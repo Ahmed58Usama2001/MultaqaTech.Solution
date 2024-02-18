@@ -1,0 +1,123 @@
+﻿using AutoMapper.Internal;
+using System.Linq;
+
+namespace MultaqaTech.APIs.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class AccountController : BaseApiController
+{
+    private readonly UserManager<AppUser> _userManager;
+    private readonly SignInManager<AppUser> _signInManager;
+    private readonly IAuthService _authService;
+    private readonly IMapper _mapper;
+
+    public AccountController(UserManager<AppUser> userManager,SignInManager<AppUser> signInManager,
+        IAuthService authService,
+        IMapper mapper)
+    {
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _authService = authService;
+        _mapper = mapper;
+    }
+
+    [HttpPost("login")]
+    public async Task<ActionResult<UserDto>> Login(LoginDto model)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = await _userManager.FindByEmailAsync(model.UserNameOrEmail);
+
+            if (user == null) 
+                user = await _userManager.FindByNameAsync(model.UserNameOrEmail);
+           
+            if(user is null)
+                return Unauthorized(new ApiResponse(401));
+
+            var result= await _signInManager.CheckPasswordSignInAsync(user, model.Password,false);
+
+            if(!result.Succeeded)
+                return Unauthorized(new ApiResponse(401));
+
+            return Ok(new UserDto
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                Token = await _authService.CreateTokenAsync(user, _userManager)
+            }); ;
+        }
+
+        return Unauthorized(new ApiResponse(401));
+    }
+
+    [HttpPost("register")]
+    public async Task<ActionResult<UserDto>> Register(RegisterDto model)
+    {
+        if (CheckEmailExists(model.Email).Result.Value)
+            return BadRequest(new ApiValidationErrorResponse() { Errors= new string[] {"This email already exists!"} });
+
+        if (CheckUserNameExists(model.UserName).Result.Value)
+            return BadRequest(new ApiValidationErrorResponse() { Errors = new string[] { "This user name already exists!" } });
+
+        if (CheckPhoneNumberExists(model.PhoneNumber).Result.Value)
+            return BadRequest(new ApiValidationErrorResponse() { Errors = new string[] { "This phone number already exists!" } });
+
+        if (!model.AcceptTerms)
+            return BadRequest(new ApiValidationErrorResponse() { Errors = new string[] { "You should accept terms and policies first!" } });
+
+        var user = new AppUser
+        {   Email = model.Email,
+            FirstName = model.FirstName,
+            LastName = model.LastName,
+            UserName = model.UserName,
+            PhoneNumber = model.PhoneNumber,
+        };
+
+        var result=await _userManager.CreateAsync(user,model.Password);
+
+        if (!result.Succeeded)
+        {
+            string errors = string.Join(", ", result.Errors.Select(error => error.Description));
+            return BadRequest(new ApiResponse(400, errors));
+        }
+
+        return Ok(new UserDto
+        {
+            UserName = user.UserName,
+            Email = user.Email,
+            Token = await _authService.CreateTokenAsync(user, _userManager)
+        });
+
+    }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<ActionResult<UserDto>>GetCurrentUser()
+    {
+        var email = User.FindFirstValue(ClaimTypes.Email); 
+
+        var user= await _userManager.FindByEmailAsync(email);
+
+        return Ok(new UserDto()
+        {
+            UserName= user.UserName,
+            Email = user.Email,
+            Token= await _authService.CreateTokenAsync(user, _userManager)
+        });
+    }
+
+    [HttpGet("emailexists")]
+    public async Task<ActionResult<bool>> CheckEmailExists(string email)
+        =>await _userManager.FindByEmailAsync(email) is not null;
+
+    [HttpGet("phonenumberexists")]
+    public async Task<ActionResult<bool>> CheckPhoneNumberExists(string phoneNumber)
+       =>await _userManager.Users.FirstOrDefaultAsync(U => U.PhoneNumber == phoneNumber) is not null;
+
+    [HttpGet("usernameexists")]
+    public async Task<ActionResult<bool>> CheckUserNameExists(string userName)
+        => await _userManager.FindByNameAsync(userName) is not null;
+
+
+}
