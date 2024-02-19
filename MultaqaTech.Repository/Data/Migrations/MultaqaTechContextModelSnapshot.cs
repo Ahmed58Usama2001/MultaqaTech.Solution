@@ -7,7 +7,7 @@ using MultaqaTech.Repository.Data;
 
 #nullable disable
 
-namespace MultaqaTech.Repository.Repositories.Migrations.Data
+namespace MultaqaTech.Repository.Data.Migrations
 {
     [DbContext(typeof(MultaqaTechContext))]
     partial class MultaqaTechContextModelSnapshot : ModelSnapshot
