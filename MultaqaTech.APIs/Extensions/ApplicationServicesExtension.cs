@@ -26,6 +26,8 @@ public static class ApplicationServicesExtension
             };
         });
 
+        services.AddScoped<ISubjectService, SubjectService>();
+
         return services;
     }
 }

@@ -1,12 +1,14 @@
-﻿namespace MultaqaTech.APIs.Helpers;
+﻿using MultaqaTech.Core.Entities;
 
-public class MappingProfiles:Profile
+namespace MultaqaTech.APIs.Helpers;
+
+public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-       
-       
+        CreateMap<SubjectDto, Subject>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
 
-
+        CreateMap<Subject, SubjectDto>();
     }
 }

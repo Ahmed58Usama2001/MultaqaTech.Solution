@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace MultaqaTech.APIs;
 
 public class Program
