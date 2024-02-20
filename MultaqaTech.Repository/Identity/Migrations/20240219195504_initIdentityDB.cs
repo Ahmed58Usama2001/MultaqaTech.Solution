@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace MultaqaTech.Repository.Repository.Identity.Migrations
+namespace MultaqaTech.Repository.Identity.Migrations
 {
     /// <inheritdoc />
     public partial class initIdentityDB : Migration

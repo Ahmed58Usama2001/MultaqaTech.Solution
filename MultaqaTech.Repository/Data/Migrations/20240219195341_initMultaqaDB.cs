@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace MultaqaTech.Repository.Repositories.Migrations.Data
+namespace MultaqaTech.Repository.Data.Migrations
 {
     /// <inheritdoc />
     public partial class initMultaqaDB : Migration

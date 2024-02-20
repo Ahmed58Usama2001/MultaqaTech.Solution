@@ -9,10 +9,10 @@ using MultaqaTech.Repository.Identity;
 
 #nullable disable
 
-namespace MultaqaTech.Repository.Repository.Identity.Migrations
+namespace MultaqaTech.Repository.Identity.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20240218111418_initIdentityDB")]
+    [Migration("20240219195504_initIdentityDB")]
     partial class initIdentityDB
     {
         /// <inheritdoc />
