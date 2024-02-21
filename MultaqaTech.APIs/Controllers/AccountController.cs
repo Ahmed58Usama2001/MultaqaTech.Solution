@@ -63,15 +63,13 @@ public class AccountController : BaseApiController
         if (CheckPhoneNumberExists(model.PhoneNumber).Result.Value)
             return BadRequest(new ApiValidationErrorResponse() { Errors = new string[] { "This phone number already exists!" } });
 
-        if (!model.AcceptTerms)
-            return BadRequest(new ApiValidationErrorResponse() { Errors = new string[] { "You should accept terms and policies first!" } });
-
         var user = new AppUser
         {   Email = model.Email,
             FirstName = model.FirstName,
             LastName = model.LastName,
             UserName = model.UserName,
             PhoneNumber = model.PhoneNumber,
+            RegistrationDate= DateTime.Now
         };
 
         var result=await _userManager.CreateAsync(user,model.Password);

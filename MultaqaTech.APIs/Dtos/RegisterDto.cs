@@ -3,12 +3,15 @@
 public class RegisterDto
 {
     [Required]
+    [MinLength(3, ErrorMessage = "The FirstName must be at least 3 characters long.")]
     public string FirstName { get; set; }
 
     [Required]
+    [MinLength(3, ErrorMessage = "The LastName must be at least 3 characters long.")]
     public string LastName { get; set; }
 
     [Required]
+    [MinLength(3, ErrorMessage = "The UserName must be at least 3 characters long.")]
     public string UserName { get; set; }
 
     [Required]
@@ -16,11 +19,10 @@ public class RegisterDto
     public string Email { get; set; }
 
     [Required]
+    [RegularExpression(@"^(?:\+?20|0)?1\d{9}$", ErrorMessage = "Invalid Egyptian phone number.")]
     public string PhoneNumber { get; set; }
 
     [Required]
+    [MinLength(3, ErrorMessage = "The Password must be at least 3 characters long.")]
     public string Password { get; set; }
-
-    [Required]
-    public bool AcceptTerms { get; set; }
 }

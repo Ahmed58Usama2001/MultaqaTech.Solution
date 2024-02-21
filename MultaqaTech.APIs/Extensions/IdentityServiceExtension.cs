@@ -9,7 +9,6 @@ public static class IdentityServiceExtension
 
         services.AddIdentity<AppUser, IdentityRole>(options =>
         {
-            options.Password.RequiredUniqueChars = 2;
             options.Password.RequireNonAlphanumeric = true;
             options.Password.RequireUppercase = true;
             options.Password.RequireLowercase = true;
