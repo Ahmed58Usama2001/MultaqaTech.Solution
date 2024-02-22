@@ -74,6 +74,8 @@ public class Program
             app.UseSwaggerMiddlewares();
         }
 
+        app.UseMiddleware<RateLimeterMiddleware>();
+
         app.UseStatusCodePagesWithRedirects("/errors/{0}");
 
         app.UseHttpsRedirection();
