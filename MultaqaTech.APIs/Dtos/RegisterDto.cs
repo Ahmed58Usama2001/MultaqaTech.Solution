@@ -23,6 +23,5 @@ public class RegisterDto
     public string PhoneNumber { get; set; }
 
     [Required]
-    [MinLength(3, ErrorMessage = "The Password must be at least 3 characters long.")]
     public string Password { get; set; }
 }
