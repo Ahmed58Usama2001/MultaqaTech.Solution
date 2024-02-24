@@ -1,4 +1,4 @@
-﻿namespace MultaqaTech.Repository.Data;
+﻿namespace MultaqaTech.Repository.Data.Configurations;
 
 public class MultaqaTechContext : DbContext
 {

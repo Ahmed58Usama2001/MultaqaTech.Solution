@@ -3,6 +3,7 @@ global using MultaqaTech.APIs.Dtos;
 global using MultaqaTech.Repository;
 global using MultaqaTech.APIs.Errors;
 global using MultaqaTech.APIs.Helpers;
+global using MultaqaTech.Core.Entities;
 global using MultaqaTech.APIs.Extensions;
 global using MultaqaTech.Repository.Data;
 global using MultaqaTech.APIs.MiddleWares;

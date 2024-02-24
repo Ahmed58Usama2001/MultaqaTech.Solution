@@ -8,7 +8,5 @@ public class MappingProfiles : Profile
     {
         CreateMap<SubjectDto, Subject>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-
-        CreateMap<Subject, SubjectDto>();
     }
 }

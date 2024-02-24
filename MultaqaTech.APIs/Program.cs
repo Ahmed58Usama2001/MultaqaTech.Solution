@@ -1,3 +1,5 @@
+using MultaqaTech.Repository.Data.Configurations;
+
 namespace MultaqaTech.APIs;
 
 public class Program
@@ -47,7 +49,7 @@ public class Program
         try
         {    
             await _dbContext.Database.MigrateAsync(); // Update-Database
-            await MultaqaTechContextSeed.SeedAsync(_dbContext); // Data Seeding
+            //await MultaqaTechContextSeed.SeedAsync(_dbContext); // Data Seeding
 
             await _identityDbContext.Database.MigrateAsync(); // Update-Database
 

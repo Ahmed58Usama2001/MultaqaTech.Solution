@@ -5,17 +5,16 @@ namespace MultaqaTech.Core.Entities;
 public class Course : BaseEntity
 {
     //public Instructor Instructor { get; set; }
-
+    public int SubjectId { get; set; }
     public Subject Subject { get; set; }
 
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
     public string? Language { get; set; }
 
     public decimal Price { get; set; }
     public decimal Rating { get; set; }
     public decimal Duration { get; set; }
 
-    public int SubjectId { get; set; }
     public int TotalEnrolled { get; set; }
     public int NumberOfLectures { get; set; }
 
@@ -29,4 +28,5 @@ public class Course : BaseEntity
     List<CourseReview> CourseReviews { get; set; } = new();
     
     List<string>? LearningObjectives { get; set; } = new();
+    List<int> EnrolledStudents { get; set; } = new();
 }

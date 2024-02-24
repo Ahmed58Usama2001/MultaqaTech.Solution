@@ -29,7 +29,7 @@ public class ExceptionMiddleWare
             httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
             var response = env.IsDevelopment() ?
-                new ApiExceptionResponse((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace.ToString()) :
+                new ApiExceptionResponse((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace?.ToString()) :
                 new ApiExceptionResponse((int)HttpStatusCode.InternalServerError);
 
             var options=new JsonSerializerOptions() {PropertyNamingPolicy=JsonNamingPolicy.CamelCase};
