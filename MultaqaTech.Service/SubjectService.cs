@@ -22,4 +22,18 @@ public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
             return null;
         }
     }
+
+    public async Task<IEnumerable<Subject>> ReadAllAsync()
+    {
+        IGenericRepository<Subject> repo = _unitOfWork.Repository<Subject>();
+
+        return await repo.GetAllAsync();
+    }
+
+    public async Task<Subject?> ReadById(int id)
+    {
+        var repo = _unitOfWork.Repository<Subject>();
+
+        return await repo.GetByIdAsync(id);
+    }
 }
