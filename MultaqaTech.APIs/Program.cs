@@ -29,6 +29,14 @@ public class Program
 
         builder.Services.AddIdentityServices(builder.Configuration);
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("MyPolicy", options =>
+            {
+                options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+            });
+        });
+
         #endregion
 
 
@@ -83,6 +91,8 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseStaticFiles();
+
+        app.UseCors("MyPolicy");
 
         app.MapControllers();
 
