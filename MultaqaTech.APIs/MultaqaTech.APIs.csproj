@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -17,12 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <ProjectReference Include="..\MultaqaTech.Repository\MultaqaTech.Repository.csproj" />
+    <ProjectReference Include="..\MultaqaTech.Service\MultaqaTech.Service.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MultaqaTech.Repository\MultaqaTech.Repository.csproj" />
-    <ProjectReference Include="..\MultaqaTech.Service\MultaqaTech.Service.csproj" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
-﻿using MultaqaTech.Core.Entities;
-
+﻿
 namespace MultaqaTech.APIs.Helpers;
 
 public class MappingProfiles : Profile

@@ -12,7 +12,8 @@ public static class IdentityServiceExtension
             options.Password.RequireNonAlphanumeric = true;
             options.Password.RequireUppercase = true;
             options.Password.RequireLowercase = true;
-        }).AddEntityFrameworkStores<AppIdentityDbContext>();
+        }).AddEntityFrameworkStores<AppIdentityDbContext>()
+        .AddDefaultTokenProviders();
 
         services.AddAuthentication(options =>
         {
@@ -42,6 +43,16 @@ public static class IdentityServiceExtension
                     ClockSkew = TimeSpan.FromDays(double.Parse(configuration["JWT:DurationInDays"] ?? string.Empty))
                 };
 
+            }).AddGoogle(options =>
+            {
+                IConfigurationSection googleAuthSection = configuration.GetSection("Authentication:Google");
+
+                options.ClientId = googleAuthSection["ClientId"];
+                options.ClientSecret = googleAuthSection["ClientSecret"];
+            }).AddFacebook(facebookOptions =>
+            {
+                facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
+                facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
             });
 
 
