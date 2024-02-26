@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace MultaqaTech.APIs.Extensions;
+﻿namespace MultaqaTech.APIs.Extensions;
 
 public static class IdentityServiceExtension
 {

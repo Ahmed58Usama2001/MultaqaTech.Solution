@@ -19,12 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <ProjectReference Include="..\MultaqaTech.Repository\MultaqaTech.Repository.csproj" />
+    <ProjectReference Include="..\MultaqaTech.Service\MultaqaTech.Service.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MultaqaTech.Repository\MultaqaTech.Repository.csproj" />
-    <ProjectReference Include="..\MultaqaTech.Service\MultaqaTech.Service.csproj" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

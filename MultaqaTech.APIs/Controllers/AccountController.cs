@@ -1,9 +1,4 @@
-﻿using AutoMapper.Internal;
-using MultaqaTech.APIs.Dtos;
-using MultaqaTech.Core.Entities;
-using System.Linq;
-
-namespace MultaqaTech.APIs.Controllers;
+﻿namespace MultaqaTech.APIs.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
