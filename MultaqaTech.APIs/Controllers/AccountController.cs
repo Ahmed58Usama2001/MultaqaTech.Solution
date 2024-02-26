@@ -1,4 +1,6 @@
 ﻿using AutoMapper.Internal;
+using MultaqaTech.APIs.Dtos;
+using MultaqaTech.Core.Entities;
 using System.Linq;
 
 namespace MultaqaTech.APIs.Controllers;
@@ -23,7 +25,7 @@ public class AccountController : BaseApiController
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<UserDto>> Login(LoginDto model)
+    public async Task<ActionResult<UserDto>> Login(LoginDto model )
     {
         if (ModelState.IsValid)
         {
@@ -35,7 +37,7 @@ public class AccountController : BaseApiController
             if(user is null)
                 return Unauthorized(new ApiResponse(401));
 
-            var result= await _signInManager.CheckPasswordSignInAsync(user, model.Password,false);
+            var result= await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe,false );
 
             if(!result.Succeeded)
                 return Unauthorized(new ApiResponse(401));
@@ -49,6 +51,55 @@ public class AccountController : BaseApiController
         }
 
         return Unauthorized(new ApiResponse(401));
+    }
+
+    [HttpPost("forgetPassword")]
+    public async Task<ActionResult<UserDto>> ForgetPassword(ForgetPasswordDto model)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+
+            if (user is not null)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var resetPasswordLink = Url.Action("ResetPassword","Account",new {Email=model.Email,Token=token}, Request.Scheme);
+                var email = new Email()
+                {
+                    Title = "Reset Password",
+                    To = model.Email,
+                    Body = resetPasswordLink
+                };
+                EmailSettings.SendEmail(email);
+                return Ok(model);
+            }
+            ModelState.AddModelError(string.Empty, "Email is invalid");
+        }
+
+        return Ok(model) ;
+    }
+
+    [HttpPost("ResetPassword")]
+    public async Task<ActionResult<UserDto>> ResetPassword(ResetPasswordDto model)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+
+            if (user is not null)
+            {
+               var result = await _userManager.ResetPasswordAsync(user,model.Token,model.Password);
+                if (result.Succeeded)
+                    return RedirectToAction(nameof(Login));
+                string errors = string.Join(", ", result.Errors.Select(error => error.Description));
+                return BadRequest(new ApiResponse(400, errors));
+
+            }          
+        }
+
+        return Ok(model);
     }
 
     [HttpPost("register")]
@@ -90,6 +141,7 @@ public class AccountController : BaseApiController
         });
 
     }
+
 
     [Authorize]
     [HttpGet]
