@@ -14,4 +14,5 @@ public class MultaqaTechContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
     public DbSet<Subject> Subjects { get; set; }
+    public DbSet<Tag> Tags { get; set; }
 }

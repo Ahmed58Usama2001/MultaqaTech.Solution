@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Core.Entities.Enums;
-
-namespace MultaqaTech.Core.Entities;
+﻿namespace MultaqaTech.Core.Entities;
 
 public class Course : BaseEntity
 {

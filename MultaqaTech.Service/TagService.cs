@@ -1,18 +1,18 @@
 ﻿namespace MultaqaTech.Service;
 
-public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
+public class TagService(IUnitOfWork unitOfWork) : ITagService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<Subject?> CreateSubjectAsync(Subject subject)
+    public async Task<Tag?> CreateTagAsync(Tag tag)
     {
         try
         {
-            await _unitOfWork.Repository<Subject>().AddAsync(subject);
+            await _unitOfWork.Repository<Tag>().AddAsync(tag);
             var result = await _unitOfWork.CompleteAsync();
             if (result <= 0) return null;
 
-            return subject;
+            return tag;
         }
         catch (Exception ex)
         {
@@ -21,29 +21,13 @@ public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
         }
     }
 
-    public async Task<Subject?> GetSubjectAsync(int subjectId)
+    public async Task<Tag?> GetTagAsync(int tagId)
     {
         try
         {
-            var subject= await _unitOfWork.Repository<Subject>().GetByIdAsync(subjectId);
+            var tag = await _unitOfWork.Repository<Tag>().GetByIdAsync(tagId);
 
-            return subject;
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex.ToString());
-            return null;
-        }
-
-    }
-
-    public async Task<IReadOnlyList<Subject>> GetSubjectsAsync()
-    {
-        try
-        {
-            var subjects = await _unitOfWork.Repository<Subject>().GetAllAsync();
-
-            return subjects;
+            return tag;
         }
         catch (Exception ex)
         {
@@ -52,24 +36,39 @@ public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
         }
     }
 
-    public async Task<Subject?> UpdateSubject(int subjectId, Subject updatedSubject)
+    public async Task<IReadOnlyList<Tag>> GetTagsAsync()
     {
-        var subject = await _unitOfWork.Repository<Subject>().GetByIdAsync(subjectId);
+        try
+        {
+            var tags = await _unitOfWork.Repository<Tag>().GetAllAsync();
 
-        if (subject == null) return null;
+            return tags;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+            return null;
+        }
+    }
 
-        if (updatedSubject == null || string.IsNullOrWhiteSpace(updatedSubject.Name))
+    public async Task<Tag?> UpdateTag(int tagId, Tag updatedTag)
+    {
+        var tag = await _unitOfWork.Repository<Tag>().GetByIdAsync(tagId);
+
+        if(tag == null) return null;
+
+        if (updatedTag == null || string.IsNullOrWhiteSpace(updatedTag.Name))
             return null;
 
-        subject.Name = updatedSubject.Name;
+        tag.Name= updatedTag.Name;
 
         try
         {
-            _unitOfWork.Repository<Subject>().Update(subject);
+            _unitOfWork.Repository<Tag>().Update(tag);
             var result = await _unitOfWork.CompleteAsync();
             if (result <= 0) return null;
 
-            return subject;
+            return tag;
         }
         catch (Exception ex)
         {
@@ -78,17 +77,16 @@ public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
         }
     }
 
-
-    public async Task<bool> DeleteSubject(int subjectId)
+    public async Task<bool> DeleteTag(int tagId)
     {
-        var subject = await _unitOfWork.Repository<Subject>().GetByIdAsync(subjectId);
+        var tag = await _unitOfWork.Repository<Tag>().GetByIdAsync(tagId);
 
-        if (subject == null)
+        if (tag == null)
             return false;
 
         try
         {
-            _unitOfWork.Repository<Subject>().Delete(subject);
+            _unitOfWork.Repository<Tag>().Delete(tag);
 
             var result = await _unitOfWork.CompleteAsync();
 
@@ -103,4 +101,5 @@ public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
             return false;
         }
     }
+
 }

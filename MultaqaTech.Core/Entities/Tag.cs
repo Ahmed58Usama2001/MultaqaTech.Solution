@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Core.Entities;
 
-public class Tag : BaseEntity
+public class Subject : BaseEntity
 {
     public string Name { get; set; }
 }

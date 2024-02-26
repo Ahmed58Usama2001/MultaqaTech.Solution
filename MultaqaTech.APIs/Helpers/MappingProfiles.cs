@@ -1,11 +1,10 @@
-﻿
-namespace MultaqaTech.APIs.Helpers;
+﻿namespace MultaqaTech.APIs.Helpers;
 
 public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<SubjectDto, Subject>()
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
+        CreateMap<TagDto, Tag>().ReverseMap(); 
+        CreateMap<SubjectDto, Subject>().ReverseMap();
     }
 }
