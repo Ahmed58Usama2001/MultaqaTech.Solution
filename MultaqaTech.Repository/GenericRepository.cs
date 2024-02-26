@@ -10,7 +10,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     }
 
     public async Task<IReadOnlyList<T>> GetAllAsync()
-    {   
+    {
         return await _dbContext.Set<T>().ToListAsync();
     }
 
@@ -40,7 +40,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     }
 
     public async Task AddAsync(T entity)
-   => await _dbContext.AddAsync(entity);
+        => await _dbContext.AddAsync(entity);
 
     public void Update(T entity)
     => _dbContext.Update(entity);

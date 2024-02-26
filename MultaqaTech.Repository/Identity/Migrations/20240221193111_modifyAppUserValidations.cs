@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace MultaqaTech.Repository.Repositories.Data.Migrations
+namespace MultaqaTech.Repository.Identity.Migrations
 {
     /// <inheritdoc />
-    public partial class initMultaqaDB2 : Migration
+    public partial class modifyAppUserValidations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

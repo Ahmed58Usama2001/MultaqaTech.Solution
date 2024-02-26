@@ -11,7 +11,6 @@ public static class IdentityServiceExtension
 
         services.AddIdentity<AppUser, IdentityRole>(options =>
         {
-            options.Password.RequiredUniqueChars = 2;
             options.Password.RequireNonAlphanumeric = true;
             options.Password.RequireUppercase = true;
             options.Password.RequireLowercase = true;
@@ -25,7 +24,7 @@ public static class IdentityServiceExtension
         })
             .AddJwtBearer(options =>
             {
-                var secretKey = Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]);
+                var secretKey = Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]?? string.Empty);
                 var requiredKeyLength = 256 / 8; // 256 bits
                 if (secretKey.Length < requiredKeyLength)
                 {
@@ -43,7 +42,7 @@ public static class IdentityServiceExtension
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(secretKey),
                     ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromDays(double.Parse(configuration["JWT:DurationInDays"]))
+                    ClockSkew = TimeSpan.FromDays(double.Parse(configuration["JWT:DurationInDays"] ?? string.Empty))
                 };
 
             }).AddGoogle(options =>

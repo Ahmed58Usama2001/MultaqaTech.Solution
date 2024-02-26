@@ -1,4 +1,4 @@
-using System.Globalization;
+using MultaqaTech.Repository.Data.Configurations;
 
 namespace MultaqaTech.APIs;
 
@@ -29,6 +29,13 @@ public class Program
 
         builder.Services.AddIdentityServices(builder.Configuration);
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("MyPolicy", options =>
+            {
+                options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+            });
+        });
 
         #endregion
 
@@ -50,7 +57,7 @@ public class Program
         try
         {    
             await _dbContext.Database.MigrateAsync(); // Update-Database
-            await MultaqaTechContextSeed.SeedAsync(_dbContext); // Data Seeding
+            //await MultaqaTechContextSeed.SeedAsync(_dbContext); // Data Seeding
 
             await _identityDbContext.Database.MigrateAsync(); // Update-Database
 
@@ -77,11 +84,15 @@ public class Program
             app.UseSwaggerMiddlewares();
         }
 
+        app.UseMiddleware<RateLimeterMiddleware>();
+
         app.UseStatusCodePagesWithRedirects("/errors/{0}");
 
         app.UseHttpsRedirection();
 
         app.UseStaticFiles();
+
+        app.UseCors("MyPolicy");
 
         app.MapControllers();
 

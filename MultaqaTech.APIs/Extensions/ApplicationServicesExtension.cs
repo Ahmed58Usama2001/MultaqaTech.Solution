@@ -12,8 +12,8 @@ public static class ApplicationServicesExtension
         {
             options.InvalidModelStateResponseFactory = (actionContext) =>
             {
-                var errors = actionContext.ModelState.Where(p => p.Value.Errors.Count() > 0)
-                .SelectMany(p => p.Value.Errors)
+                var errors = actionContext.ModelState.Where(p => p.Value?.Errors.Count() > 0)
+                .SelectMany(p => p.Value?.Errors ?? new())
                 .Select(e => e.ErrorMessage)
                 .ToArray();
 
@@ -25,6 +25,8 @@ public static class ApplicationServicesExtension
                 return new BadRequestObjectResult(validationErrorResponse);
             };
         });
+
+        services.AddScoped<ISubjectService, SubjectService>();
 
         return services;
     }

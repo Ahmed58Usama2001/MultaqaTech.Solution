@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MultaqaTech.Repository.Data;
+using MultaqaTech.Repository.Data.Configurations;
 
 #nullable disable
 
-namespace MultaqaTech.Repository.Repositories.Migrations.Data
+namespace MultaqaTech.Repository.Data.Migrations
 {
     [DbContext(typeof(MultaqaTechContext))]
     partial class MultaqaTechContextModelSnapshot : ModelSnapshot
@@ -20,6 +20,23 @@ namespace MultaqaTech.Repository.Repositories.Migrations.Data
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("MultaqaTech.Core.Entities.Subject", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Subjects");
+                });
 #pragma warning restore 612, 618
         }
     }

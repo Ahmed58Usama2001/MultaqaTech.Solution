@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MultaqaTech.Repository.Data;
+using MultaqaTech.Repository.Data.Configurations;
 
 #nullable disable
 
-namespace MultaqaTech.Repository.Repository.Data.Migrations
+namespace MultaqaTech.Repository.Data.Migrations
 {
     [DbContext(typeof(MultaqaTechContext))]
-    [Migration("20240218111518_initDB")]
-    partial class initDB
+    [Migration("20240219195341_initMultaqaDB")]
+    partial class initMultaqaDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

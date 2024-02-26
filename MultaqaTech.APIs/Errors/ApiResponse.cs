@@ -2,10 +2,10 @@
 
 public class ApiResponse
 {
-    public int  StatusCode { get; set; }
-    public string  Message { get; set; }
+    public int StatusCode { get; set; }
+    public string Message { get; set; }
 
-    public ApiResponse(int statusCode,string? message=null)
+    public ApiResponse(int statusCode, string? message = null)
     {
         this.StatusCode = statusCode;
 
@@ -16,11 +16,11 @@ public class ApiResponse
     {
         return statusCode switch //switch expression
         {
-            400=>"A Bad Request, You have made",
-            401=>"Authorized, you are not",
-            404=>"Resource was not found",
-            500=>"Errors are the path to the dark side. Errors kead to anger. Anger leads to hate. Hate leads to career change.",
-            _=>null
+            400 => "A Bad Request, You have made",
+            401 => "Authorized, you are not",
+            404 => "Resource was not found",
+            500 => "Errors are the path to the dark side. Errors kead to anger. Anger leads to hate. Hate leads to career change.",
+            _ => null
         };
     }
 }
