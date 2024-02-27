@@ -23,7 +23,7 @@ public class SubjectsController(ISubjectService subjectService, IMapper mapper) 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<Subject>>> GetAllSubjects()
     {
-        var subjects = await _subjectService.GetSubjectsAsync();
+        var subjects = await _subjectService.ReadAllAsync();
         return Ok(subjects);
     }
 
@@ -33,7 +33,7 @@ public class SubjectsController(ISubjectService subjectService, IMapper mapper) 
     [HttpGet("{id}")]
     public async Task<ActionResult<SubjectDto>> GetSubject(int id)
     {
-        var subject = await _subjectService.GetSubjectAsync(id);
+        var subject = await _subjectService.ReadByIdAsync(id);
 
         if (subject == null)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });

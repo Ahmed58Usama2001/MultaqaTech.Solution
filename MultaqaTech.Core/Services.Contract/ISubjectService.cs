@@ -3,9 +3,10 @@
 public interface ISubjectService
 {
     Task<Subject?> CreateSubjectAsync(Subject subject);
-    Task<IReadOnlyList<Subject>> GetSubjectsAsync();
 
-    Task<Subject?> GetSubjectAsync(int subjectId);
+    Task<IReadOnlyList<Subject>> ReadAllAsync();
+
+    Task<Subject?> ReadByIdAsync(int subjectId);
 
     Task<Subject?> UpdateSubject(int subjectId, Subject subject);
 

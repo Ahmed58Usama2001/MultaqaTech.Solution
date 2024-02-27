@@ -21,7 +21,7 @@ public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
         }
     }
 
-    public async Task<Subject?> GetSubjectAsync(int subjectId)
+    public async Task<Subject?> ReadByIdAsync(int subjectId)
     {
         try
         {
@@ -37,7 +37,7 @@ public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
 
     }
 
-    public async Task<IReadOnlyList<Subject>> GetSubjectsAsync()
+    public async Task<IReadOnlyList<Subject>> ReadAllAsync()
     {
         try
         {

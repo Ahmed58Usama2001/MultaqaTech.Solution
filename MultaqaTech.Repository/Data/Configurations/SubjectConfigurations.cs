@@ -1,10 +1,10 @@
 ﻿namespace MultaqaTech.Repository.Data.Configurations;
 
-internal class TagConfigurations : IEntityTypeConfiguration<Tag>
+internal class SubjectConfigurations : IEntityTypeConfiguration<Subject>
 {
-    public void Configure(EntityTypeBuilder<Tag> builder)
+    public void Configure(EntityTypeBuilder<Subject> builder)
     {
-        builder.ToTable("Tags");
+        builder.ToTable("Subjects");
 
         builder.Property(e => e.Name)
             .IsRequired()

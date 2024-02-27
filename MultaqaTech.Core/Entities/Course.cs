@@ -2,7 +2,9 @@
 
 public class Course : BaseEntity
 {
-    //public Instructor Instructor { get; set; }
+    //public int InstructorId { get; set; }
+    //public AppUser Instructor { get; set; }
+
     public int SubjectId { get; set; }
     public Subject Subject { get; set; }
 
