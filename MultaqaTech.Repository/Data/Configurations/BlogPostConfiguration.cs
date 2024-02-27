@@ -20,7 +20,7 @@ internal class BlogPostConfiguration : IEntityTypeConfiguration<BlogPost>
         //    .HasForeignKey(e => e.AuthorId);
 
         builder.HasOne(e => e.Category)
-         .WithMany(b => b.BlogPosts)
+         .WithMany()
          .HasForeignKey(e => e.CategoryId)
          .OnDelete(DeleteBehavior.Restrict);
 

@@ -16,10 +16,6 @@ internal class BlogPostCommentConfiguration : IEntityTypeConfiguration<BlogPostC
         //    .WithMany()
         //    .HasForeignKey(e => e.AuthorId);
 
-        builder.HasOne(e => e.BlogPost)
-             .WithMany() 
-             .HasForeignKey(e => e.BlogPostId)
-             .OnDelete(DeleteBehavior.Cascade);
 
 
     }
