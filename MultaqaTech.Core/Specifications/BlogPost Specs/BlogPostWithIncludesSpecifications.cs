@@ -27,12 +27,12 @@ public class BlogPostWithIncludesSpecifications : BaseSpecifications<BlogPost>
                     break;
 
                 default:
-                    AddOrderBy(p => p.Title);
+                    AddOrderBy(p => p.PublishingDate);
                     break;
             }
         }
         else
-            AddOrderBy(p => p.Title);
+            AddOrderBy(p => p.PublishingDate);
 
         ApplyPagination((speceficationsParams.PageIndex - 1) * speceficationsParams.PageSize, speceficationsParams.PageSize);
     }
