@@ -12,6 +12,15 @@ internal class BlogPostConfiguration : IEntityTypeConfiguration<BlogPost>
             .IsRequired()
             .HasMaxLength(255);
 
+        builder.Property(e => e.AuthorName)
+        .IsRequired();
+
+        builder.Property(e => e.Content)
+        .IsRequired();
+
+        builder.Property(e => e.CategoryId)
+         .IsRequired();
+
         builder.Property(e => e.PublishingDate)
             .IsRequired();
 

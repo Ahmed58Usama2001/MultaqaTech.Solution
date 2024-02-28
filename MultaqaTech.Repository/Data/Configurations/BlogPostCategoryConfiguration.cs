@@ -10,5 +10,10 @@ internal class BlogPostCategoryConfiguration : IEntityTypeConfiguration<BlogPost
             .IsRequired()
             .HasMaxLength(255);
 
+        builder.HasMany(e => e.BlogPosts)
+    .WithOne(c => c.Category)
+    .HasForeignKey(c => c.CategoryId)
+    .OnDelete(DeleteBehavior.Cascade);
+
     }
 }

@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MultaqaTech.Repository.Data.Configurations;
 
 #nullable disable
 
-namespace MultaqaTech.Repository.Data.Migrations
+namespace MultaqaTech.Repository.Repository.Data.Migrations
 {
     [DbContext(typeof(MultaqaTechContext))]
-    partial class MultaqaTechContextModelSnapshot : ModelSnapshot
+    [Migration("20240228003308_AllowNullFprAuthorName")]
+    partial class AllowNullFprAuthorName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,9 +52,6 @@ namespace MultaqaTech.Repository.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("BlogPostCategoryId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -71,8 +71,6 @@ namespace MultaqaTech.Repository.Data.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BlogPostCategoryId");
 
                     b.HasIndex("CategoryId");
 
@@ -160,10 +158,6 @@ namespace MultaqaTech.Repository.Data.Migrations
 
             modelBuilder.Entity("MultaqaTech.Core.Entities.BlogPost", b =>
                 {
-                    b.HasOne("MultaqaTech.Core.Entities.BlogPostCategory", null)
-                        .WithMany("BlogPosts")
-                        .HasForeignKey("BlogPostCategoryId");
-
                     b.HasOne("MultaqaTech.Core.Entities.BlogPostCategory", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
@@ -187,11 +181,6 @@ namespace MultaqaTech.Repository.Data.Migrations
             modelBuilder.Entity("MultaqaTech.Core.Entities.BlogPost", b =>
                 {
                     b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.BlogPostCategory", b =>
-                {
-                    b.Navigation("BlogPosts");
                 });
 #pragma warning restore 612, 618
         }
