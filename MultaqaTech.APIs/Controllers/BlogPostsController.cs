@@ -1,7 +1,4 @@
-﻿using MultaqaTech.APIs.Dtos;
-using MultaqaTech.Core.Entities;
-
-namespace MultaqaTech.APIs.Controllers;
+﻿namespace MultaqaTech.APIs.Controllers;
 
 [Authorize]
 public class BlogPostsController(IBlogPostService blogPostService, IMapper mapper, UserManager<AppUser> userManager,IBlogPostCategoryService blogPostCategoryService ) : BaseApiController

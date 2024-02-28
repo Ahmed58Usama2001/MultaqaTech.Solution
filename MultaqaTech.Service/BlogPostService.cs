@@ -1,8 +1,4 @@
 ﻿
-using Microsoft.EntityFrameworkCore;
-using MultaqaTech.Core.Entities;
-using MultaqaTech.Core.Specifications.BlogPost_Specs;
-
 namespace MultaqaTech.Service;
 
 public class BlogPostService(IUnitOfWork unitOfWork) : IBlogPostService

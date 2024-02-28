@@ -11,6 +11,8 @@ global using MultaqaTech.Core.Services.Contract;
 global using MultaqaTech.Core.Entities.Identity;
 global using MultaqaTech.Core.Repositories.Contract;
 global using MultaqaTech.Core.Specifications.BlogPost_Specs;
+global using MultaqaTech.Repository.Data.Configurations;
+
 
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;

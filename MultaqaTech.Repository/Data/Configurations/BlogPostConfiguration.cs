@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace MultaqaTech.Repository.Data.Configurations;
+﻿namespace MultaqaTech.Repository.Data.Configurations;
 
 internal class BlogPostConfiguration : IEntityTypeConfiguration<BlogPost>
 {

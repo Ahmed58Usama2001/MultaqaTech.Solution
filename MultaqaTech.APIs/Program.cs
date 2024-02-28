@@ -1,5 +1,3 @@
-using MultaqaTech.Repository.Data.Configurations;
-
 namespace MultaqaTech.APIs;
 
 public class Program
