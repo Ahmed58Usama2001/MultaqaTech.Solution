@@ -69,7 +69,7 @@ public class AccountController : BaseApiController
                 EmailSettings.SendEmail(email);
                 return Ok(model);
             }
-            ModelState.AddModelError(string.Empty, "Email is invalid");
+            return Unauthorized(new ApiResponse(401));
         }
 
         return Ok(model) ;
