@@ -22,19 +22,8 @@
             //    .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => MapComments(src.Comments)))
             //    .ForMember(dest => dest.PublishingDate, opt => opt.MapFrom(src => DateTime.ParseExact(src.PublishingDate, "dddd, MMMM dd, yyyy 'at' hh:mm:ss tt", CultureInfo.InvariantCulture)));
 
-
-           
+            CreateMap<CourseDto, Course>().ReverseMap();
+            CreateMap<Course, CourseToReturnDto>().ReverseMap();
         }
-
-namespace MultaqaTech.APIs.Helpers;
-
-public class MappingProfiles : Profile
-{
-    public MappingProfiles()
-    {
-        CreateMap<SubjectDto, Subject>().ReverseMap();
-        CreateMap<BlogPostCategoryDto, BlogPostCategory>().ReverseMap();
-        CreateMap<CourseDto, Course>().ReverseMap();
-        CreateMap<Course, CourseToReturnDto>().ReverseMap();
     }
 }
