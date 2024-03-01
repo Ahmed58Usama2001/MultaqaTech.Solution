@@ -25,7 +25,7 @@ public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
     {
         try
         {
-            var subject= await _unitOfWork.Repository<Subject>().GetByIdAsync(subjectId);
+            var subject = await _unitOfWork.Repository<Subject>().GetByIdAsync(subjectId);
 
             return subject;
         }

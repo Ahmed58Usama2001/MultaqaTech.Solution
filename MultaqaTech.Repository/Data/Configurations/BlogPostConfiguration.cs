@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace MultaqaTech.Repository.Data.Configurations;
+﻿namespace MultaqaTech.Repository.Data.Configurations;
 
 internal class BlogPostConfiguration : IEntityTypeConfiguration<BlogPost>
 {
@@ -30,7 +28,6 @@ internal class BlogPostConfiguration : IEntityTypeConfiguration<BlogPost>
         .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(bp => bp.Tags)
-     .WithMany(t => t.BlogPosts);
-
+               .WithMany();
     }
 }

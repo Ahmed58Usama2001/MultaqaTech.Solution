@@ -27,11 +27,10 @@ public class SubjectsController(ISubjectService subjectService, IMapper mapper) 
         return Ok(subjects);
     }
 
-
     [ProducesResponseType(typeof(SubjectDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("{id}")]
-    public async Task<ActionResult<SubjectDto>> GetSubject(int id)
+    public async Task<ActionResult<SubjectDto>> GetSubjectById(int id)
     {
         var subject = await _subjectService.ReadByIdAsync(id);
 
@@ -44,9 +43,9 @@ public class SubjectsController(ISubjectService subjectService, IMapper mapper) 
     [ProducesResponseType(typeof(Subject), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpPut]
-    public async Task<ActionResult<Subject>> UpdateSubject(int subjectId, Subject updatedSubject)
+    public async Task<ActionResult<Subject>> UpdateSubject(Subject updatedSubject)
     {
-        var subject = await _subjectService.UpdateSubject(subjectId, updatedSubject);
+        var subject = await _subjectService.UpdateSubject(updatedSubject.Id, updatedSubject);
 
         if (subject == null)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });

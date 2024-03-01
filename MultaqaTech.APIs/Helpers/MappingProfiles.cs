@@ -6,5 +6,7 @@ public class MappingProfiles : Profile
     {
         CreateMap<SubjectDto, Subject>().ReverseMap();
         CreateMap<BlogPostCategoryDto, BlogPostCategory>().ReverseMap();
+        CreateMap<CourseDto, Course>().ReverseMap();
+        CreateMap<Course, CourseToReturnDto>().ReverseMap();
     }
 }

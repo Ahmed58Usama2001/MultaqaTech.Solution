@@ -28,6 +28,8 @@ public static class ApplicationServicesExtension
 
         services.AddScoped<ISubjectService, SubjectService>();
         services.AddScoped<IBlogPostCategoryService, BlogPostCategoryService>();
+        services.AddScoped<ICourseService, CourseService>();
+
         return services;
     }
 }

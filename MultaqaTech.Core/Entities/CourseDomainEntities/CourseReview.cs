@@ -1,8 +1,11 @@
-﻿namespace MultaqaTech.Core.Entities;
+﻿namespace MultaqaTech.Core.Entities.CourseDomainEntities;
 
 public class CourseReview : BaseEntity
 {
-    public string? ReviewContent { get; set; }
+    public int CourseId { get; set; }
+    public Course Course { get; set; }
+
+    public string? Content { get; set; }
 
     public int NumberOfStars { get; set; }
 

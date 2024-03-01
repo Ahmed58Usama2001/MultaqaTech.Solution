@@ -11,6 +11,7 @@ global using MultaqaTech.Repository.Identity;
 global using MultaqaTech.Core.Services.Contract;
 global using MultaqaTech.Core.Entities.Identity;
 global using MultaqaTech.Core.Repositories.Contract;
+global using MultaqaTech.Core.Entities.CourseDomainEntities;
 
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
@@ -28,5 +29,3 @@ global using System.Security.Claims;
 global using System.ComponentModel.DataAnnotations;
 
 global using AutoMapper;
-
-
