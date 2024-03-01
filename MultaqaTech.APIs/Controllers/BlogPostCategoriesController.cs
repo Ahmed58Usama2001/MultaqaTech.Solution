@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using MultaqaTech.Service;
-
-namespace MultaqaTech.APIs.Controllers;
+﻿namespace MultaqaTech.APIs.Controllers;
 
 public class BlogPostCategoriesController(IBlogPostCategoryService blogPostCategoryService, IMapper mapper) : BaseApiController
 {

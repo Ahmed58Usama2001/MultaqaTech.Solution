@@ -3,9 +3,7 @@
 public class BlogPost : BaseEntity
 {
     public string Title { get; set; } = string.Empty;
-
-    //public int AuthorId { get; set; }
-    //public AppUser Author { get; set; }
+    public string AuthorName { get; set; }
 
     public string Content { get; set; } = string.Empty;
 
@@ -17,7 +15,8 @@ public class BlogPost : BaseEntity
     public int NumberOfViews { get; set; }
 
 
-    public List<Subject> Tags { get; set; } = new();
+    public List<Subject>? Tags { get; set; } = new();
 
-    public List<BlogPostComment> Comments { get; set; } = new();
+    public List<BlogPostComment>? Comments { get; set; } = new();
+
 }

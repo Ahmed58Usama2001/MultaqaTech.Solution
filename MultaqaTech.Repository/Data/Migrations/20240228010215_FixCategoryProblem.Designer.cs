@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MultaqaTech.Repository.Data.Configurations;
 
 #nullable disable
 
-namespace MultaqaTech.Repository.Data.Migrations
+namespace MultaqaTech.Repository.Repository.Data.Migrations
 {
     [DbContext(typeof(MultaqaTechContext))]
-    partial class MultaqaTechContextModelSnapshot : ModelSnapshot
+    [Migration("20240228010215_FixCategoryProblem")]
+    partial class FixCategoryProblem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,13 +27,13 @@ namespace MultaqaTech.Repository.Data.Migrations
 
             modelBuilder.Entity("BlogPostSubject", b =>
                 {
-                    b.Property<int>("BlogPostId")
+                    b.Property<int>("BlogPostsId")
                         .HasColumnType("int");
 
                     b.Property<int>("TagsId")
                         .HasColumnType("int");
 
-                    b.HasKey("BlogPostId", "TagsId");
+                    b.HasKey("BlogPostsId", "TagsId");
 
                     b.HasIndex("TagsId");
 
@@ -125,65 +128,6 @@ namespace MultaqaTech.Repository.Data.Migrations
                     b.ToTable("BlogPostComments", (string)null);
                 });
 
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.Course", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CourseLevel")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DeductionAmount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DeductionType")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Duration")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Language")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastUpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("NumberOfLectures")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Rating")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("SubjectId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("TotalEnrolled")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UploadDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SubjectId");
-
-                    b.HasIndex("Title")
-                        .IsUnique();
-
-                    b.ToTable("Courses", (string)null);
-                });
-
             modelBuilder.Entity("MultaqaTech.Core.Entities.Subject", b =>
                 {
                     b.Property<int>("Id")
@@ -206,7 +150,7 @@ namespace MultaqaTech.Repository.Data.Migrations
                 {
                     b.HasOne("MultaqaTech.Core.Entities.BlogPost", null)
                         .WithMany()
-                        .HasForeignKey("BlogPostId")
+                        .HasForeignKey("BlogPostsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -243,20 +187,14 @@ namespace MultaqaTech.Repository.Data.Migrations
                     b.Navigation("BlogPost");
                 });
 
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.Course", b =>
-                {
-                    b.HasOne("MultaqaTech.Core.Entities.Subject", "Subject")
-                        .WithMany()
-                        .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Subject");
-                });
-
             modelBuilder.Entity("MultaqaTech.Core.Entities.BlogPost", b =>
                 {
                     b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("MultaqaTech.Core.Entities.BlogPostCategory", b =>
+                {
+                    b.Navigation("BlogPosts");
                 });
 #pragma warning restore 612, 618
         }

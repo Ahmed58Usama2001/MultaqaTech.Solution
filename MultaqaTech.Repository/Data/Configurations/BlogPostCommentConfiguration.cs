@@ -6,11 +6,14 @@ internal class BlogPostCommentConfiguration : IEntityTypeConfiguration<BlogPostC
     {
         builder.ToTable("BlogPostComments");
 
-        builder.Property(e => e.Content)
+        builder.Property(e => e.CommentContent)
             .IsRequired();
 
         builder.Property(e => e.DatePosted)
             .IsRequired();
+
+        builder.Property(e => e.BlogPostId)
+    .IsRequired();
 
         //builder.HasOne(e => e.Author)
         //    .WithMany()
