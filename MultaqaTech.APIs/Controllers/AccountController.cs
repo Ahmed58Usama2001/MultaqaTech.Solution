@@ -85,13 +85,14 @@ public class AccountController : BaseApiController
 
             if (user is not null)
             {
-               var result = await _userManager.ResetPasswordAsync(user,model.Token,model.Password);
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
                 if (result.Succeeded)
-                    return RedirectToAction(nameof(Login));
+                    return Ok(model);
                 string errors = string.Join(", ", result.Errors.Select(error => error.Description));
                 return BadRequest(new ApiResponse(400, errors));
 
-            }          
+            }
         }
 
         return Ok(model);
