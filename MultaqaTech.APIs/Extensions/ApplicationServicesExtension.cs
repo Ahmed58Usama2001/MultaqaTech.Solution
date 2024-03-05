@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.APIs.Extensions;
+﻿using MultaqaTech.Service.BlogPostEntitiesServices;
+
+namespace MultaqaTech.APIs.Extensions;
 
 public static class ApplicationServicesExtension
 {
@@ -29,8 +31,6 @@ public static class ApplicationServicesExtension
         services.AddScoped<ISubjectService, SubjectService>();
         services.AddScoped<IBlogPostCategoryService, BlogPostCategoryService>();
         services.AddScoped<IBlogPostService, BlogPostService>();
-        services.AddScoped<ICourseService, CourseService>();
-
         return services;
     }
 }

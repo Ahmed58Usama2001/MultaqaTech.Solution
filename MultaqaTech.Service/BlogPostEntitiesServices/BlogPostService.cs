@@ -1,8 +1,7 @@
-﻿
-using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
 using MultaqaTech.Core.Services.Contract;
 
-namespace MultaqaTech.Service;
+namespace MultaqaTech.Service.BlogPostEntitiesServices;
 
 public class BlogPostService(IUnitOfWork unitOfWork) : IBlogPostService
 {
@@ -27,8 +26,6 @@ public class BlogPostService(IUnitOfWork unitOfWork) : IBlogPostService
 
     public async Task<BlogPost?> ReadByIdAsync(int blogPostId)
     {
-        await IncrementViewCountAsync(blogPostId);
-
         var spec = new BlogPostWithIncludesSpecifications(blogPostId);
 
         var blogPost = await _unitOfWork.Repository<BlogPost>().GetByIdWithSpecAsync(spec);
@@ -102,7 +99,7 @@ public class BlogPostService(IUnitOfWork unitOfWork) : IBlogPostService
             return false;
         }
     }
- 
+
 
     public async Task<int> GetCountAsync(BlogPostSpeceficationsParams speceficationsParams)
     {

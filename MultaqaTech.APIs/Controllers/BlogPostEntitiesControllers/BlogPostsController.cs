@@ -1,4 +1,5 @@
 ﻿using MultaqaTech.APIs.Dtos.BlogPostDtos;
+using MultaqaTech.Core.Entities.BlogPostDomainEntities;
 
 namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
 
@@ -25,7 +26,6 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
         var user = await _userManager.FindByEmailAsync(authorEmail);
         if (user is null) return BadRequest(new ApiResponse(404));
 
-        //Assuming you have a service or repository to fetch the category by ID
        var existingCategory = await _blogPostCategoryService.ReadByIdAsync(blogPostDto.CategoryId);
         if (existingCategory is null)
             return NotFound(new { Message = "Category wasn't Not Found", StatusCode = 404 });
@@ -73,6 +73,8 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
     [HttpGet("{id}")]
     public async Task<ActionResult<BlogPostToReturnDto>> GetBlogPost(int id)
     {
+        await _blogPostService.IncrementViewCountAsync(id);
+
         var blogPost = await _blogPostService.ReadByIdAsync(id);
 
         if (blogPost == null)
@@ -87,7 +89,6 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
     public async Task<ActionResult<BlogPostToReturnDto>> UpdateBlogPost(int blogPostId, BlogPostCreateDto updatedBlogPostDto)
     {
         var updatedPost = await _blogPostService.ReadByIdAsync(blogPostId);
-
 
         updatedPost.Title = updatedBlogPostDto.Title;
 
@@ -123,12 +124,25 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
         return Ok("The post was deleted Successfully");
     }
 
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [HttpGet("{postId}/sharelink")]
+    public async Task<IActionResult> GetShareableLink(int postId)
+    {
+        var sharedPost =await GetBlogPost(postId);
+
+        if (sharedPost == null)
+            return NotFound(new { Message = "Not Found", StatusCode = 404 });
+       
+        var shareableLink = Url.ActionLink("GetBlogPost", "BlogPosts", new { id = postId }, Request.Scheme);
+
+        return Ok(new { shareLink = shareableLink });
+    }
+
 
     private async Task<List<Subject>> MapTagsAsync(List<int> tagsIds)
     {
         var tags = new List<Subject>();
 
-        // Assuming you have a repository to fetch tags from
         var fetchedTags = await _subjectService.ReadSubjectsByIds(tagsIds);
 
         foreach (var fetchedTag in fetchedTags)        

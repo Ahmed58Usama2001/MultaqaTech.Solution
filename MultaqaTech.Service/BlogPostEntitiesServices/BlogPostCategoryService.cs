@@ -1,6 +1,6 @@
 ﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
 
-namespace MultaqaTech.Service;
+namespace MultaqaTech.Service.BlogPostEntitiesServices;
 
 public class BlogPostCategoryService(IUnitOfWork unitOfWork) : IBlogPostCategoryService
 {
