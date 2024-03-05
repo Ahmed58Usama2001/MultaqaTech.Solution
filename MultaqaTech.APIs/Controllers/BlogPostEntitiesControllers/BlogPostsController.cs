@@ -3,108 +3,119 @@
 namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
 
 [Authorize]
-public class BlogPostsController(IBlogPostService blogPostService, IMapper mapper, UserManager<AppUser> userManager, IBlogPostCategoryService blogPostCategoryService) : BaseApiController
+public class BlogPostsController(IBlogPostService blogPostService, IMapper mapper, UserManager<AppUser> userManager, IBlogPostCategoryService blogPostCategoryService
+    ,ISubjectService subjectService) : BaseApiController
 {
     private readonly IBlogPostService _blogPostService = blogPostService;
     private readonly IMapper _mapper = mapper;
     private readonly UserManager<AppUser> _userManager = userManager;
     private readonly IBlogPostCategoryService _blogPostCategoryService = blogPostCategoryService;
+    private readonly ISubjectService _subjectService = subjectService;
 
+    [ProducesResponseType(typeof(BlogPostToReturnDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [HttpPost]
+    public async Task<ActionResult<BlogPostToReturnDto>> CreateBlogPostAsync(BlogPostCreateDto blogPostDto)
+    {
+        if (blogPostDto is null) return BadRequest(new ApiResponse(400));
 
-    //[ProducesResponseType(typeof(BlogPostCreateDto), StatusCodes.Status200OK)]
-    //[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    //[HttpPost]
-    //public async Task<ActionResult<BlogPostCreateDto>> CreateBlogPostAsync(BlogPostCreateDto blogPostDto)
-    //{
-    //    if (blogPostDto is null) return BadRequest(new ApiResponse(400));
+        var authorEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (authorEmail is null) return BadRequest(new ApiResponse(404));
 
-    //    var authorEmail = User.FindFirstValue(ClaimTypes.Email);
-    //    if (authorEmail is null) return BadRequest(new ApiResponse(404));
+        var user = await _userManager.FindByEmailAsync(authorEmail);
+        if (user is null) return BadRequest(new ApiResponse(404));
 
-    //    var user = await _userManager.FindByEmailAsync(authorEmail);
-    //    if (user is null) return BadRequest(new ApiResponse(404));
+        //Assuming you have a service or repository to fetch the category by ID
+       var existingCategory = await _blogPostCategoryService.ReadByIdAsync(blogPostDto.CategoryId);
+        if (existingCategory is null)
+            return NotFound(new { Message = "Category wasn't Not Found", StatusCode = 404 });
 
-    //    blogPostDto.PublishingDate = DateTime.Now.ToString("dddd, MMMM dd, yyyy 'at' hh:mm:ss tt");
+        var mappedblogPost = new BlogPost
+        {
+            Title = blogPostDto.Title,
+            AuthorName = user.UserName,
+            Content = blogPostDto.Content,
+            BlogPostCategoryId = blogPostDto.CategoryId,
+            Category = existingCategory,
+            PublishingDate = DateTime.Now,
+            NumberOfViews = 0,
+            Tags = blogPostDto.Tags != null ? await MapTagsAsync(blogPostDto.Tags) : new List<Subject>()
+        };
 
-    //    // Assuming you have a service or repository to fetch the category by ID
-    //    var existingCategory = await _blogPostCategoryService.ReadByIdAsync(blogPostDto.CategoryId);
+        var createdBlogPost = await blogPostService.CreateBlogPostAsync(mappedblogPost);
 
-    //    //var mappedblogPost = new BlogPost
-    //    //{
-    //    //    Title = blogPostDto.Title,
-    //    //    AuthorName = user.UserName,
-    //    //    Content = blogPostDto.Content,
-    //    //    BlogPostCategoryId = blogPostDto.CategoryId,
-    //    //    Category = existingCategory,
-    //    //    PublishingDate = DateTime.Now,
-    //    //    NumberOfViews = blogPostDto.NumberOfViews,
-    //    //    Tags = MapTags(blogPostDto.Tags),
-    //    //    Comments = MapComments(blogPostDto.Comments)
-    //    //};
+        if (createdBlogPost is null) return BadRequest(new ApiResponse(400));
 
-    //    //var createdBlogPost = await blogPostService.CreateBlogPostAsync(mappedblogPost);
-
-    //    //if (createdBlogPost is null) return BadRequest(new ApiResponse(400));
-
-
-    //    //return Ok(_mapper.Map<BlogPost, BlogPostCreateDto>(createdBlogPost));
-    //}
+        return Ok(_mapper.Map<BlogPost, BlogPostToReturnDto>(createdBlogPost));
+    }
 
 
 
-    [ProducesResponseType(typeof(BlogPostCreateDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BlogPostToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet]
-    public async Task<ActionResult<Pagination<BlogPostCreateDto>>> GetBlogPosts([FromQuery] BlogPostSpeceficationsParams speceficationsParams)
+    public async Task<ActionResult<Pagination<BlogPostToReturnDto>>> GetBlogPosts([FromQuery] BlogPostSpeceficationsParams speceficationsParams)
     {
         var blogPosts = await _blogPostService.ReadBlogPostsAsync(speceficationsParams);
 
         if (blogPosts == null)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
 
-        var data = _mapper.Map<IReadOnlyList<BlogPost>, IReadOnlyList<BlogPostCreateDto>>(blogPosts);
-
-
         var count = await _blogPostService.GetCountAsync(speceficationsParams);
 
-        return Ok(new Pagination<BlogPostCreateDto>(speceficationsParams.PageIndex, speceficationsParams.PageSize, count, data));
+        var data = _mapper.Map<IReadOnlyList<BlogPost>, IReadOnlyList<BlogPostToReturnDto>>(blogPosts);
+
+        return Ok(new Pagination<BlogPostToReturnDto>(speceficationsParams.PageIndex, speceficationsParams.PageSize, count, data));
     }
 
-    [ProducesResponseType(typeof(BlogPostCreateDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BlogPostToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("{id}")]
-    public async Task<ActionResult<BlogPostCreateDto>> GetBlogPost(int id)
+    public async Task<ActionResult<BlogPostToReturnDto>> GetBlogPost(int id)
     {
-        await _blogPostService.IncrementViewCountAsync(id);
-
         var blogPost = await _blogPostService.ReadByIdAsync(id);
 
         if (blogPost == null)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
 
-        return Ok(_mapper.Map<BlogPost, BlogPostCreateDto>(blogPost));
+        return Ok(_mapper.Map<BlogPostToReturnDto>(blogPost));
     }
 
-    [ProducesResponseType(typeof(BlogPost), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BlogPostToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    [HttpPut]
-    public async Task<ActionResult<Subject>> UpdateBlogPost(int blogPostId, BlogPost updatedBlogPost)
+    [HttpPut("{blogPostId}")]
+    public async Task<ActionResult<BlogPostToReturnDto>> UpdateBlogPost(int blogPostId, BlogPostCreateDto updatedBlogPostDto)
     {
-        var blogPost = await _blogPostService.UpdateBlogPost(blogPostId, updatedBlogPost);
+        var updatedPost = await _blogPostService.ReadByIdAsync(blogPostId);
+
+
+        updatedPost.Title = updatedBlogPostDto.Title;
+
+        updatedPost.Content = updatedPost.Content;
+
+        updatedPost.BlogPostCategoryId = updatedBlogPostDto.CategoryId;
+        var existingCategory = await _blogPostCategoryService.ReadByIdAsync(updatedBlogPostDto.CategoryId);
+        if (existingCategory is null)
+            return NotFound(new { Message = "Category wasn't Not Found", StatusCode = 404 });
+        updatedPost.Category = existingCategory;
+
+        updatedPost.Tags = updatedBlogPostDto.Tags != null ? await MapTagsAsync(updatedBlogPostDto.Tags) : new List<Subject>();
+
+        var blogPost = await _blogPostService.UpdateBlogPost(blogPostId, updatedPost);
 
         if (blogPost == null)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
 
-        return Ok(_mapper.Map<BlogPost, BlogPostCreateDto>(blogPost));
+        return Ok(_mapper.Map<BlogPostToReturnDto>(blogPost));
     }
 
 
-    [ProducesResponseType(typeof(BlogPost), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BlogPostToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [HttpDelete]
-    public async Task<ActionResult<BlogPost>> DeleteBlogPost(int blogPostId)
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<BlogPostToReturnDto>> DeleteBlogPost(int id)
     {
-        var result = await _blogPostService.DeleteBlogPost(blogPostId);
+        var result = await _blogPostService.DeleteBlogPost(id);
 
         if (!result)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
@@ -113,12 +124,17 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
     }
 
 
-    private List<Subject> MapTags(List<string>? tags)
+    private async Task<List<Subject>> MapTagsAsync(List<int> tagsIds)
     {
-        if (tags == null)
-            return null;
+        var tags = new List<Subject>();
 
-        return tags.Select(tag => new Subject { Name = tag }).ToList();
+        // Assuming you have a repository to fetch tags from
+        var fetchedTags = await _subjectService.ReadSubjectsByIds(tagsIds);
+
+        foreach (var fetchedTag in fetchedTags)        
+            tags.Add(fetchedTag);
+        
+        return tags;
     }
 
 

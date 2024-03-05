@@ -56,15 +56,15 @@ public class SubjectsController(ISubjectService subjectService, IMapper mapper) 
 
     [ProducesResponseType(typeof(Subject), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [HttpDelete]
-    public async Task<ActionResult<Subject>> DeleteSubject(int subjectId)
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<Subject>> DeleteSubject(int id)
     {
-        var result = await _subjectService.DeleteSubject(subjectId);
+        var result = await _subjectService.DeleteSubject(id);
 
         if (!result)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
 
-        return Ok();
+        return Ok("The Subject was deleted Successfully");
     }
 
 }

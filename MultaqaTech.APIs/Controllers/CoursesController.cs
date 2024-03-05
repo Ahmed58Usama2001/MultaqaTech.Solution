@@ -47,10 +47,10 @@ public class CoursesController(ICourseService courseService, IMapper mapper) : B
     }
 
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [HttpDelete]
-    public async Task<ActionResult> DeleteCourse(int courseId)
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteCourse(int id)
     {
-        bool result = await _courseService.DeleteCourse(courseId);
+        bool result = await _courseService.DeleteCourse(id);
 
         if (!result)
             return NotFound(new ApiResponse(400));

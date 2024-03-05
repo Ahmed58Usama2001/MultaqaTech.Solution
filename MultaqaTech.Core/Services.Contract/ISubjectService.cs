@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.Core.Services.Contract;
+﻿using MultaqaTech.Core.Repositories.Contract;
+
+namespace MultaqaTech.Core.Services.Contract;
 
 public interface ISubjectService
 {
@@ -11,4 +13,7 @@ public interface ISubjectService
     Task<Subject?> UpdateSubject(int subjectId, Subject subject);
 
     Task<bool> DeleteSubject(int subjectId);
+
+    Task<IReadOnlyList<Subject>> ReadSubjectsByIds(List<int> subjectsIds);
+    
 }

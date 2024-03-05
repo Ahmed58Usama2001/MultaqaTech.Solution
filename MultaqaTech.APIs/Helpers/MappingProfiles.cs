@@ -13,11 +13,11 @@ namespace MultaqaTech.APIs.Helpers
 
             CreateMap<BlogPostCategoryCreateDto, BlogPostCategory>();
 
-            //CreateMap<BlogPost, BlogPostCreateDto>()
-            //    .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
-            //    .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags != null ? src.Tags.Select(s => s.Name).ToList() : null))
-            //    .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments != null ? src.Comments.Select(c => c.CommentContent).ToList() : null))
-            //    .ForMember(dest => dest.PublishingDate, opt => opt.MapFrom(src => src.PublishingDate.ToString("dddd, MMMM dd, yyyy 'at' hh:mm:ss tt")));
+            CreateMap<BlogPost, BlogPostToReturnDto>()
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags != null ? src.Tags.Select(s => s.Name).ToList() : null))
+                .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments != null ? src.Comments.Select(c => c.CommentContent).ToList() : null))
+                .ForMember(dest => dest.PublishingDate, opt => opt.MapFrom(src => src.PublishingDate.ToString("dddd, MMMM dd, yyyy 'at' hh:mm:ss tt")));
 
             //CreateMap<BlogPostDto, BlogPost>()
             //    .ForMember(dest => dest.Category, opt => opt.MapFrom(src => new BlogPostCategory { Id=src.CategoryId, Name = src.Category }))
@@ -26,7 +26,7 @@ namespace MultaqaTech.APIs.Helpers
             //    .ForMember(dest => dest.PublishingDate, opt => opt.MapFrom(src => DateTime.ParseExact(src.PublishingDate, "dddd, MMMM dd, yyyy 'at' hh:mm:ss tt", CultureInfo.InvariantCulture)));
 
 
-           
+
         }
 
     }

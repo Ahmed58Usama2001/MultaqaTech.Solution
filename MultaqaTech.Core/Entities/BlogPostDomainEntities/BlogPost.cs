@@ -18,5 +18,4 @@ public class BlogPost : BaseEntity
     public List<Subject>? Tags { get; set; } = new();
 
     public List<BlogPostComment>? Comments { get; set; } = new();
-
 }

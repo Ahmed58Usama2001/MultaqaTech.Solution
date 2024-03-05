@@ -56,14 +56,14 @@ public class BlogPostCategoriesController(IBlogPostCategoryService blogPostCateg
 
     [ProducesResponseType(typeof(BlogPostCategory), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [HttpDelete]
-    public async Task<ActionResult<BlogPostCategory>> DeleteSubject(int categoryId)
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<BlogPostCategory>> DeleteBlogPostCategory(int id)
     {
-        var result = await _blogPostCategoryService.DeleteBlogPostCategory(categoryId);
+        var result = await _blogPostCategoryService.DeleteBlogPostCategory(id);
 
         if (!result)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
 
-        return Ok();
+        return Ok("The Category was deleted Successfully");
     }
 }

@@ -1,4 +1,5 @@
-﻿namespace MultaqaTech.Service;
+﻿
+namespace MultaqaTech.Service;
 
 public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
 {
@@ -101,6 +102,21 @@ public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
         {
             Log.Error(ex.ToString());
             return false;
+        }
+    }
+
+    public async Task<IReadOnlyList<Subject>> ReadSubjectsByIds(List<int> subjectsIds)
+    {
+        try
+        {
+            var subjects = await _unitOfWork.Repository<Subject>().GetAllByIdsAsync(subjectsIds);
+
+            return subjects;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+            return null;
         }
     }
 }

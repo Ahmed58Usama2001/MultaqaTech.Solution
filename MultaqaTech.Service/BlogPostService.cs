@@ -1,5 +1,6 @@
 ﻿
 using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+using MultaqaTech.Core.Services.Contract;
 
 namespace MultaqaTech.Service;
 
@@ -26,6 +27,8 @@ public class BlogPostService(IUnitOfWork unitOfWork) : IBlogPostService
 
     public async Task<BlogPost?> ReadByIdAsync(int blogPostId)
     {
+        await IncrementViewCountAsync(blogPostId);
+
         var spec = new BlogPostWithIncludesSpecifications(blogPostId);
 
         var blogPost = await _unitOfWork.Repository<BlogPost>().GetByIdWithSpecAsync(spec);
