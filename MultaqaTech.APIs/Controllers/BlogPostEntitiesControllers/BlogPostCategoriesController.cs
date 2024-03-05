@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
-
-namespace MultaqaTech.APIs.Controllers;
+﻿namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
 
 public class BlogPostCategoriesController(IBlogPostCategoryService blogPostCategoryService, IMapper mapper) : BaseApiController
 {
@@ -11,7 +9,7 @@ public class BlogPostCategoriesController(IBlogPostCategoryService blogPostCateg
     [ProducesResponseType(typeof(BlogPostCategory), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPost]
-    public async Task<ActionResult<BlogPostCategory>> CreateSubject(BlogPostCategoryDto blogPostCategoryDto)
+    public async Task<ActionResult<BlogPostCategory>> CreateSubject(BlogPostCategoryCreateDto blogPostCategoryDto)
     {
         if (blogPostCategoryDto is null) return BadRequest(new ApiResponse(400));
 
@@ -30,30 +28,30 @@ public class BlogPostCategoriesController(IBlogPostCategoryService blogPostCateg
     }
 
 
-    [ProducesResponseType(typeof(BlogPostCategoryDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(BlogPostCategory), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("{id}")]
-    public async Task<ActionResult<BlogPostCategoryDto>> GetSubject(int id)
+    public async Task<ActionResult<BlogPostCategory>> GetSubject(int id)
     {
         var category = await _blogPostCategoryService.ReadByIdAsync(id);
 
         if (category == null)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
 
-        return Ok(_mapper.Map<BlogPostCategory, BlogPostCategoryDto>(category));
+        return Ok(category);
     }
 
     [ProducesResponseType(typeof(BlogPostCategory), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpPut]
-    public async Task<ActionResult<BlogPostCategory>> UpdateSubject(int categoryId, BlogPostCategory updatedCategory)
+    public async Task<ActionResult<BlogPostCategory>> UpdateSubject(int categoryId, BlogPostCategoryCreateDto updatedCategory)
     {
-        var category = await _blogPostCategoryService.UpdateBlogPostCategory(categoryId, updatedCategory);
+        var category = await _blogPostCategoryService.UpdateBlogPostCategory(categoryId, _mapper.Map<BlogPostCategory>(updatedCategory));
 
         if (category == null)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
 
-        return Ok(_mapper.Map<BlogPostCategory, BlogPostCategoryDto>(category));
+        return Ok(category);
     }
 
     [ProducesResponseType(typeof(BlogPostCategory), StatusCodes.Status200OK)]

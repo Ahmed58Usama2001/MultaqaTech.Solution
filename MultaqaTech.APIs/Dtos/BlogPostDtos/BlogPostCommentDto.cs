@@ -1,9 +1,7 @@
-﻿namespace MultaqaTech.Core.Entities;
+﻿namespace MultaqaTech.APIs.Dtos.BlogPostDtos;
 
-public class BlogPostCommentDto:BaseEntity
+public class BlogPostCommentCreateDto : BaseEntity
 {
-    public int Id { get; set; }
-
     public string CommentContent { get; set; }
 
     public string AuthorName { get; set; }

@@ -1,9 +1,7 @@
-﻿namespace MultaqaTech.APIs.Dtos;
+﻿namespace MultaqaTech.APIs.Dtos.BlogPostDtos;
 
-public class BlogPostDto
+public class BlogPostCreateDto
 {
-    public int Id { get; set; }
-
     public string Title { get; set; }
 
     public string AuthorName { get; set; }
@@ -17,7 +15,5 @@ public class BlogPostDto
 
     public int NumberOfViews { get; set; }
 
-    public List<string>? Tags { get; set; } = new();
-
-    public List<string>? Comments { get; set; } = new();
+    public List<SubjectCreateDto>? Tags { get; set; } = new();
 }

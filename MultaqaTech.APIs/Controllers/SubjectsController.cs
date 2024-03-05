@@ -9,7 +9,7 @@ public class SubjectsController(ISubjectService subjectService, IMapper mapper) 
     [ProducesResponseType(typeof(Subject), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPost]
-    public async Task<ActionResult<Subject>> CreateSubject(SubjectDto subjectDto)
+    public async Task<ActionResult<Subject>> CreateSubject(SubjectCreateDto subjectDto)
     {
         if (subjectDto is null) return BadRequest(new ApiResponse(400));
 
@@ -27,30 +27,31 @@ public class SubjectsController(ISubjectService subjectService, IMapper mapper) 
         return Ok(subjects);
     }
 
-    [ProducesResponseType(typeof(SubjectDto), StatusCodes.Status200OK)]
+
+    [ProducesResponseType(typeof(Subject), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("{id}")]
-    public async Task<ActionResult<SubjectDto>> GetSubjectById(int id)
+    public async Task<ActionResult<Subject>> GetSubject(int id)
     {
         var subject = await _subjectService.ReadByIdAsync(id);
 
         if (subject == null)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
 
-        return Ok(_mapper.Map<Subject, SubjectDto>(subject));
+        return Ok(subject);
     }
 
     [ProducesResponseType(typeof(Subject), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpPut]
-    public async Task<ActionResult<Subject>> UpdateSubject(Subject updatedSubject)
+    public async Task<ActionResult<Subject>> UpdateSubject(int subjectId, SubjectCreateDto updatedSubject)
     {
-        var subject = await _subjectService.UpdateSubject(updatedSubject.Id, updatedSubject);
+        var subject = await _subjectService.UpdateSubject(subjectId, _mapper.Map<Subject>(updatedSubject));
 
         if (subject == null)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
 
-        return Ok(_mapper.Map<Subject, SubjectDto>(subject));
+        return Ok(subject);
     }
 
     [ProducesResponseType(typeof(Subject), StatusCodes.Status200OK)]

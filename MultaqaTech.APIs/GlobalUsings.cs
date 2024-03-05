@@ -10,10 +10,11 @@ global using MultaqaTech.Repository.Identity;
 global using MultaqaTech.Core.Services.Contract;
 global using MultaqaTech.Core.Entities.Identity;
 global using MultaqaTech.Core.Repositories.Contract;
+global using MultaqaTech.Repository.Data.Configurations;
 global using MultaqaTech.Core.Entities.CourseDomainEntities;
 global using MultaqaTech.Core.Specifications.BlogPost_Specs;
-global using MultaqaTech.Repository.Data.Configurations;
-
+global using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+global using MultaqaTech.APIs.Dtos.BlogPostDtos;
 
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
