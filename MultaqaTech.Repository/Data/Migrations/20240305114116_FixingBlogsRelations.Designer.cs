@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MultaqaTech.Repository.Data.Configurations;
 
 #nullable disable
 
-namespace MultaqaTech.Repository.Data.Migrations
+namespace MultaqaTech.Repository.Repository.Data.Migrations
 {
     [DbContext(typeof(MultaqaTechContext))]
-    partial class MultaqaTechContextModelSnapshot : ModelSnapshot
+    [Migration("20240305114116_FixingBlogsRelations")]
+    partial class FixingBlogsRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,9 +49,10 @@ namespace MultaqaTech.Repository.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AuthorName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("BlogPostCategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
@@ -68,7 +72,7 @@ namespace MultaqaTech.Repository.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BlogPostCategoryId");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("BlogPosts", (string)null);
                 });
@@ -212,7 +216,7 @@ namespace MultaqaTech.Repository.Data.Migrations
                 {
                     b.HasOne("MultaqaTech.Core.Entities.BlogPostDomainEntities.BlogPostCategory", "Category")
                         .WithMany("BlogPosts")
-                        .HasForeignKey("BlogPostCategoryId")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.Service;
+﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+
+namespace MultaqaTech.Service;
 
 public class BlogPostCategoryService(IUnitOfWork unitOfWork) : IBlogPostCategoryService
 {

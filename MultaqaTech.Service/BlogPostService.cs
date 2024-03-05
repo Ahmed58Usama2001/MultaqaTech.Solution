@@ -1,4 +1,6 @@
 ﻿
+using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+
 namespace MultaqaTech.Service;
 
 public class BlogPostService(IUnitOfWork unitOfWork) : IBlogPostService
@@ -53,7 +55,7 @@ public class BlogPostService(IUnitOfWork unitOfWork) : IBlogPostService
         blogPost.Content = updatedBlogPost.Content;
         blogPost.NumberOfViews = updatedBlogPost.NumberOfViews;
         blogPost.Category = updatedBlogPost.Category;
-        blogPost.CategoryId = updatedBlogPost.CategoryId;
+        blogPost.BlogPostCategoryId = updatedBlogPost.BlogPostCategoryId;
         blogPost.PublishingDate = updatedBlogPost.PublishingDate;
         blogPost.Tags = updatedBlogPost.Tags;
         blogPost.Comments = updatedBlogPost.Comments;

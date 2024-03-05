@@ -1,13 +1,13 @@
-﻿namespace MultaqaTech.Core.Entities;
+﻿namespace MultaqaTech.Core.Entities.BlogPostDomainEntities;
 
 public class BlogPost : BaseEntity
 {
     public string Title { get; set; } = string.Empty;
-    public string AuthorName { get; set; }
+    public string? AuthorName { get; set; }
 
     public string Content { get; set; } = string.Empty;
 
-    public int CategoryId { get; set; }
+    public int BlogPostCategoryId { get; set; }
     public BlogPostCategory Category { get; set; }
 
     public DateTime PublishingDate { get; set; }

@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.Repository.Data.Configurations;
+﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+
+namespace MultaqaTech.Repository.Data.Configurations;
 
 public class MultaqaTechContext : DbContext
 {
@@ -17,5 +19,4 @@ public class MultaqaTechContext : DbContext
     public DbSet<BlogPostCategory> BlogPostCategories { get; set; }
     public DbSet<BlogPostComment> BlogPostComments { get; set; }
     public DbSet<BlogPost> BlogPosts { get; set; }
-    public DbSet<Course> Courses { get; set; }
 }

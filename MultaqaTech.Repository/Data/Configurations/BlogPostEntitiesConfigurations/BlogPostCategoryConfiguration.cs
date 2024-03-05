@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.Repository.Data.Configurations;
+﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+
+namespace MultaqaTech.Repository.Data.Configurations.BlogPostEntitiesConfigurations;
 
 internal class BlogPostCategoryConfiguration : IEntityTypeConfiguration<BlogPostCategory>
 {
@@ -9,11 +11,6 @@ internal class BlogPostCategoryConfiguration : IEntityTypeConfiguration<BlogPost
         builder.Property(e => e.Name)
             .IsRequired()
             .HasMaxLength(255);
-
-        builder.HasMany(e => e.BlogPosts)
-    .WithOne(c => c.Category)
-    .HasForeignKey(c => c.CategoryId)
-    .OnDelete(DeleteBehavior.Cascade);
 
     }
 }

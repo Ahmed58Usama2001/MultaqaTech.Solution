@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.Repository.Data.Configurations;
+﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+
+namespace MultaqaTech.Repository.Data.Configurations.BlogPostEntitiesConfigurations;
 
 internal class BlogPostCommentConfiguration : IEntityTypeConfiguration<BlogPostComment>
 {
@@ -13,13 +15,6 @@ internal class BlogPostCommentConfiguration : IEntityTypeConfiguration<BlogPostC
             .IsRequired();
 
         builder.Property(e => e.BlogPostId)
-    .IsRequired();
-
-        //builder.HasOne(e => e.Author)
-        //    .WithMany()
-        //    .HasForeignKey(e => e.AuthorId);
-
-
-
+            .IsRequired();
     }
 }

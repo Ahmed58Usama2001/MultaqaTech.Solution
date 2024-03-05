@@ -1,6 +1,8 @@
-﻿namespace MultaqaTech.Core.Specifications.BlogPost_Specs;
+﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
 
-    public class BlogPostsWithFilterationForCountSpecifications : BaseSpecifications<BlogPost>
+namespace MultaqaTech.Core.Specifications.BlogPost_Specs;
+
+public class BlogPostsWithFilterationForCountSpecifications : BaseSpecifications<BlogPost>
     {
         public BlogPostsWithFilterationForCountSpecifications(BlogPostSpeceficationsParams speceficationsParams) :
               base(p =>
@@ -8,7 +10,7 @@
               || p.Title.ToLower().Contains(speceficationsParams.Search)
               || p.Content.ToLower().Contains(speceficationsParams.Search)
                || p.AuthorName.ToLower().Contains(speceficationsParams.Search) &&
-            (!speceficationsParams.categoryId.HasValue || p.CategoryId == speceficationsParams.categoryId.Value)
+            (!speceficationsParams.categoryId.HasValue || p.BlogPostCategoryId == speceficationsParams.categoryId.Value)
             ))
         {
 

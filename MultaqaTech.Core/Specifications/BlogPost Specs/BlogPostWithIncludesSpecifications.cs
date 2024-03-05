@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.Core.Specifications.BlogPost_Specs;
+﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+
+namespace MultaqaTech.Core.Specifications.BlogPost_Specs;
 
 public class BlogPostWithIncludesSpecifications : BaseSpecifications<BlogPost>
 {
@@ -8,7 +10,7 @@ public class BlogPostWithIncludesSpecifications : BaseSpecifications<BlogPost>
               || p.Title.ToLower().Contains(speceficationsParams.Search)
               || p.Content.ToLower().Contains(speceficationsParams.Search)
                || p.AuthorName.ToLower().Contains(speceficationsParams.Search) &&
-            (!speceficationsParams.categoryId.HasValue || p.CategoryId == speceficationsParams.categoryId.Value)
+            (!speceficationsParams.categoryId.HasValue || p.BlogPostCategoryId == speceficationsParams.categoryId.Value)
             ))
         
     {

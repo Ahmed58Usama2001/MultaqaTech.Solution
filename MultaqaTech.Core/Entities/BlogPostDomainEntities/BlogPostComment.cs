@@ -1,6 +1,6 @@
-﻿namespace MultaqaTech.Core.Entities;
+﻿namespace MultaqaTech.Core.Entities.BlogPostDomainEntities;
 
-public class BlogPostComment:BaseEntity
+public class BlogPostComment : BaseEntity
 {
     public string CommentContent { get; set; }
 
