@@ -32,6 +32,7 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
             Title = blogPostDto.Title,
             AuthorName = user.UserName,
             Content = blogPostDto.Content,
+            PictureUrl = blogPostDto.PictureUrl,
             BlogPostCategoryId = blogPostDto.CategoryId,
             Category = existingCategory,
             PublishingDate = DateTime.Now,
@@ -90,6 +91,8 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
         updatedPost.Title = updatedBlogPostDto.Title;
 
         updatedPost.Content = updatedBlogPostDto.Content;
+
+        updatedPost.PictureUrl = updatedBlogPostDto.PictureUrl;
 
         updatedPost.BlogPostCategoryId = updatedBlogPostDto.CategoryId;
         var existingCategory = await _blogPostCategoryService.ReadByIdAsync(updatedBlogPostDto.CategoryId);

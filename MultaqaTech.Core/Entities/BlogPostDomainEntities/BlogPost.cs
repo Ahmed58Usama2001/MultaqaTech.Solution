@@ -7,6 +7,8 @@ public class BlogPost : BaseEntity
 
     public string Content { get; set; } = string.Empty;
 
+    public string? PictureUrl { get; set; }
+
     public int BlogPostCategoryId { get; set; }
     public BlogPostCategory Category { get; set; }
 

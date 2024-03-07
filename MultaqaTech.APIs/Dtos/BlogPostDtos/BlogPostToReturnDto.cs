@@ -10,6 +10,9 @@ public class BlogPostToReturnDto
 
     public string Content { get; set; }
 
+    public string? PictureUrl { get; set; }
+
+
     public int CategoryId { get; set; }
     public string Category { get; set; }
 

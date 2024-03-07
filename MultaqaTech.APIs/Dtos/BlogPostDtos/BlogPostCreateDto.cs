@@ -6,6 +6,8 @@ public class BlogPostCreateDto
 
     public string Content { get; set; }
 
+    public string PictureUrl { get; set; }
+
     public int CategoryId { get; set; }
 
     public List<int>? Tags { get; set; } = new();
