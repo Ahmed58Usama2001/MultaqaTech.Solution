@@ -1,4 +1,5 @@
-﻿using MultaqaTech.Service.BlogPostEntitiesServices;
+﻿using MultaqaTech.Core.Services.Contract.BlogPostContracts;
+using MultaqaTech.Service.BlogPostEntitiesServices;
 
 namespace MultaqaTech.APIs.Extensions;
 
@@ -31,6 +32,7 @@ public static class ApplicationServicesExtension
         services.AddScoped<ISubjectService, SubjectService>();
         services.AddScoped<IBlogPostCategoryService, BlogPostCategoryService>();
         services.AddScoped<IBlogPostService, BlogPostService>();
+        services.AddScoped<IBlogPostCommentService, BlogPostCommentService>();
         return services;
     }
 }

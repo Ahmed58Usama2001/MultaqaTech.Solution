@@ -1,5 +1,4 @@
-﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
-
+﻿
 namespace MultaqaTech.Core.Specifications.BlogPost_Specs;
 
 public class BlogPostWithIncludesSpecifications : BaseSpecifications<BlogPost>
@@ -28,13 +27,17 @@ public class BlogPostWithIncludesSpecifications : BaseSpecifications<BlogPost>
                     AddOrderByDesc(p => p.NumberOfViews);
                     break;
 
-                default:
+                case "PublishingDateAsc":
                     AddOrderBy(p => p.PublishingDate);
+                    break;
+
+                default:
+                    AddOrderByDesc(p => p.PublishingDate);
                     break;
             }
         }
         else
-            AddOrderBy(p => p.PublishingDate);
+            AddOrderByDesc(p => p.PublishingDate);
 
         ApplyPagination((speceficationsParams.PageIndex - 1) * speceficationsParams.PageSize, speceficationsParams.PageSize);
     }

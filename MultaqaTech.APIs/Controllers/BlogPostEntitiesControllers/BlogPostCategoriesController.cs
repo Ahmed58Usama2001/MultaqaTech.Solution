@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
+﻿using MultaqaTech.Core.Services.Contract.BlogPostContracts;
+
+namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
 
 public class BlogPostCategoriesController(IBlogPostCategoryService blogPostCategoryService, IMapper mapper) : BaseApiController
 {

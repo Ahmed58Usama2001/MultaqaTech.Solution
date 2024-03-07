@@ -4,6 +4,8 @@ global using MultaqaTech.Core.Services.Contract;
 global using MultaqaTech.Core.Repositories.Contract;
 global using MultaqaTech.Core.Specifications.BlogPost_Specs;
 global using MultaqaTech.Core.Entities.CourseDomainEntities;
+global using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+global using MultaqaTech.Core.Services.Contract.BlogPostContracts;
 
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.IdentityModel.Tokens;

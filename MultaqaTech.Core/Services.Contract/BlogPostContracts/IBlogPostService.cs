@@ -1,6 +1,6 @@
 ﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
 
-namespace MultaqaTech.Core.Services.Contract;
+namespace MultaqaTech.Core.Services.Contract.BlogPostContracts;
 
 public interface IBlogPostService
 {
@@ -16,7 +16,7 @@ public interface IBlogPostService
 
     Task<int> GetCountAsync(BlogPostSpeceficationsParams speceficationsParams);
 
-    public  Task<int> IncrementViewCountAsync(int postId);
+    public Task<int> IncrementViewCountAsync(int postId);
 
 
 }

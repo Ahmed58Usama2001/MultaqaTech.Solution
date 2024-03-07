@@ -1,7 +1,4 @@
-﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
-using MultaqaTech.Core.Services.Contract;
-
-namespace MultaqaTech.Service.BlogPostEntitiesServices;
+﻿namespace MultaqaTech.Service.BlogPostEntitiesServices;
 
 public class BlogPostService(IUnitOfWork unitOfWork) : IBlogPostService
 {
@@ -51,14 +48,7 @@ public class BlogPostService(IUnitOfWork unitOfWork) : IBlogPostService
         if (updatedBlogPost == null || string.IsNullOrWhiteSpace(updatedBlogPost.Title))
             return null;
 
-        blogPost.Title = updatedBlogPost.Title;
-        blogPost.Content = updatedBlogPost.Content;
-        blogPost.NumberOfViews = updatedBlogPost.NumberOfViews;
-        blogPost.Category = updatedBlogPost.Category;
-        blogPost.BlogPostCategoryId = updatedBlogPost.BlogPostCategoryId;
-        blogPost.PublishingDate = updatedBlogPost.PublishingDate;
-        blogPost.Tags = updatedBlogPost.Tags;
-        blogPost.Comments = updatedBlogPost.Comments;
+        blogPost= updatedBlogPost;
 
         try
         {
@@ -103,7 +93,7 @@ public class BlogPostService(IUnitOfWork unitOfWork) : IBlogPostService
 
     public async Task<int> GetCountAsync(BlogPostSpeceficationsParams speceficationsParams)
     {
-        var countSpec = new BlogPostsWithFilterationForCountSpecifications(speceficationsParams);
+        var countSpec = new BlogPostWithFilterationForCountSpecifications(speceficationsParams);
 
         var count = await _unitOfWork.Repository<BlogPost>().GetCountAsync(countSpec);
 

@@ -1,4 +1,5 @@
 ﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+using MultaqaTech.Core.Services.Contract.BlogPostContracts;
 
 namespace MultaqaTech.Service.BlogPostEntitiesServices;
 

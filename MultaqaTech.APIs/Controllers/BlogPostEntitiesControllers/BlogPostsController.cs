@@ -1,7 +1,4 @@
-﻿using MultaqaTech.APIs.Dtos.BlogPostDtos;
-using MultaqaTech.Core.Entities.BlogPostDomainEntities;
-
-namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
+﻿namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
 
 [Authorize]
 public class BlogPostsController(IBlogPostService blogPostService, IMapper mapper, UserManager<AppUser> userManager, IBlogPostCategoryService blogPostCategoryService
@@ -92,7 +89,7 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
 
         updatedPost.Title = updatedBlogPostDto.Title;
 
-        updatedPost.Content = updatedPost.Content;
+        updatedPost.Content = updatedBlogPostDto.Content;
 
         updatedPost.BlogPostCategoryId = updatedBlogPostDto.CategoryId;
         var existingCategory = await _blogPostCategoryService.ReadByIdAsync(updatedBlogPostDto.CategoryId);
@@ -150,15 +147,5 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
         
         return tags;
     }
-
-
-    private List<BlogPostComment> MapComments(List<string>? comments)
-    {
-        if (comments == null)
-            return null;
-
-        return comments.Select(comment => new BlogPostComment { CommentContent = comment }).ToList();
-    }
-
 
 }

@@ -1,10 +1,9 @@
-﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
-
+﻿
 namespace MultaqaTech.Core.Specifications.BlogPost_Specs;
 
-public class BlogPostsWithFilterationForCountSpecifications : BaseSpecifications<BlogPost>
+public class BlogPostWithFilterationForCountSpecifications : BaseSpecifications<BlogPost>
     {
-        public BlogPostsWithFilterationForCountSpecifications(BlogPostSpeceficationsParams speceficationsParams) :
+        public BlogPostWithFilterationForCountSpecifications(BlogPostSpeceficationsParams speceficationsParams) :
               base(p =>
             (string.IsNullOrEmpty(speceficationsParams.Search)
               || p.Title.ToLower().Contains(speceficationsParams.Search)
