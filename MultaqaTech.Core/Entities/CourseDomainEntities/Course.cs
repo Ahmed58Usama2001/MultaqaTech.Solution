@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
+﻿
 namespace MultaqaTech.Core.Entities.CourseDomainEntities;
 
 public class Course : BaseEntityWithPictureUrl

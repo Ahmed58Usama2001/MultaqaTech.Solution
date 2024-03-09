@@ -21,7 +21,7 @@ public class BlogPostCommentsController(IBlogPostService blogPostService, IMappe
         var user = await _userManager.FindByEmailAsync(authorEmail);
         if (user is null) return BadRequest(new ApiResponse(404));
 
-       var existingPost = await _blogPostService.ReadByIdAsync(blogPostCommentDto.BlogPostId);
+        var existingPost = await _blogPostService.ReadByIdAsync(blogPostCommentDto.BlogPostId);
         if (existingPost is null)
             return NotFound(new { Message = "Post wasn't Not Found", StatusCode = 404 });
 
@@ -46,7 +46,7 @@ public class BlogPostCommentsController(IBlogPostService blogPostService, IMappe
     [ProducesResponseType(typeof(BlogPostCommentToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet]
-    public async Task<ActionResult<Pagination<BlogPostCommentToReturnDto>>> GetBlogPosts([FromQuery] BlogPostCommentSpeceficationsParams speceficationsParams)
+    public async Task<ActionResult<Pagination<BlogPostCommentToReturnDto>>> GetBlogPostComments([FromQuery] BlogPostCommentSpeceficationsParams speceficationsParams)
     {
         var blogPostComments = await _blogPostCommentService.ReadBlogPostCommentsAsync(speceficationsParams);
 
@@ -63,7 +63,7 @@ public class BlogPostCommentsController(IBlogPostService blogPostService, IMappe
     [ProducesResponseType(typeof(BlogPostCommentToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("{id}")]
-    public async Task<ActionResult<BlogPostCommentToReturnDto>> GetBlogPost(int id)
+    public async Task<ActionResult<BlogPostCommentToReturnDto>> GetBlogPostComment(int id)
     {
         var blogPostComment = await _blogPostCommentService.ReadByIdAsync(id);
 
@@ -97,7 +97,7 @@ public class BlogPostCommentsController(IBlogPostService blogPostService, IMappe
     [ProducesResponseType(typeof(BlogPostCommentToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpDelete("{id}")]
-    public async Task<ActionResult<BlogPostCommentToReturnDto>> DeleteBlogPost(int id)
+    public async Task<ActionResult<BlogPostCommentToReturnDto>> DeleteBlogPostComment(int id)
     {
         var result = await _blogPostCommentService.DeleteBlogPostComment(id);
 

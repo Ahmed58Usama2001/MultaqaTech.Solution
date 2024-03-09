@@ -1,5 +1,4 @@
-﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
-
+﻿
 namespace MultaqaTech.Repository.Data.Configurations;
 
 public class MultaqaTechContext : DbContext

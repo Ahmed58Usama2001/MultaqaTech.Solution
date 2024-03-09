@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Core.Services.Contract.BlogPostContracts;
-using MultaqaTech.Service.BlogPostEntitiesServices;
-
+﻿
 namespace MultaqaTech.APIs.Extensions;
 
 public static class ApplicationServicesExtension

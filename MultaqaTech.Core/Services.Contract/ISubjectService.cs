@@ -1,5 +1,4 @@
-﻿using MultaqaTech.Core.Repositories.Contract;
-
+﻿
 namespace MultaqaTech.Core.Services.Contract;
 
 public interface ISubjectService
