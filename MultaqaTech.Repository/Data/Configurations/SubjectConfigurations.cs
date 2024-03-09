@@ -6,8 +6,10 @@ internal class SubjectConfigurations : IEntityTypeConfiguration<Subject>
     {
         builder.ToTable("Subjects");
 
+        builder.HasIndex(e => e.Name).IsUnique();
+
         builder.Property(e => e.Name)
-            .IsRequired()
-            .HasMaxLength(100);
+               .IsRequired()
+               .HasMaxLength(100);
     }
 }

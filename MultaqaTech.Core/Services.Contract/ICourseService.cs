@@ -1,16 +1,16 @@
-﻿using MultaqaTech.Core.Entities.CourseDomainEntities;
-
-namespace MultaqaTech.Core.Services.Contract;
+﻿namespace MultaqaTech.Core.Services.Contract;
 
 public interface ICourseService
 {
-    Task<Course?> CreateCourseAsync(Course course);
-
-    Task<IReadOnlyList<Course>> ReadAllAsync();
+    Task<Course?> CreateCourseAsync(Course course, AppUser? instructor);
 
     Task<Course?> ReadByIdAsync(int courseId);
 
-    Task<Course?> UpdateCourse(Course course);
+    Task<Course?> UpdateCourse(Course course, int courseId);
 
     Task<bool> DeleteCourse(int courseId);
+
+    Task<IEnumerable<Course>?> ReadCoursesForStudent(string studentId, CourseSpeceficationsParams courseSpeceficationsParams);
+        
+    Task<IEnumerable<Course>?> ReadCoursesForInstructor(string instructorId, CourseSpeceficationsParams courseSpeceficationsParams);
 }

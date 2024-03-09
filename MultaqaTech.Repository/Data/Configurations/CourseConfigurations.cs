@@ -8,16 +8,29 @@ internal class CourseConfigurations : IEntityTypeConfiguration<Course>
     {
         builder.ToTable("Courses");
 
+        builder.HasIndex(e => e.Title).IsUnique();
+
         builder.Property(e => e.Title)
                .IsRequired()
                .HasMaxLength(maxLength);
 
-        builder.HasIndex(e => e.Title).IsUnique();
 
         builder.HasOne(e => e.Subject)
                .WithMany()
                .HasForeignKey(e => e.SubjectId)
                .OnDelete(DeleteBehavior.Restrict);
+
+        //builder.HasOne(e => e.Instructor)
+        //       .WithMany()
+        //       .HasForeignKey(e => e.InstructorId)
+        //       .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasMany(e => e.Tags)
+               .WithMany();
+
+        builder.HasMany(e => e.Prerequisites)
+             .WithMany();
+
         builder.Property(e => e.Price).HasColumnType("decimal(18,2)");
     }
 }

@@ -1,22 +1,28 @@
 ﻿namespace MultaqaTech.Service;
 
-public class CourseService(IUnitOfWork unitOfWork) : ICourseService
+public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectService) : ICourseService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly ISubjectService _subjectService = subjectService;
 
-    private async Task BeforeCreate(Course course)
+    private async Task BeforeCreate(Course course, AppUser? instructor)
     {
         course.UploadDate = DateTime.Now;
         course.LastUpdatedDate = DateTime.Now;
+        course.InstructorId = instructor.Id;
+        //course.Instructor = instructor;
+        course.Subject = await _subjectService.ReadByIdAsync(course.SubjectId) ?? new();
+        course.Tags = await MapSubjectsAsync(course.TagsIds ?? new());
+        course.Prerequisites = await MapSubjectsAsync(course.PrerequisitesIds ?? new());
         //
         //
         await Task.CompletedTask;
     }
-    public async Task<Course?> CreateCourseAsync(Course course)
+    public async Task<Course?> CreateCourseAsync(Course course, AppUser? instructor)
     {
         ArgumentNullException.ThrowIfNull(course);
 
-        await BeforeCreate(course);
+        await BeforeCreate(course, instructor);
 
         try
         {
@@ -38,7 +44,7 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
     {
         try
         {
-            Course? course = await _unitOfWork.Repository<Course>().GetByIdAsync(courseId);
+            Course? course = await _unitOfWork.Repository<Course>().GetByIdWithSpecAsync(new CoursesSpecifications(courseId));
 
             return course;
         }
@@ -49,13 +55,14 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
         }
     }
 
-    public async Task<IReadOnlyList<Course>?> ReadAllAsync()
+    public async Task<IEnumerable<Course>?> ReadCoursesForInstructor(string instructorId, CourseSpeceficationsParams courseSpeceficationsParams)
     {
         try
         {
-            IReadOnlyList<Course>? courses = await _unitOfWork.Repository<Course>().GetAllAsync();
+            courseSpeceficationsParams.instractorId = instructorId;
+            IEnumerable<Course>? coursesForInstructor = (await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(new CoursesSpecifications(courseSpeceficationsParams)));
 
-            return courses;
+            return coursesForInstructor;
         }
         catch (Exception ex)
         {
@@ -64,24 +71,51 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
         }
     }
 
-    private async Task BeforeUpdate(Course course)
+    public async Task<IEnumerable<Course>?> ReadCoursesForStudent(string studentId, CourseSpeceficationsParams courseSpeceficationsParams)
     {
-        course.LastUpdatedDate = DateTime.Now;
-        //
-        //
-        await Task.CompletedTask;
+        try
+        {
+            courseSpeceficationsParams.StudentId = studentId;
+            var coursesForStudent = (await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(new CoursesSpecifications(courseSpeceficationsParams)));
+
+            return coursesForStudent;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+            return null;
+        }
     }
-    public async Task<Course?> UpdateCourse(Course course)
+
+    //private async Task BeforeUpdate(Course course)
+    //{
+    //    course.LastUpdatedDate = DateTime.Now;
+    //    //
+    //    //
+    //    await Task.CompletedTask;
+    //}
+    public async Task<Course?> UpdateCourse(Course course, int courseId)
     {
         ArgumentNullException.ThrowIfNull(course);
 
-        await BeforeUpdate(course);
+        //await BeforeUpdate(course);
 
-        Course? courseFromDb = await _unitOfWork.Repository<Course>().GetByIdAsync(course.Id);
+        Course? courseFromDb = await _unitOfWork.Repository<Course>().GetByIdAsync(courseId);
 
         if (courseFromDb is null) return null;
 
-        courseFromDb = course;
+        courseFromDb.CourseLevel = course.CourseLevel;
+        courseFromDb.Title = course.Title;
+        courseFromDb.Language = course.Language;
+        courseFromDb.ThumbnailUrl = course.ThumbnailUrl;
+        courseFromDb.SubjectId = course.SubjectId;
+        courseFromDb.Price = course.Price;
+        courseFromDb.LearningObjectives = course.LearningObjectives;
+        courseFromDb.Subject = await _subjectService.ReadByIdAsync(course.SubjectId) ?? new();
+        courseFromDb.Tags = await MapSubjectsAsync(course.TagsIds ?? new());
+        courseFromDb.Prerequisites = await MapSubjectsAsync(course.PrerequisitesIds ?? new());
+        courseFromDb.LastUpdatedDate = DateTime.Now;
+
         try
         {
             _unitOfWork.Repository<Course>().Update(courseFromDb);
@@ -98,9 +132,9 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
         }
     }
 
-    public async Task<bool> DeleteCourse(int subjectId)
+    public async Task<bool> DeleteCourse(int courseId)
     {
-        Course? course = await _unitOfWork.Repository<Course>().GetByIdAsync(subjectId);
+        Course? course = await _unitOfWork.Repository<Course>().GetByIdAsync(courseId);
 
         if (course is null) return false;
 
@@ -119,5 +153,19 @@ public class CourseService(IUnitOfWork unitOfWork) : ICourseService
             Log.Error(ex.ToString());
             return false;
         }
+    }
+
+    private async Task<List<Subject>> MapSubjectsAsync(List<int> subjectIds)
+    {
+        if (!subjectIds.Any()) return new();
+
+        var subjects = new List<Subject>();
+
+        var subjectsFromDb = await _subjectService.ReadSubjectsByIds(subjectIds);
+
+        foreach (var subject in subjectsFromDb)
+            subjects.Add(subject);
+
+        return subjects;
     }
 }

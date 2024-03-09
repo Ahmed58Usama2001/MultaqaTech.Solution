@@ -22,16 +22,15 @@ public class BaseSpecifications<T> : ISpecifications<T> where T : BaseEntity
 
     public void AddOrderBy(Expression<Func<T, object>> addOrderByExpression)
     {
-        OrderBy= addOrderByExpression;
+        OrderBy = addOrderByExpression;
     }
-
 
     public void AddOrderByDesc(Expression<Func<T, object>> addOrderByDescExpression)
     {
         OrderByDesc = addOrderByDescExpression;
     }
 
-    public void ApplyPagination(int skip,int take)
+    public void ApplyPagination(int skip, int take)
     {
         IsPaginationEnabled = true;
         Take = take;

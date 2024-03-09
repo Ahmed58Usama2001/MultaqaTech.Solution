@@ -1,5 +1,4 @@
-﻿
-namespace MultaqaTech.Service;
+﻿namespace MultaqaTech.Service;
 
 public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
 {

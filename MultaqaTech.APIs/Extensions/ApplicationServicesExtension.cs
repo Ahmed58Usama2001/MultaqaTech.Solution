@@ -33,6 +33,8 @@ public static class ApplicationServicesExtension
         services.AddScoped<IBlogPostCategoryService, BlogPostCategoryService>();
         services.AddScoped<IBlogPostService, BlogPostService>();
         services.AddScoped<IBlogPostCommentService, BlogPostCommentService>();
+        services.AddScoped<ICourseService, CourseService>();
+
         return services;
     }
 }
