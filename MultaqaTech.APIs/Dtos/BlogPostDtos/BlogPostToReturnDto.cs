@@ -21,5 +21,5 @@ public class BlogPostToReturnDto
     public int NumberOfViews { get; set; }
 
     public List<string>? Tags { get; set; } = new();
-    public List<string>? Comments { get; set; } = new();
+    public List<object>? Comments { get; set; } = new();
 }
