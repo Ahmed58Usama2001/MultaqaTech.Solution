@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
-
-namespace MultaqaTech.Core.Services.Contract.BlogPostContracts;
+﻿namespace MultaqaTech.Core.Services.Contract.BlogPostContracts;
 
 public interface IBlogPostService
 {

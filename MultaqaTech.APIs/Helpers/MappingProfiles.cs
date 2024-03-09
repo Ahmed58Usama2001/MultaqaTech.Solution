@@ -1,7 +1,4 @@
-﻿using MultaqaTech.APIs.Dtos.BlogPostDtos;
-using MultaqaTech.Core.Entities.BlogPostDomainEntities;
-
-namespace MultaqaTech.APIs.Helpers
+﻿namespace MultaqaTech.APIs.Helpers
 {
     public class MappingProfiles : Profile
     {

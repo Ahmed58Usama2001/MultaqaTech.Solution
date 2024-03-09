@@ -1,5 +1,4 @@
-﻿using MultaqaTech.Core.Entities.CourseDomainEntities;
-
+﻿
 namespace MultaqaTech.Core.Services.Contract;
 
 public interface ICourseService

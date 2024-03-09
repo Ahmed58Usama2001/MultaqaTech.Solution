@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Repository.Data.Configurations;
-
-namespace MultaqaTech.Repository.Data;
+﻿namespace MultaqaTech.Repository.Data;
 
 public static class MultaqaTechContextSeed
 {
