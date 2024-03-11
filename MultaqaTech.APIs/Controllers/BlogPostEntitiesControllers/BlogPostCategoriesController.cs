@@ -64,6 +64,6 @@ public class BlogPostCategoriesController(IBlogPostCategoryService blogPostCateg
         if (!result)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
 
-        return Ok("The Category was deleted Successfully");
+        return NoContent();
     }
 }

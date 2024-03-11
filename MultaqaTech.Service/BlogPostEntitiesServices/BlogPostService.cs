@@ -65,13 +65,8 @@ public class BlogPostService(IUnitOfWork unitOfWork) : IBlogPostService
         }
     }
 
-    public async Task<bool> DeleteBlogPost(int blogPostId)
+    public async Task<bool> DeleteBlogPost(BlogPost blogPost)
     {
-        var blogPost = await _unitOfWork.Repository<BlogPost>().GetByIdAsync(blogPostId);
-
-        if (blogPost == null)
-            return false;
-
         try
         {
             _unitOfWork.Repository<BlogPost>().Delete(blogPost);

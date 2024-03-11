@@ -21,13 +21,8 @@ public class BlogPostCommentService(IUnitOfWork unitOfWork) : IBlogPostCommentSe
         }
     }
 
-    public async Task<bool> DeleteBlogPostComment(int blogPostCommentId)
+    public async Task<bool> DeleteBlogPostComment(BlogPostComment blogPostComment)
     {
-        var blogPostComment = await _unitOfWork.Repository<BlogPostComment>().GetByIdAsync(blogPostCommentId);
-
-        if (blogPostComment == null)
-            return false;
-
         try
         {
             _unitOfWork.Repository<BlogPostComment>().Delete(blogPostComment);

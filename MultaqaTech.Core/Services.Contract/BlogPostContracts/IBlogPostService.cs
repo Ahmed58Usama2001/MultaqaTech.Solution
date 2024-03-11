@@ -10,7 +10,7 @@ public interface IBlogPostService
 
     Task<BlogPost?> UpdateBlogPost(int blogPostId, BlogPost updatedBlogPost);
 
-    Task<bool> DeleteBlogPost(int blogPostId);
+    Task<bool> DeleteBlogPost(BlogPost blogPost);
 
     Task<int> GetCountAsync(BlogPostSpeceficationsParams speceficationsParams);
 

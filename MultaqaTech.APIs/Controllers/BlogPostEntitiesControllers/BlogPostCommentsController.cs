@@ -1,12 +1,17 @@
-﻿namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
+﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+using MultaqaTech.Core.Repositories.Contract;
+
+namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
 
 [Authorize]
-public class BlogPostCommentsController(IBlogPostService blogPostService, IMapper mapper, UserManager<AppUser> userManager, IBlogPostCommentService blogPostCommentService) : BaseApiController
+public class BlogPostCommentsController(IBlogPostService blogPostService, IMapper mapper, UserManager<AppUser> userManager, IBlogPostCommentService blogPostCommentService
+    ,IUnitOfWork unitOfWork) : BaseApiController
 {
     private readonly IBlogPostService _blogPostService = blogPostService;
     private readonly IMapper _mapper = mapper;
     private readonly UserManager<AppUser> _userManager = userManager;
     private readonly IBlogPostCommentService _blogPostCommentService = blogPostCommentService;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     [ProducesResponseType(typeof(BlogPostCommentToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -99,11 +104,23 @@ public class BlogPostCommentsController(IBlogPostService blogPostService, IMappe
     [HttpDelete("{id}")]
     public async Task<ActionResult<BlogPostCommentToReturnDto>> DeleteBlogPostComment(int id)
     {
-        var result = await _blogPostCommentService.DeleteBlogPostComment(id);
+        var blogPostComment = await _unitOfWork.Repository<BlogPostComment>().GetByIdAsync(id);
+        if (blogPostComment == null)
+            return NotFound(new { Message = "Not Found", StatusCode = 404 });
+
+
+        var authorEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (authorEmail is null) return BadRequest(new ApiResponse(404));
+
+        var user = await _userManager.FindByEmailAsync(authorEmail);
+        if (user is null || user.UserName!= blogPostComment.AuthorName) 
+            return BadRequest(new ApiResponse(401));
+
+        var result = await _blogPostCommentService.DeleteBlogPostComment(blogPostComment);
 
         if (!result)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
 
-        return Ok("The Comment was deleted Successfully");
+        return NoContent();
     }
 }
