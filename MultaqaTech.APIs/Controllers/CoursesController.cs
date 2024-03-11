@@ -26,6 +26,19 @@ public class CoursesController(ICourseService courseService, IMapper mapper, Use
         return Ok(_mapper.Map<CourseToReturnDto>(createdCourse));
     }
 
+    [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetAllCoursesFiltered([FromQuery] CourseSpeceficationsParams courseSpeceficationsParams)
+    {
+        IEnumerable<Course>? courses = await _courseService.ReadCoursesWithSpecifications(courseSpeceficationsParams);
+
+        if (courses is null)
+            return NotFound(new ApiResponse(404));
+
+        return Ok(_mapper.Map<IEnumerable<Course>, IEnumerable<CourseToReturnDto>>(courses));
+    }
+
     [ProducesResponseType(typeof(CourseToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("{id}")]
@@ -44,7 +57,7 @@ public class CoursesController(ICourseService courseService, IMapper mapper, Use
     [HttpGet("GetCoursesForInstructorByInstructorId/{instructorId}")]
     public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForInstructorByInstructorId(string instructorId, [FromQuery] CourseSpeceficationsParams courseSpeceficationsParams)
     {
-        courseSpeceficationsParams.instractorId = instructorId;
+        courseSpeceficationsParams.InstractorId = instructorId;
 
         IEnumerable<Course>? courses = await _courseService.ReadCoursesForInstructor(courseSpeceficationsParams);
 
@@ -91,4 +104,5 @@ public class CoursesController(ICourseService courseService, IMapper mapper, Use
 
         return NoContent();
     }
+
 }

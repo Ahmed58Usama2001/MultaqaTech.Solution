@@ -1,15 +1,15 @@
-﻿using MultaqaTech.Core.Entities.CourseDomainEntities;
-
-namespace MultaqaTech.Core.Specifications;
+﻿namespace MultaqaTech.Core.Specifications;
 
 public class CoursesSpecifications : BaseSpecifications<Course>
 {
     public CoursesSpecifications(CourseSpeceficationsParams speceficationsParams)
         : base(e =>
-            (
-            (!string.IsNullOrEmpty(speceficationsParams.instractorId) && e.InstructorId == speceficationsParams.instractorId) ||
-            (!string.IsNullOrEmpty(speceficationsParams.StudentId) && e.EnrolledStudentsIds.Contains(speceficationsParams.StudentId))
-            ))
+           (
+                 (string.IsNullOrEmpty(speceficationsParams.InstractorId) || e.InstructorId == speceficationsParams.InstractorId) &&
+                 (string.IsNullOrEmpty(speceficationsParams.StudentId) || e.EnrolledStudentsIds.Contains(speceficationsParams.StudentId)) &&
+                 (speceficationsParams.SubjectId == null || e.SubjectId == speceficationsParams.SubjectId) &&
+                 (speceficationsParams.CourseLevel == null || e.CourseLevel == speceficationsParams.CourseLevel)
+           ))
     {
         AddIncludes();
         ApplyPagination((speceficationsParams.PageIndex - 1) * speceficationsParams.PageSize, speceficationsParams.PageSize);

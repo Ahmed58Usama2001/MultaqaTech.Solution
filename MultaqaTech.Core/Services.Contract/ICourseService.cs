@@ -10,6 +10,8 @@ public interface ICourseService
 
     Task<bool> DeleteCourse(int courseId);
 
+    Task<IEnumerable<Course>?> ReadCoursesWithSpecifications(CourseSpeceficationsParams courseSpeceficationsParams);
+
     Task<IEnumerable<Course>?> ReadCoursesForStudent(string studentId, CourseSpeceficationsParams courseSpeceficationsParams);
         
     Task<IEnumerable<Course>?> ReadCoursesForInstructor(CourseSpeceficationsParams courseSpeceficationsParams);

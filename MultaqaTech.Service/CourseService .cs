@@ -59,9 +59,22 @@ public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectServic
     {
         try
         {
-            IEnumerable<Course>? coursesForInstructor = (await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(new CoursesSpecifications(courseSpeceficationsParams)));
+            return await ReadCoursesWithSpecifications(courseSpeceficationsParams);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+            return null;
+        }
+    }
 
-            return coursesForInstructor;
+    public async Task<IEnumerable<Course>?> ReadCoursesWithSpecifications(CourseSpeceficationsParams courseSpeceficationsParams)
+    {
+        try
+        {
+            IEnumerable<Course>? courses = (await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(new CoursesSpecifications(courseSpeceficationsParams)));
+
+            return courses;
         }
         catch (Exception ex)
         {
@@ -74,10 +87,7 @@ public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectServic
     {
         try
         {
-            courseSpeceficationsParams.StudentId = studentId;
-            var coursesForStudent = (await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(new CoursesSpecifications(courseSpeceficationsParams)));
-
-            return coursesForStudent;
+            return await ReadCoursesWithSpecifications(courseSpeceficationsParams);
         }
         catch (Exception ex)
         {

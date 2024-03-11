@@ -2,8 +2,11 @@
 
 public class CourseSpeceficationsParams
 {
-    public string? instractorId { get; set; }
+    public string? InstractorId { get; set; }
     public string? StudentId { get; set; }
+
+    public int? SubjectId { get; set; }
+    public CourseLevel? CourseLevel{ get; set; }
 
     private const int maxPageSize = 12;
     private int pageSize = 6;
