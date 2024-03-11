@@ -44,7 +44,9 @@ public class CoursesController(ICourseService courseService, IMapper mapper, Use
     [HttpGet("GetCoursesForInstructorByInstructorId/{instructorId}")]
     public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForInstructorByInstructorId(string instructorId, [FromQuery] CourseSpeceficationsParams courseSpeceficationsParams)
     {
-        IEnumerable<Course>? courses = await _courseService.ReadCoursesForInstructor(instructorId, courseSpeceficationsParams);
+        courseSpeceficationsParams.instractorId = instructorId;
+
+        IEnumerable<Course>? courses = await _courseService.ReadCoursesForInstructor(courseSpeceficationsParams);
 
         if (courses is null)
             return NotFound(new ApiResponse(404));

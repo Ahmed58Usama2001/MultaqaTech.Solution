@@ -12,5 +12,5 @@ public interface ICourseService
 
     Task<IEnumerable<Course>?> ReadCoursesForStudent(string studentId, CourseSpeceficationsParams courseSpeceficationsParams);
         
-    Task<IEnumerable<Course>?> ReadCoursesForInstructor(string instructorId, CourseSpeceficationsParams courseSpeceficationsParams);
+    Task<IEnumerable<Course>?> ReadCoursesForInstructor(CourseSpeceficationsParams courseSpeceficationsParams);
 }

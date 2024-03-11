@@ -7,15 +7,15 @@ public class CoursesSpecifications : BaseSpecifications<Course>
     public CoursesSpecifications(CourseSpeceficationsParams speceficationsParams)
         : base(e =>
             (
-            (!string.IsNullOrEmpty(speceficationsParams.instractorId) || e.InstructorId == speceficationsParams.instractorId) &&
-            (!string.IsNullOrEmpty(speceficationsParams.StudentId) || e.EnrolledStudentsIds.Contains(speceficationsParams.instractorId))
+            (!string.IsNullOrEmpty(speceficationsParams.instractorId) && e.InstructorId == speceficationsParams.instractorId) ||
+            (!string.IsNullOrEmpty(speceficationsParams.StudentId) && e.EnrolledStudentsIds.Contains(speceficationsParams.StudentId))
             ))
     {
         AddIncludes();
         ApplyPagination((speceficationsParams.PageIndex - 1) * speceficationsParams.PageSize, speceficationsParams.PageSize);
     }
 
-    public CoursesSpecifications(int id) : base(e=>e.Id.Equals(id))
+    public CoursesSpecifications(int id) : base(e => e.Id.Equals(id))
     {
         AddIncludes();
     }

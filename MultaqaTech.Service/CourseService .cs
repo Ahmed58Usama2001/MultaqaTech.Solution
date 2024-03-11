@@ -12,8 +12,8 @@ public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectServic
         course.InstructorId = instructor.Id;
         //course.Instructor = instructor;
         course.Subject = await _subjectService.ReadByIdAsync(course.SubjectId) ?? new();
-        course.Tags = await MapTagsAsync(course.TagsIds ?? new(), course.Id);
-        course.Prerequisites = await MapPrerequestAsync(course.PrerequisitesIds ?? new(), course.Id);
+        course.Tags = await MapTagsAsync(course.TagsIds ?? new());
+        course.Prerequisites = await MapPrerequestAsync(course.PrerequisitesIds ?? new());
         //
         //
         await Task.CompletedTask;
@@ -55,11 +55,10 @@ public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectServic
         }
     }
 
-    public async Task<IEnumerable<Course>?> ReadCoursesForInstructor(string instructorId, CourseSpeceficationsParams courseSpeceficationsParams)
+    public async Task<IEnumerable<Course>?> ReadCoursesForInstructor(CourseSpeceficationsParams courseSpeceficationsParams)
     {
         try
         {
-            courseSpeceficationsParams.instractorId = instructorId;
             IEnumerable<Course>? coursesForInstructor = (await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(new CoursesSpecifications(courseSpeceficationsParams)));
 
             return coursesForInstructor;
@@ -112,8 +111,8 @@ public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectServic
         courseFromDb.Price = course.Price;
         courseFromDb.LearningObjectives = course.LearningObjectives;
         courseFromDb.Subject = await _subjectService.ReadByIdAsync(course.SubjectId) ?? new();
-        courseFromDb.Tags = await MapTagsAsync(course.TagsIds ?? new(), courseId);
-        courseFromDb.Prerequisites = await MapPrerequestAsync(course.PrerequisitesIds ?? new(), courseId);
+        courseFromDb.Tags = await MapTagsAsync(course.TagsIds ?? new());
+        courseFromDb.Prerequisites = await MapPrerequestAsync(course.PrerequisitesIds ?? new());
         courseFromDb.LastUpdatedDate = DateTime.Now;
 
         try
@@ -155,7 +154,7 @@ public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectServic
         }
     }
 
-    private async Task<List<CourseTag>> MapTagsAsync(List<int> tagsIds, int courseId)
+    private async Task<List<CourseTag>> MapTagsAsync(List<int> tagsIds)
     {
         if (!tagsIds.Any()) return new();
 
@@ -166,7 +165,6 @@ public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectServic
         foreach (var subject in subjectsFromDb)
             courseTags.Add(new()
             {
-                CourseId = courseId,
                 TagId = subject.Id,
                 TagName = subject.Name,
             });
@@ -174,7 +172,7 @@ public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectServic
         return courseTags;
     }
 
-    private async Task<List<CoursePrerequist>> MapPrerequestAsync(List<int> prerequistsIds, int courseId)
+    private async Task<List<CoursePrerequist>> MapPrerequestAsync(List<int> prerequistsIds)
     {
         if (!prerequistsIds.Any()) return new();
 
@@ -185,7 +183,6 @@ public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectServic
         foreach (var subject in subjectsFromDb)
             coursePrerequists.Add(new()
             {
-                CourseId = courseId,
                 PrerequistId = subject.Id,
                 PrerequistName = subject.Name,
             });
