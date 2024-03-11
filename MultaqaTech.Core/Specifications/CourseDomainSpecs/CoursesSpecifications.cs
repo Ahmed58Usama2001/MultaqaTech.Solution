@@ -11,7 +11,7 @@ public class CoursesSpecifications : BaseSpecifications<Course>
                  (speceficationsParams.SubjectId == null || e.SubjectId == speceficationsParams.SubjectId) &&
                  (speceficationsParams.MinPrice == null || e.Price >= speceficationsParams.MinPrice) &&
                  (speceficationsParams.MaxPrice == null || e.Price <= speceficationsParams.MaxPrice) &&
-                 (speceficationsParams.CourseLevel == null || e.CourseLevel == speceficationsParams.CourseLevel)
+                 (speceficationsParams.CourseLevel == null || e.Level == speceficationsParams.CourseLevel)
            ))
     {
         AddIncludes();

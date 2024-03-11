@@ -32,6 +32,10 @@ internal class CourseConfigurations : IEntityTypeConfiguration<Course>
                .WithOne(cp => cp.Course)
                .HasForeignKey(cp => cp.CourseId);
 
+        builder.HasMany(e => e.Reviews)
+               .WithOne(cr=>cr.Course)
+               .HasForeignKey(cr => cr.CourseId);
+
         builder.Property(e => e.Price).HasColumnType("decimal(18,2)");
     }
 }

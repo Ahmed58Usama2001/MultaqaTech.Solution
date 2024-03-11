@@ -1,5 +1,4 @@
-﻿
-namespace MultaqaTech.APIs.Extensions;
+﻿namespace MultaqaTech.APIs.Extensions;
 
 public static class ApplicationServicesExtension
 {
@@ -32,6 +31,7 @@ public static class ApplicationServicesExtension
         services.AddScoped<IBlogPostService, BlogPostService>();
         services.AddScoped<IBlogPostCommentService, BlogPostCommentService>();
         services.AddScoped<ICourseService, CourseService>();
+        services.AddScoped<ICourseReviewService, CourseReviewService>();
 
         return services;
     }

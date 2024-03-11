@@ -1,5 +1,4 @@
-﻿
-namespace MultaqaTech.Repository.Data.Configurations;
+﻿namespace MultaqaTech.Repository.Data.Configurations;
 
 public class MultaqaTechContext : DbContext
 {
@@ -21,4 +20,5 @@ public class MultaqaTechContext : DbContext
     public DbSet<Course> Courses { get; set; }
     public DbSet<CourseTag> CoursesTags { get; set; }
     public DbSet<CoursePrerequist> CoursesPrerequists { get; set; }
+    public DbSet<CourseReview> CourseReviews { get; set; }
 }

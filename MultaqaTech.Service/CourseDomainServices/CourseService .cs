@@ -1,4 +1,4 @@
-﻿namespace MultaqaTech.Service;
+﻿namespace MultaqaTech.Service.CourseDomainServices;
 
 public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectService) : ICourseService
 {
@@ -72,7 +72,7 @@ public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectServic
     {
         try
         {
-            IEnumerable<Course>? courses = (await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(new CoursesSpecifications(courseSpeceficationsParams)));
+            IEnumerable<Course>? courses = await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(new CoursesSpecifications(courseSpeceficationsParams));
 
             return courses;
         }
@@ -113,7 +113,7 @@ public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectServic
 
         if (courseFromDb is null) return null;
 
-        courseFromDb.CourseLevel = course.CourseLevel;
+        courseFromDb.Level = course.Level;
         courseFromDb.Title = course.Title;
         courseFromDb.Language = course.Language;
         courseFromDb.ThumbnailUrl = course.ThumbnailUrl;

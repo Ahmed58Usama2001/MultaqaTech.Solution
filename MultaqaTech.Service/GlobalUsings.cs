@@ -7,6 +7,7 @@ global using MultaqaTech.Core.Specifications.BlogPost_Specs;
 global using MultaqaTech.Core.Entities.CourseDomainEntities;
 global using MultaqaTech.Core.Entities.BlogPostDomainEntities;
 global using MultaqaTech.Core.Services.Contract.BlogPostContracts;
+global using MultaqaTech.Core.Services.Contract.CourseDomainContracts;
 
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.IdentityModel.Tokens;

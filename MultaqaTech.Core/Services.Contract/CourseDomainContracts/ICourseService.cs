@@ -1,4 +1,4 @@
-﻿namespace MultaqaTech.Core.Services.Contract;
+﻿namespace MultaqaTech.Core.Services.Contract.CourseDomainContracts;
 
 public interface ICourseService
 {
@@ -13,6 +13,6 @@ public interface ICourseService
     Task<IEnumerable<Course>?> ReadCoursesWithSpecifications(CourseSpeceficationsParams courseSpeceficationsParams);
 
     Task<IEnumerable<Course>?> ReadCoursesForStudent(string studentId, CourseSpeceficationsParams courseSpeceficationsParams);
-        
+
     Task<IEnumerable<Course>?> ReadCoursesForInstructor(CourseSpeceficationsParams courseSpeceficationsParams);
 }
