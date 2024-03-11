@@ -10,7 +10,7 @@ public interface IBlogPostCommentService
 
     Task<BlogPostComment?> UpdateBlogPostComment(int blogPostCommentId, BlogPostComment updatedBlogPostComment);
 
-    Task<bool> DeleteBlogPostComment(int blogPostCommentId);
+    Task<bool> DeleteBlogPostComment(BlogPostComment blogPostComment);
 
     Task<int> GetCountAsync(BlogPostCommentSpeceficationsParams speceficationsParams);
 }

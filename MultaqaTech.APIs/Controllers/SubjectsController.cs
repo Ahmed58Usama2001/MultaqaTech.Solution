@@ -64,7 +64,7 @@ public class SubjectsController(ISubjectService subjectService, IMapper mapper) 
         if (!result)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
 
-        return Ok("The Subject was deleted Successfully");
+        return NoContent();
     }
 
 }

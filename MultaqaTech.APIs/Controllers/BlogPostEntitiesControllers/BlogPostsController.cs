@@ -1,14 +1,19 @@
-﻿namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
+﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+using MultaqaTech.Repository;
+
+namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
 
 [Authorize]
 public class BlogPostsController(IBlogPostService blogPostService, IMapper mapper, UserManager<AppUser> userManager, IBlogPostCategoryService blogPostCategoryService
-    ,ISubjectService subjectService) : BaseApiController
+    ,ISubjectService subjectService,IUnitOfWork unitOfWork) : BaseApiController
 {
     private readonly IBlogPostService _blogPostService = blogPostService;
     private readonly IMapper _mapper = mapper;
     private readonly UserManager<AppUser> _userManager = userManager;
     private readonly IBlogPostCategoryService _blogPostCategoryService = blogPostCategoryService;
     private readonly ISubjectService _subjectService = subjectService;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
 
     [ProducesResponseType(typeof(BlogPostToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -71,12 +76,12 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
     [HttpGet("{id}")]
     public async Task<ActionResult<BlogPostToReturnDto>> GetBlogPost(int id)
     {
-        await _blogPostService.IncrementViewCountAsync(id);
-
         var blogPost = await _blogPostService.ReadByIdAsync(id);
 
         if (blogPost == null)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
+
+        await _blogPostService.IncrementViewCountAsync(id);
 
         return Ok(_mapper.Map<BlogPostToReturnDto>(blogPost));
     }
@@ -116,12 +121,23 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
     [HttpDelete("{id}")]
     public async Task<ActionResult<BlogPostToReturnDto>> DeleteBlogPost(int id)
     {
-        var result = await _blogPostService.DeleteBlogPost(id);
+        var blogPost = await _unitOfWork.Repository<BlogPost>().GetByIdAsync(id);
+        if (blogPost == null)
+            return NotFound(new { Message = "Not Found", StatusCode = 404 });
+
+        var authorEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (authorEmail is null) return BadRequest(new ApiResponse(404));
+
+        var user = await _userManager.FindByEmailAsync(authorEmail);
+        if (user is null || user.UserName != blogPost.AuthorName)
+            return BadRequest(new ApiResponse(401));
+
+        var result = await _blogPostService.DeleteBlogPost(blogPost);
 
         if (!result)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
 
-        return Ok("The post was deleted Successfully");
+        return NoContent();
     }
 
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
