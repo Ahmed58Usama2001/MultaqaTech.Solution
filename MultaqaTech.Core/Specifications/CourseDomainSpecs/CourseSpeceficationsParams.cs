@@ -4,8 +4,11 @@ public class CourseSpeceficationsParams
 {
     public string? InstractorId { get; set; }
     public string? StudentId { get; set; }
+    public string? Language { get; set; }
 
     public int? SubjectId { get; set; }
+    public decimal? MinPrice { get; set; }
+    public decimal? MaxPrice { get; set; }
     public CourseLevel? CourseLevel{ get; set; }
 
     private const int maxPageSize = 12;
