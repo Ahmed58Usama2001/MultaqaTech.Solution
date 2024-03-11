@@ -38,8 +38,8 @@ public class Course : BaseEntityWithPictureUrl
     public CourseLevel CourseLevel { get; set; }
     public DeductionType DeductionType { get; set; }
 
-    public List<Subject> Tags { get; set; } = new();
-    public List<Subject> Prerequisites { get; set; } = new();
+    public List<CourseTag> Tags { get; set; } = new();
+    public List<CoursePrerequist> Prerequisites { get; set; } = new();
     //public List<CourseReview> CourseReviews { get; set; } = new();
     public List<string>? LearningObjectives { get; set; } = new();
     public List<string>? LecturesLinks { get; set; } = new();

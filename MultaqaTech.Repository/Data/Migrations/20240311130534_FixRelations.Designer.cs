@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MultaqaTech.Repository.Data.Configurations;
 
 #nullable disable
 
-namespace MultaqaTech.Repository.Data.Migrations
+namespace MultaqaTech.Repository.Repository.Data.Migrations
 {
     [DbContext(typeof(MultaqaTechContext))]
-    partial class MultaqaTechContextModelSnapshot : ModelSnapshot
+    [Migration("20240311130534_FixRelations")]
+    partial class FixRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,6 +38,42 @@ namespace MultaqaTech.Repository.Data.Migrations
                     b.HasIndex("TagsId");
 
                     b.ToTable("BlogPostSubject");
+                });
+
+            modelBuilder.Entity("CourseCoursePrerequist", b =>
+                {
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PrerequisitesPrerrequistId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PrerequisitesCourseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CourseId", "PrerequisitesPrerrequistId", "PrerequisitesCourseId");
+
+                    b.HasIndex("PrerequisitesPrerrequistId", "PrerequisitesCourseId");
+
+                    b.ToTable("CourseCoursePrerequist");
+                });
+
+            modelBuilder.Entity("CourseCourseTag", b =>
+                {
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagsTagId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagsCourseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CourseId", "TagsTagId", "TagsCourseId");
+
+                    b.HasIndex("TagsTagId", "TagsCourseId");
+
+                    b.ToTable("CourseCourseTag");
                 });
 
             modelBuilder.Entity("MultaqaTech.Core.Entities.BlogPostDomainEntities.BlogPost", b =>
@@ -202,7 +241,7 @@ namespace MultaqaTech.Repository.Data.Migrations
 
             modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CoursePrerequist", b =>
                 {
-                    b.Property<int>("PrerequistId")
+                    b.Property<int>("PrerrequistId")
                         .HasColumnType("int");
 
                     b.Property<int>("CourseId")
@@ -212,9 +251,7 @@ namespace MultaqaTech.Repository.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("PrerequistId", "CourseId");
-
-                    b.HasIndex("CourseId");
+                    b.HasKey("PrerrequistId", "CourseId");
 
                     b.ToTable("CoursesPrerequists", (string)null);
                 });
@@ -232,8 +269,6 @@ namespace MultaqaTech.Repository.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("TagId", "CourseId");
-
-                    b.HasIndex("CourseId");
 
                     b.ToTable("CoursesTags", (string)null);
                 });
@@ -274,6 +309,36 @@ namespace MultaqaTech.Repository.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("CourseCoursePrerequist", b =>
+                {
+                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.Course", null)
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.CoursePrerequist", null)
+                        .WithMany()
+                        .HasForeignKey("PrerequisitesPrerrequistId", "PrerequisitesCourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CourseCourseTag", b =>
+                {
+                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.Course", null)
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.CourseTag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsTagId", "TagsCourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MultaqaTech.Core.Entities.BlogPostDomainEntities.BlogPost", b =>
                 {
                     b.HasOne("MultaqaTech.Core.Entities.BlogPostDomainEntities.BlogPostCategory", "Category")
@@ -307,44 +372,6 @@ namespace MultaqaTech.Repository.Data.Migrations
                     b.Navigation("Subject");
                 });
 
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CoursePrerequist", b =>
-                {
-                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.Course", "Course")
-                        .WithMany("Prerequisites")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MultaqaTech.Core.Entities.Subject", "Prerequist")
-                        .WithMany()
-                        .HasForeignKey("PrerequistId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("Prerequist");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CourseTag", b =>
-                {
-                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.Course", "Course")
-                        .WithMany("Tags")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MultaqaTech.Core.Entities.Subject", "Tag")
-                        .WithMany()
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("Tag");
-                });
-
             modelBuilder.Entity("MultaqaTech.Core.Entities.BlogPostDomainEntities.BlogPost", b =>
                 {
                     b.Navigation("Comments");
@@ -353,13 +380,6 @@ namespace MultaqaTech.Repository.Data.Migrations
             modelBuilder.Entity("MultaqaTech.Core.Entities.BlogPostDomainEntities.BlogPostCategory", b =>
                 {
                     b.Navigation("BlogPosts");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.Course", b =>
-                {
-                    b.Navigation("Prerequisites");
-
-                    b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618
         }

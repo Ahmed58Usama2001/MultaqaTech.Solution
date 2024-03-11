@@ -1,4 +1,4 @@
-﻿namespace MultaqaTech.Repository.Data.Configurations;
+﻿namespace MultaqaTech.Repository.Data.Configurations.CourseDomainConfigurations;
 
 internal class CourseConfigurations : IEntityTypeConfiguration<Course>
 {
@@ -14,7 +14,6 @@ internal class CourseConfigurations : IEntityTypeConfiguration<Course>
                .IsRequired()
                .HasMaxLength(maxLength);
 
-
         builder.HasOne(e => e.Subject)
                .WithMany()
                .HasForeignKey(e => e.SubjectId)
@@ -26,10 +25,12 @@ internal class CourseConfigurations : IEntityTypeConfiguration<Course>
         //       .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(e => e.Tags)
-               .WithMany();
+               .WithOne(ct => ct.Course)
+               .HasForeignKey(ct => ct.CourseId);
 
         builder.HasMany(e => e.Prerequisites)
-             .WithMany();
+               .WithOne(cp => cp.Course)
+               .HasForeignKey(cp => cp.CourseId);
 
         builder.Property(e => e.Price).HasColumnType("decimal(18,2)");
     }
