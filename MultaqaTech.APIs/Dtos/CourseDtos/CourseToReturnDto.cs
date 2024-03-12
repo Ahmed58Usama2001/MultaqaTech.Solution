@@ -18,7 +18,7 @@ public class CourseToReturnDto
     public DateTime LastUpdatedDate { get; set; }
     public DateTime UploadDate { get; set; }
 
-    public CourseLevel CourseLevel { get; set; }
+    public CourseLevel Level { get; set; }
     public DeductionType DeductionType { get; set; }
 
     public List<string> Tags { get; set; } = new();

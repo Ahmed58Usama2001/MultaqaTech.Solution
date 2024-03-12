@@ -1,5 +1,6 @@
 ﻿namespace MultaqaTech.APIs.Controllers;
 
+[Authorize]
 public class CoursesController(ICourseService courseService, IMapper mapper, UserManager<AppUser> userManager) : BaseApiController
 {
     private readonly ICourseService _courseService = courseService;

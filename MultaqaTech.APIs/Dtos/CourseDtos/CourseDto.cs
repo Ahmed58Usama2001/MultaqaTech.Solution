@@ -24,7 +24,7 @@ public class CourseDto
     public decimal Price { get; set; }
 
     [Required]
-    public CourseLevel CourseLevel { get; set; }
+    public CourseLevel Level { get; set; }
 
     //[Required]
     public List<int>? TagsIds { get; set; } = new();
