@@ -69,9 +69,6 @@ public class Program
         }
 
 
-
-
-
         #region Configure Middlewares
 
         app.UseMiddleware<ExceptionMiddleWare>();
@@ -82,7 +79,7 @@ public class Program
             app.UseSwaggerMiddlewares();
         }
 
-        app.UseMiddleware<RateLimeterMiddleware>();
+        //app.UseMiddleware<RateLimeterMiddleware>();
 
         app.UseStatusCodePagesWithRedirects("/errors/{0}");
 
