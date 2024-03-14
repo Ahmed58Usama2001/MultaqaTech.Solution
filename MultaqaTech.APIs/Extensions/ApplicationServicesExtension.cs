@@ -7,6 +7,7 @@ public static class ApplicationServicesExtension
         services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 
         services.AddAutoMapper(typeof(MappingProfiles));
+        services.AddHttpClient();
 
         services.Configure<ApiBehaviorOptions>(options =>
         {
