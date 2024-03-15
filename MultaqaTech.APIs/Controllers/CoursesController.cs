@@ -20,6 +20,9 @@ public class CoursesController(ICourseService courseService, IMapper mapper, Use
         AppUser? instructor = await _userManager.FindByEmailAsync(instructorEmail);
         if (instructor is null) return NotFound(new ApiResponse(404));
 
+        bool isTitleUnique = await _courseService.CheckTitleUniqueness(courseDto.Title);
+        if (!isTitleUnique) return BadRequest(new ApiResponse(400,"Course Title Should Be Unique"));
+
         Course? createdCourse = await _courseService.CreateCourseAsync(_mapper.Map<Course>(courseDto), instructor);
 
         if (createdCourse is null) return BadRequest(new ApiResponse(400));

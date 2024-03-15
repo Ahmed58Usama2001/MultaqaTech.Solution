@@ -40,6 +40,20 @@ public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectServic
         }
     }
 
+    public async Task<IEnumerable<Course>> ReadAllCourses()
+    {
+        try
+        {
+            IEnumerable<Course>? courses = await _unitOfWork.Repository<Course>().GetAllAsync();
+
+            return courses;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+            return Enumerable.Empty<Course>();
+        }
+    }
     public async Task<Course?> ReadByIdAsync(int courseId)
     {
         try
@@ -174,5 +188,12 @@ public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectServic
             subjects.Add(subject);
 
         return subjects;
+    }
+
+    public async Task<bool> CheckTitleUniqueness(string title)
+    {
+        IEnumerable<Course>? courses = await ReadAllCourses();
+
+        return !courses.Any(e => e.Title.Equals(title));
     }
 }
