@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.APIs.Controllers;
+﻿using MultaqaTech.APIs.Dtos;
+
+namespace MultaqaTech.APIs.Controllers;
 
 [Authorize]
 public class CoursesController(ICourseService courseService, IMapper mapper, UserManager<AppUser> userManager) : BaseApiController
@@ -89,6 +91,9 @@ public class CoursesController(ICourseService courseService, IMapper mapper, Use
     [HttpPut("{courseId}")]
     public async Task<ActionResult<CourseToReturnDto>> UpdateCourse(int courseId, CourseDto course)
     {
+        bool isTitleUnique = await _courseService.CheckTitleUniqueness(course.Title);
+        if (!isTitleUnique) return BadRequest(new ApiResponse(400, "Course Title Should Be Unique"));
+
         Course? updatedCourse = await _courseService.UpdateCourse(_mapper.Map<CourseDto, Course>(course), courseId);
 
         if (updatedCourse is null)
