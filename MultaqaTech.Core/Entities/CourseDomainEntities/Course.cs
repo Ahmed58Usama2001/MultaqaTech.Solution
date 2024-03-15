@@ -12,7 +12,7 @@ public class Course : BaseEntityWithPictureUrl
     public string? Language { get; set; }
 
     // shadowing the picture url prop in base
-    public new string ThumbnailUrl
+    public string ThumbnailUrl
     {
         get { return base.PictureUrl; }
         set { base.PictureUrl = value; }
@@ -37,8 +37,8 @@ public class Course : BaseEntityWithPictureUrl
     public CourseLevel Level { get; set; }
     public DeductionType DeductionType { get; set; }
 
-    public List<CourseTag> Tags { get; set; } = new();
-    public List<CoursePrerequist> Prerequisites { get; set; } = new();
+    public List<Subject> Tags { get; set; } = new();
+    public List<Subject> Prerequisites { get; set; } = new();
     public List<CourseReview> Reviews { get; set; } = new();
     public List<string>? LearningObjectives { get; set; } = new();
     public List<string>? LecturesLinks { get; set; } = new();

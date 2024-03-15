@@ -9,11 +9,11 @@ using MultaqaTech.Repository.Data.Configurations;
 
 #nullable disable
 
-namespace MultaqaTech.Repository.Repository.Data.Migrations
+namespace MultaqaTech.Repository.Migrations
 {
     [DbContext(typeof(MultaqaTechContext))]
-    [Migration("20240309201646_Instractor")]
-    partial class Instractor
+    [Migration("20240315150041_InitDb")]
+    partial class InitDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,32 +42,32 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
 
             modelBuilder.Entity("CourseSubject", b =>
                 {
-                    b.Property<int>("CourseId")
+                    b.Property<int>("AssociatedCoursesId")
                         .HasColumnType("int");
 
                     b.Property<int>("TagsId")
                         .HasColumnType("int");
 
-                    b.HasKey("CourseId", "TagsId");
+                    b.HasKey("AssociatedCoursesId", "TagsId");
 
                     b.HasIndex("TagsId");
 
-                    b.ToTable("CourseSubject");
+                    b.ToTable("CourseTags", (string)null);
                 });
 
             modelBuilder.Entity("CourseSubject1", b =>
                 {
-                    b.Property<int>("Course1Id")
+                    b.Property<int>("CourseId")
                         .HasColumnType("int");
 
                     b.Property<int>("PrerequisitesId")
                         .HasColumnType("int");
 
-                    b.HasKey("Course1Id", "PrerequisitesId");
+                    b.HasKey("CourseId", "PrerequisitesId");
 
                     b.HasIndex("PrerequisitesId");
 
-                    b.ToTable("CourseSubject1");
+                    b.ToTable("CousePrerequests", (string)null);
                 });
 
             modelBuilder.Entity("MultaqaTech.Core.Entities.BlogPostDomainEntities.BlogPost", b =>
@@ -163,9 +163,6 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CourseLevel")
-                        .HasColumnType("int");
-
                     b.Property<int>("DeductionAmount")
                         .HasColumnType("int");
 
@@ -181,7 +178,7 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
 
                     b.Property<string>("InstructorId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Language")
                         .HasColumnType("nvarchar(max)");
@@ -194,6 +191,9 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
 
                     b.Property<string>("LecturesLinks")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
 
                     b.Property<string>("PictureUrl")
                         .IsRequired()
@@ -225,8 +225,6 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InstructorId");
-
                     b.HasIndex("SubjectId");
 
                     b.HasIndex("Title")
@@ -235,73 +233,31 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
                     b.ToTable("Courses", (string)null);
                 });
 
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.Instractor", b =>
+            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CourseReview", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Bio")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("JobTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("RegistrationDate")
+                    b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("NumberOfStars")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Instractor");
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("CourseReviews", (string)null);
                 });
 
             modelBuilder.Entity("MultaqaTech.Core.Entities.Subject", b =>
@@ -344,7 +300,7 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
                 {
                     b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.Course", null)
                         .WithMany()
-                        .HasForeignKey("CourseId")
+                        .HasForeignKey("AssociatedCoursesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -359,7 +315,7 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
                 {
                     b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.Course", null)
                         .WithMany()
-                        .HasForeignKey("Course1Id")
+                        .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -394,21 +350,24 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
 
             modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.Course", b =>
                 {
-                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.Instractor", "Instructor")
-                        .WithMany()
-                        .HasForeignKey("InstructorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("MultaqaTech.Core.Entities.Subject", "Subject")
                         .WithMany()
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Instructor");
-
                     b.Navigation("Subject");
+                });
+
+            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CourseReview", b =>
+                {
+                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.Course", "Course")
+                        .WithMany("Reviews")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
                 });
 
             modelBuilder.Entity("MultaqaTech.Core.Entities.BlogPostDomainEntities.BlogPost", b =>
@@ -419,6 +378,11 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
             modelBuilder.Entity("MultaqaTech.Core.Entities.BlogPostDomainEntities.BlogPostCategory", b =>
                 {
                     b.Navigation("BlogPosts");
+                });
+
+            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.Course", b =>
+                {
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

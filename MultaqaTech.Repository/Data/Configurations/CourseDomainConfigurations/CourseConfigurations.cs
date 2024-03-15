@@ -14,26 +14,26 @@ internal class CourseConfigurations : IEntityTypeConfiguration<Course>
                .IsRequired()
                .HasMaxLength(maxLength);
 
-        builder.HasOne(e => e.Subject)
-               .WithMany()
-               .HasForeignKey(e => e.SubjectId)
-               .OnDelete(DeleteBehavior.Restrict);
-
         //builder.HasOne(e => e.Instructor)
         //       .WithMany()
         //       .HasForeignKey(e => e.InstructorId)
         //       .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasMany(e => e.Tags)
-               .WithOne(ct => ct.Course)
-               .HasForeignKey(ct => ct.CourseId);
+        builder.HasOne(e => e.Subject)
+               .WithMany()
+               .HasForeignKey(e => e.SubjectId)
+               .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasMany(e => e.Prerequisites)
-               .WithOne(cp => cp.Course)
-               .HasForeignKey(cp => cp.CourseId);
+        builder.HasMany(c => c.Tags)
+               .WithMany(s=>s.AssociatedCourses)
+               .UsingEntity(j => j.ToTable("CourseTags"));
+
+        builder.HasMany(c => c.Prerequisites)
+               .WithMany()
+               .UsingEntity(j => j.ToTable("CousePrerequests"));
 
         builder.HasMany(e => e.Reviews)
-               .WithOne(cr=>cr.Course)
+               .WithOne(cr => cr.Course)
                .HasForeignKey(cr => cr.CourseId);
 
         builder.Property(e => e.Price).HasColumnType("decimal(18,2)");

@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MultaqaTech.Repository.Data.Configurations;
 
 #nullable disable
 
-namespace MultaqaTech.Repository.Repository.Data.Migrations
+namespace MultaqaTech.Repository.Migrations
 {
     [DbContext(typeof(MultaqaTechContext))]
-    [Migration("20240309210244_InstractorAsAppUserr")]
-    partial class InstractorAsAppUserr
+    partial class MultaqaTechContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,32 +39,32 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
 
             modelBuilder.Entity("CourseSubject", b =>
                 {
-                    b.Property<int>("CourseId")
+                    b.Property<int>("AssociatedCoursesId")
                         .HasColumnType("int");
 
                     b.Property<int>("TagsId")
                         .HasColumnType("int");
 
-                    b.HasKey("CourseId", "TagsId");
+                    b.HasKey("AssociatedCoursesId", "TagsId");
 
                     b.HasIndex("TagsId");
 
-                    b.ToTable("CourseSubject");
+                    b.ToTable("CourseTags", (string)null);
                 });
 
             modelBuilder.Entity("CourseSubject1", b =>
                 {
-                    b.Property<int>("Course1Id")
+                    b.Property<int>("CourseId")
                         .HasColumnType("int");
 
                     b.Property<int>("PrerequisitesId")
                         .HasColumnType("int");
 
-                    b.HasKey("Course1Id", "PrerequisitesId");
+                    b.HasKey("CourseId", "PrerequisitesId");
 
                     b.HasIndex("PrerequisitesId");
 
-                    b.ToTable("CourseSubject1");
+                    b.ToTable("CousePrerequests", (string)null);
                 });
 
             modelBuilder.Entity("MultaqaTech.Core.Entities.BlogPostDomainEntities.BlogPost", b =>
@@ -163,9 +160,6 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CourseLevel")
-                        .HasColumnType("int");
-
                     b.Property<int>("DeductionAmount")
                         .HasColumnType("int");
 
@@ -194,6 +188,9 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
 
                     b.Property<string>("LecturesLinks")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
 
                     b.Property<string>("PictureUrl")
                         .IsRequired()
@@ -231,6 +228,33 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Courses", (string)null);
+                });
+
+            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CourseReview", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("NumberOfStars")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("CourseReviews", (string)null);
                 });
 
             modelBuilder.Entity("MultaqaTech.Core.Entities.Subject", b =>
@@ -273,7 +297,7 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
                 {
                     b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.Course", null)
                         .WithMany()
-                        .HasForeignKey("CourseId")
+                        .HasForeignKey("AssociatedCoursesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -288,7 +312,7 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
                 {
                     b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.Course", null)
                         .WithMany()
-                        .HasForeignKey("Course1Id")
+                        .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -332,6 +356,17 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
                     b.Navigation("Subject");
                 });
 
+            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CourseReview", b =>
+                {
+                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.Course", "Course")
+                        .WithMany("Reviews")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
             modelBuilder.Entity("MultaqaTech.Core.Entities.BlogPostDomainEntities.BlogPost", b =>
                 {
                     b.Navigation("Comments");
@@ -340,6 +375,11 @@ namespace MultaqaTech.Repository.Repository.Data.Migrations
             modelBuilder.Entity("MultaqaTech.Core.Entities.BlogPostDomainEntities.BlogPostCategory", b =>
                 {
                     b.Navigation("BlogPosts");
+                });
+
+            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.Course", b =>
+                {
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

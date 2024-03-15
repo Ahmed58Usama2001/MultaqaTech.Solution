@@ -26,8 +26,8 @@
             CreateMap<Course, CourseToReturnDto>()
                .ForMember(dest => dest.Subject, opt => opt.MapFrom(src => src.Subject.Name))
                //.ForMember(dest => dest.Instructor, opt => opt.MapFrom(src => src.Instructor.FirstName + src.Instructor.LastName))
-               .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags != null ? src.Tags.Select(s => s.TagName).ToList() : null))
-               .ForMember(dest => dest.Prerequisites, opt => opt.MapFrom(src => src.Prerequisites != null ? src.Prerequisites.Select(c => c.PrerequistName).ToList() : null))
+               .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags != null ? src.Tags.Select(s => s.Name).ToList() : null))
+               .ForMember(dest => dest.Prerequisites, opt => opt.MapFrom(src => src.Prerequisites != null ? src.Prerequisites.Select(c => c.Name).ToList() : null))
                .ForMember(d => d.ThumbnailUrl, O => O.MapFrom<GenericPictureUrlResolver<Course, CourseToReturnDto>>());
         }
     }

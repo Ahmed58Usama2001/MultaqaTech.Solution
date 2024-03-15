@@ -6,4 +6,6 @@ public class Subject : BaseEntity
 
     [JsonIgnore]
     public List<BlogPost> BlogPosts { get; set; } = new();
+    [JsonIgnore]
+    public List<Course>? AssociatedCourses { get; set; } = new();
 }
