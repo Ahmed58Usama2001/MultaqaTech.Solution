@@ -32,7 +32,7 @@ public static class ApplicationServicesExtension
         services.AddScoped<IBlogPostService, BlogPostService>();
         services.AddScoped<IBlogPostCommentService, BlogPostCommentService>();
         services.AddScoped<ICourseService, CourseService>();
-        services.AddScoped<ICourseReviewService, CourseReviewService>();
+        services.AddScoped<ICourseReviewService, CourseService>();
 
         return services;
     }

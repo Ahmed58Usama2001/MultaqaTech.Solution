@@ -17,5 +17,4 @@ public class MultaqaTechContext : DbContext
     public DbSet<BlogPostComment> BlogPostComments { get; set; }
     public DbSet<BlogPost> BlogPosts { get; set; }
     public DbSet<Course> Courses { get; set; }
-    public DbSet<CourseReview> CourseReviews { get; set; }
 }

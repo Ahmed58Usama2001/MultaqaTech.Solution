@@ -39,7 +39,7 @@ public class Course : BaseEntityWithPictureUrl
 
     public List<Subject> Tags { get; set; } = new();
     public List<Subject> Prerequisites { get; set; } = new();
-    public List<CourseReview> Reviews { get; set; } = new();
+    public List<CourseReview>? Reviews { get; set; } = new();
     public List<string>? LearningObjectives { get; set; } = new();
     public List<string>? LecturesLinks { get; set; } = new();
     public List<string> EnrolledStudentsIds { get; set; } = new();

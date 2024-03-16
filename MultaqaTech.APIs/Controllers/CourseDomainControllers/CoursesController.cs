@@ -1,9 +1,7 @@
-﻿using MultaqaTech.APIs.Dtos;
-
-namespace MultaqaTech.APIs.Controllers;
+﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers;
 
 [Authorize]
-public class CoursesController(ICourseService courseService, IMapper mapper, UserManager<AppUser> userManager) : BaseApiController
+public partial class CoursesController(ICourseService courseService, IMapper mapper, UserManager<AppUser> userManager) : BaseApiController
 {
     private readonly ICourseService _courseService = courseService;
     private readonly IMapper _mapper = mapper;
@@ -11,19 +9,20 @@ public class CoursesController(ICourseService courseService, IMapper mapper, Use
 
     [ProducesResponseType(typeof(CourseToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
     [HttpPost]
     public async Task<ActionResult<CourseToReturnDto>> CreateCourse(CourseDto courseDto)
     {
         if (courseDto is null) return BadRequest(new ApiResponse(400));
 
         string? instructorEmail = User.FindFirstValue(ClaimTypes.Email);
-        if (instructorEmail is null) return NotFound(new ApiResponse(404));
+        if (instructorEmail is null) return NotFound(new ApiResponse(401));
 
         AppUser? instructor = await _userManager.FindByEmailAsync(instructorEmail);
-        if (instructor is null) return NotFound(new ApiResponse(404));
+        if (instructor is null) return NotFound(new ApiResponse(401));
 
         bool isTitleUnique = await _courseService.CheckTitleUniqueness(courseDto.Title);
-        if (!isTitleUnique) return BadRequest(new ApiResponse(400,"Course Title Should Be Unique"));
+        if (!isTitleUnique) return BadRequest(new ApiResponse(400, "Course Title Should Be Unique"));
 
         Course? createdCourse = await _courseService.CreateCourseAsync(_mapper.Map<Course>(courseDto), instructor);
 
@@ -88,6 +87,7 @@ public class CoursesController(ICourseService courseService, IMapper mapper, Use
 
     [ProducesResponseType(typeof(CourseToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPut("{courseId}")]
     public async Task<ActionResult<CourseToReturnDto>> UpdateCourse(int courseId, CourseDto course)
     {
@@ -113,5 +113,4 @@ public class CoursesController(ICourseService courseService, IMapper mapper, Use
 
         return NoContent();
     }
-
 }

@@ -24,8 +24,8 @@ public class CoursesSpecifications : BaseSpecifications<Course>
     }
     private void AddIncludes()
     {
-        Includes.Add(p => p.Subject);
-        Includes.Add(p => p.Prerequisites);
-        Includes.Add(p => p.Tags);
+        Includes.Add(c => c.Subject);
+        Includes.Add(c => c.Prerequisites);
+        Includes.Add(c => c.Tags);
     }
 }

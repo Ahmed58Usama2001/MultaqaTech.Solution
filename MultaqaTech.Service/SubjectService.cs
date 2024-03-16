@@ -52,6 +52,21 @@ public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
         }
     }
 
+    public async Task<IReadOnlyList<Subject>> ReadSubjectsByIds(List<int> subjectsIds)
+    {
+        try
+        {
+            var subjects = await _unitOfWork.Repository<Subject>().GetAllByIdsAsync(subjectsIds);
+
+            return subjects;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+            return null;
+        }
+    }
+
     public async Task<Subject?> UpdateSubject(int subjectId, Subject updatedSubject)
     {
         var subject = await _unitOfWork.Repository<Subject>().GetByIdAsync(subjectId);
@@ -78,7 +93,6 @@ public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
         }
     }
 
-
     public async Task<bool> DeleteSubject(int subjectId)
     {
         var subject = await _unitOfWork.Repository<Subject>().GetByIdAsync(subjectId);
@@ -101,21 +115,6 @@ public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
         {
             Log.Error(ex.ToString());
             return false;
-        }
-    }
-
-    public async Task<IReadOnlyList<Subject>> ReadSubjectsByIds(List<int> subjectsIds)
-    {
-        try
-        {
-            var subjects = await _unitOfWork.Repository<Subject>().GetAllByIdsAsync(subjectsIds);
-
-            return subjects;
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex.ToString());
-            return null;
         }
     }
 }

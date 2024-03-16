@@ -29,6 +29,10 @@
                .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags != null ? src.Tags.Select(s => s.Name).ToList() : null))
                .ForMember(dest => dest.Prerequisites, opt => opt.MapFrom(src => src.Prerequisites != null ? src.Prerequisites.Select(c => c.Name).ToList() : null))
                .ForMember(d => d.ThumbnailUrl, O => O.MapFrom<GenericPictureUrlResolver<Course, CourseToReturnDto>>());
+
+            CreateMap<CourseReviewDto, CourseReview>();
+            CreateMap<CourseReview, CourseReviewToReturnDto>()
+               .ForMember(d => d.ProfilePictureUrl, O => O.MapFrom<GenericPictureUrlResolver<CourseReview, CourseReviewToReturnDto>>());
         }
     }
 }

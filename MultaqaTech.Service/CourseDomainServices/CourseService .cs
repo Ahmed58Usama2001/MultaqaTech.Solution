@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Service.CourseDomainServices;
 
-public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectService) : ICourseService
+public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectService) : ICourseService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ISubjectService _subjectService = subjectService;
@@ -141,6 +141,8 @@ public class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectServic
 
         try
         {
+            _unitOfWork.Repository<Course>().Update(courseFromDb);
+
             var result = await _unitOfWork.CompleteAsync();
             if (result <= 0) return null;
 

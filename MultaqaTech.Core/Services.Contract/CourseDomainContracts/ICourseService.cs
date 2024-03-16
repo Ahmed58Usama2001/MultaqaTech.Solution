@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Core.Services.Contract.CourseDomainContracts;
 
-public interface ICourseService
+public interface ICourseService : ICourseReviewService
 {
     Task<Course?> CreateCourseAsync(Course course, AppUser? instructor);
 

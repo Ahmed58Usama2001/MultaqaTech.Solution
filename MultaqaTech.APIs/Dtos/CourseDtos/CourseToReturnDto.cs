@@ -24,7 +24,7 @@ public class CourseToReturnDto
 
     public List<string> Tags { get; set; } = new();
     public List<string> Prerequisites { get; set; } = new();
-    //public List<CourseReview> CourseReviews { get; set; } = new();
+    public List<CourseReviewToReturnDto> Reviews { get; set; } = new();
 
     public List<string>? LearningObjectives { get; set; } = new();
     public List<string>? LecturesLinks { get; set; } = new();
