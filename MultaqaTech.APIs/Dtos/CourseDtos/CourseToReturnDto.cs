@@ -7,6 +7,7 @@ public class CourseToReturnDto
     public string? ThumbnailUrl { get; set; }
     public string? Instructor { get; set; }
     public string Title { get; set; }
+    public string? Language { get; set; }
 
     public decimal Rating { get; set; }
     public decimal Duration { get; set; }

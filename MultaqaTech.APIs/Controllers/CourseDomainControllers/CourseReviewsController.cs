@@ -22,7 +22,6 @@ public partial class CoursesController : BaseApiController
         return Ok(_mapper.Map<CourseReviewToReturnDto>(createdCourseReview));
     }
 
-
     [ProducesResponseType(typeof(CourseReviewToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPut("Reviews/{reviewId}")]
@@ -41,6 +40,7 @@ public partial class CoursesController : BaseApiController
     }
 
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpDelete("Reviews/{reviewId}")]
     public async Task<ActionResult<CourseReviewToReturnDto>> DeleteCourseReview(int reviewId, CourseReviewDto reviewDto)
     {
@@ -51,7 +51,7 @@ public partial class CoursesController : BaseApiController
 
         bool result = await _courseService.DeleteCourseReviewAsync(mappedCourseReview);
 
-        if (!result) return NotFound(new ApiResponse(400));
+        if (!result) return NotFound(new ApiResponse(404));
 
         return NoContent();
     }
