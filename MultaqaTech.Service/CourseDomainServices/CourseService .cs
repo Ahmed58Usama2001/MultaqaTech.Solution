@@ -199,6 +199,6 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         if (course is not null)
             return (false, course.Id);
         else
-            return (false, -1);
+            return (true, -1);
     }
 }
