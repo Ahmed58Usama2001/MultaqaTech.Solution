@@ -21,7 +21,7 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         AppUser? instructor = await _userManager.FindByEmailAsync(instructorEmail);
         if (instructor is null) return NotFound(new ApiResponse(401));
 
-        bool isTitleUnique = await _courseService.CheckTitleUniqueness(courseDto.Title);
+        (bool isTitleUnique, _) = await _courseService.CheckTitleUniqueness(courseDto.Title);
         if (!isTitleUnique) return BadRequest(new ApiResponse(400, "Course Title Should Be Unique"));
 
         Course? createdCourse = await _courseService.CreateCourseAsync(_mapper.Map<Course>(courseDto), instructor);
@@ -91,8 +91,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
     [HttpPut("{courseId}")]
     public async Task<ActionResult<CourseToReturnDto>> UpdateCourse(int courseId, CourseDto course)
     {
-        bool isTitleUnique = await _courseService.CheckTitleUniqueness(course.Title);
-        if (!isTitleUnique) return BadRequest(new ApiResponse(400, "Course Title Should Be Unique"));
+        (bool isTitleUnique, int courseIdWithSameTitle) = await _courseService.CheckTitleUniqueness(course.Title);
+        if (!isTitleUnique && courseId != courseIdWithSameTitle) return BadRequest(new ApiResponse(400, "Course Title Should Be Unique"));
 
         Course? updatedCourse = await _courseService.UpdateCourse(_mapper.Map<CourseDto, Course>(course), courseId);
 

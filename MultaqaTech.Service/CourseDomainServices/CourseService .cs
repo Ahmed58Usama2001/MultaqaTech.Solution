@@ -192,10 +192,13 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         return subjects;
     }
 
-    public async Task<bool> CheckTitleUniqueness(string title)
+    public async Task<(bool isUnique, int courseIdWithSameTitle)> CheckTitleUniqueness(string title)
     {
         IEnumerable<Course>? courses = await ReadAllCourses();
-
-        return !courses.Any(e => e.Title.Equals(title));
+        Course? course = courses.FirstOrDefault(e => e.Title.Equals(title));
+        if (course is not null)
+            return (false, course.Id);
+        else
+            return (false, -1);
     }
 }
