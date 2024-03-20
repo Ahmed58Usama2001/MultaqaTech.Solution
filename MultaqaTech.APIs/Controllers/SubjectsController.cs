@@ -1,4 +1,5 @@
 ﻿using MultaqaTech.APIs.Dtos.SettingsDtos;
+using MultaqaTech.Core.Entities.SettingsEntities;
 
 namespace MultaqaTech.APIs.Controllers;
 

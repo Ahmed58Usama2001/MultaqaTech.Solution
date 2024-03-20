@@ -1,6 +1,6 @@
 ﻿using MultaqaTech.Core.Entities.ZoomDomainEntites;
 
-namespace MultaqaTech.Core.Entities;
+namespace MultaqaTech.Core.Entities.SettingsEntities;
 
 public class Subject : BaseEntity
 {

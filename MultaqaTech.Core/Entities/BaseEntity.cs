@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Core.Entities;
 
-public class BaseEntity
+public abstract class BaseEntity
 {
     public int Id { get; set; }
 }

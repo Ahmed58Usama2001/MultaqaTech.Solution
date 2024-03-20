@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.Core.Entities.BlogPostDomainEntities;
+﻿using MultaqaTech.Core.Entities.SettingsEntities;
+
+namespace MultaqaTech.Core.Entities.BlogPostDomainEntities;
 
 public class BlogPost : BaseEntityWithPictureUrl
 {

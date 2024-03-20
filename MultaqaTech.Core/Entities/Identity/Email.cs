@@ -1,4 +1,4 @@
-﻿namespace MultaqaTech.Core.Entities;
+﻿namespace MultaqaTech.Core.Entities.Identity;
 
 public class Email : BaseEntity
 {

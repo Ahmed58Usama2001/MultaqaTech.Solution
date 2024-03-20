@@ -1,4 +1,5 @@
 ﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+using MultaqaTech.Core.Entities.SettingsEntities;
 using MultaqaTech.Repository;
 
 namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;

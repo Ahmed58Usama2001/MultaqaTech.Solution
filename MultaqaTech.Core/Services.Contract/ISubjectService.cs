@@ -1,5 +1,4 @@
-﻿
-namespace MultaqaTech.Core.Services.Contract;
+﻿namespace MultaqaTech.Core.Services.Contract;
 
 public interface ISubjectService
 {
