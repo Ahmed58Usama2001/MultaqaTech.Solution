@@ -1,6 +1,9 @@
-﻿namespace MultaqaTech.APIs.Controllers.ZoomMeetingEntitiesControllers
+﻿
+namespace MultaqaTech.APIs.Controllers.ZoomMeetingEntitiesControllers
 {
-    public class ZoomMeetingController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ZoomMeetingController : BaseApiController
     {
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.Repository.Data.Configurations;
+﻿using MultaqaTech.Core.Entities.ZoomDomainEntites;
+
+namespace MultaqaTech.Repository.Data.Configurations;
 
 public class MultaqaTechContext : DbContext
 {
@@ -17,4 +19,6 @@ public class MultaqaTechContext : DbContext
     public DbSet<BlogPostComment> BlogPostComments { get; set; }
     public DbSet<BlogPost> BlogPosts { get; set; }
     public DbSet<Course> Courses { get; set; }
+    public DbSet<ZoomMeetingCategory> ZoomMeetingCategories { get; set; }
+    public DbSet<ZoomMeeting> ZoomMeetings { get; set; }
 }

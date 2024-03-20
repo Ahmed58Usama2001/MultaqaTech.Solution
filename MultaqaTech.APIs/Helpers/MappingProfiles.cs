@@ -1,4 +1,7 @@
-﻿namespace MultaqaTech.APIs.Helpers
+﻿using MultaqaTech.APIs.Dtos.ZoomDtos;
+using MultaqaTech.Core.Entities.ZoomDomainEntites;
+
+namespace MultaqaTech.APIs.Helpers
 {
     public class MappingProfiles : Profile
     {
@@ -33,6 +36,7 @@
             CreateMap<CourseReviewDto, CourseReview>();
             CreateMap<CourseReview, CourseReviewToReturnDto>()
                .ForMember(d => d.ProfilePictureUrl, O => O.MapFrom<GenericPictureUrlResolver<CourseReview, CourseReviewToReturnDto>>());
+            CreateMap<ZoomMeetingCategoryCreateDto, ZoomMeetingCategory>();
         }
     }
 }
