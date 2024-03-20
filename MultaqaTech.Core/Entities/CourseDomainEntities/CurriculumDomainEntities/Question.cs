@@ -2,6 +2,8 @@
 
 public class Question:BaseEntityWithPictureUrl
 {
+    public string Title { get; set; }
+
     public string? QuestionPictureUrl
     {
         get { return base.PictureUrl; }

@@ -2,11 +2,12 @@
 
 public class CurriculumSection:BaseEntity
 {
+    public string Title { get; set; }
 
     public int CourseId { get; set; }
     public Course Course { get; set; }
 
-    public List<Lecture>? CurriculumSectionLectures { get; set; } = new();
-    public List<Quiz>? CurriculumSectionQuizes { get; set; } = new();
+    public List<Lecture>? Lectures { get; set; } = new();
+    public List<Quiz>? Quizes { get; set; } = new();
 
 }

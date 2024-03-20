@@ -24,6 +24,11 @@ internal class CourseConfigurations : IEntityTypeConfiguration<Course>
                .HasForeignKey(e => e.SubjectId)
                .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasMany(bp => bp.CurriculumSections)
+               .WithOne(c => c.Course)
+               .HasForeignKey(c => c.CourseId)
+               .OnDelete(DeleteBehavior.Cascade);
+
         builder.HasMany(c => c.Tags)
                .WithMany(s=>s.AssociatedCourses)
                .UsingEntity(j => j.ToTable("CourseTags"));

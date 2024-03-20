@@ -10,6 +10,4 @@ public interface ICurriculumItem
 
     public int CurriculumSectionId { get; set; }
     public CurriculumSection CurriculumSection { get; set; }
-
-    public CurriculumItemType CurriculumItemType { get; set; }
 }

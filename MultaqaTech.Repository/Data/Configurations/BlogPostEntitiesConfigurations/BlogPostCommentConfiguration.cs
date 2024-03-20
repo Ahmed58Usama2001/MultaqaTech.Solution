@@ -15,5 +15,11 @@ internal class BlogPostCommentConfiguration : IEntityTypeConfiguration<BlogPostC
 
         builder.Property(e => e.BlogPostId)
             .IsRequired();
+
+        builder.HasOne(bp => bp.BlogPost)
+                 .WithMany(c => c.Comments)
+                 .HasForeignKey(bp => bp.BlogPostId)
+                 .IsRequired()
+                 .OnDelete(DeleteBehavior.NoAction);
     }
 }
