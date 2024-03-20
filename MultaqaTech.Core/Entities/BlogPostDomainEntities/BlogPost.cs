@@ -1,13 +1,17 @@
 ﻿namespace MultaqaTech.Core.Entities.BlogPostDomainEntities;
 
-public class BlogPost : BaseEntity
+public class BlogPost : BaseEntityWithPictureUrl
 {
     public string Title { get; set; } = string.Empty;
     public string? AuthorName { get; set; }
 
     public string Content { get; set; } = string.Empty;
 
-    public string? PictureUrl { get; set; }
+    public string? PostPictureUrl
+    {
+        get { return base.PictureUrl; }
+        set { base.PictureUrl = value; }
+    }
 
     public int BlogPostCategoryId { get; set; }
     public BlogPostCategory Category { get; set; }

@@ -19,7 +19,7 @@ namespace MultaqaTech.APIs.Helpers
             CreateMap<BlogPost, BlogPostToReturnDto>()
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.PublishingDate, opt => opt.MapFrom(src => src.PublishingDate.ToString("dddd, MMMM dd, yyyy 'at' hh:mm:ss tt")))
-                .ForMember(d => d.PictureUrl, O => O.MapFrom<BlogPostPictureUrlResolver>());
+                .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<GenericPictureUrlResolver<BlogPost, BlogPostToReturnDto>>());
 
 
             CreateMap<BlogPostComment, BlogPostCommentToReturnDto>()
