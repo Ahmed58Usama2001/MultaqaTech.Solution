@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.APIs.Controllers;
+﻿using MultaqaTech.APIs.Dtos.AccountDtos;
+
+namespace MultaqaTech.APIs.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

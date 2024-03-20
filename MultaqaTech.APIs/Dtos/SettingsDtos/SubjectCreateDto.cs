@@ -1,5 +1,4 @@
-﻿
-namespace MultaqaTech.APIs.Dtos;
+﻿namespace MultaqaTech.APIs.Dtos.SettingsDtos;
 
 public class SubjectCreateDto
 {

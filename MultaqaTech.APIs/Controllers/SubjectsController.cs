@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.APIs.Controllers;
+﻿using MultaqaTech.APIs.Dtos.SettingsDtos;
+
+namespace MultaqaTech.APIs.Controllers;
 
 public class SubjectsController(ISubjectService subjectService, IMapper mapper) : BaseApiController
 {
