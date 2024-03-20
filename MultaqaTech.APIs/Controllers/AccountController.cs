@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using MultaqaTech.APIs.Dtos.AccountDtos;
 
 namespace MultaqaTech.APIs.Controllers;
 
