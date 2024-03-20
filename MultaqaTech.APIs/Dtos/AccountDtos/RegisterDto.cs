@@ -1,4 +1,4 @@
-﻿namespace MultaqaTech.APIs.Dtos;
+﻿namespace MultaqaTech.APIs.Dtos.AccountDtos;
 
 public class RegisterDto
 {

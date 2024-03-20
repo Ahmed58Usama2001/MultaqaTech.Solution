@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MultaqaTech.Core.Services.Contract
+namespace MultaqaTech.Service.ZoomMeetingEntites
 {
-    public interface IZoomService
+    internal class ZoomMeetingService
     {
-       
-
     }
 }

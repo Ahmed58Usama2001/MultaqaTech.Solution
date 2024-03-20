@@ -1,4 +1,9 @@
-﻿namespace MultaqaTech.APIs.Helpers
+﻿using MultaqaTech.APIs.Dtos.SettingsDtos;
+using MultaqaTech.APIs.Dtos.ZoomDtos;
+using MultaqaTech.Core.Entities.SettingsEntities;
+using MultaqaTech.Core.Entities.ZoomDomainEntites;
+
+namespace MultaqaTech.APIs.Helpers
 {
     public class MappingProfiles : Profile
     {
@@ -16,7 +21,7 @@
             CreateMap<BlogPost, BlogPostToReturnDto>()
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.PublishingDate, opt => opt.MapFrom(src => src.PublishingDate.ToString("dddd, MMMM dd, yyyy 'at' hh:mm:ss tt")))
-                .ForMember(d => d.PictureUrl, O => O.MapFrom<BlogPostPictureUrlResolver>());
+                .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<GenericPictureUrlResolver<BlogPost, BlogPostToReturnDto>>());
 
 
             CreateMap<BlogPostComment, BlogPostCommentToReturnDto>()
@@ -33,6 +38,7 @@
             CreateMap<CourseReviewDto, CourseReview>();
             CreateMap<CourseReview, CourseReviewToReturnDto>()
                .ForMember(d => d.ProfilePictureUrl, O => O.MapFrom<GenericPictureUrlResolver<CourseReview, CourseReviewToReturnDto>>());
+            CreateMap<ZoomMeetingCategoryCreateDto, ZoomMeetingCategory>();
         }
     }
 }

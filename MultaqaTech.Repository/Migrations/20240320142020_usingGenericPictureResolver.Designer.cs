@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MultaqaTech.Repository.Data.Configurations;
 
@@ -11,9 +12,11 @@ using MultaqaTech.Repository.Data.Configurations;
 namespace MultaqaTech.Repository.Migrations
 {
     [DbContext(typeof(MultaqaTechContext))]
-    partial class MultaqaTechContextModelSnapshot : ModelSnapshot
+    [Migration("20240320142020_usingGenericPictureResolver")]
+    partial class usingGenericPictureResolver
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -237,138 +240,7 @@ namespace MultaqaTech.Repository.Migrations
                     b.ToTable("Courses", (string)null);
                 });
 
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.Answer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsRight")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.ToTable("Answers");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.CurriculumSection", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CourseId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("CurriculumSections");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.Lecture", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CurriculumItemType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CurriculumSectionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VideoUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CurriculumSectionId");
-
-                    b.ToTable("Lectures");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.Question", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("PictureUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("QuestionPictureUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("QuizId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuizId");
-
-                    b.ToTable("Questions");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.Quiz", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CurriculumItemType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CurriculumSectionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CurriculumSectionId");
-
-                    b.ToTable("Quizes");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.SettingsEntities.Subject", b =>
+            modelBuilder.Entity("MultaqaTech.Core.Entities.Subject", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -462,7 +334,7 @@ namespace MultaqaTech.Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MultaqaTech.Core.Entities.SettingsEntities.Subject", null)
+                    b.HasOne("MultaqaTech.Core.Entities.Subject", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -477,7 +349,7 @@ namespace MultaqaTech.Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MultaqaTech.Core.Entities.SettingsEntities.Subject", null)
+                    b.HasOne("MultaqaTech.Core.Entities.Subject", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -492,7 +364,7 @@ namespace MultaqaTech.Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MultaqaTech.Core.Entities.SettingsEntities.Subject", null)
+                    b.HasOne("MultaqaTech.Core.Entities.Subject", null)
                         .WithMany()
                         .HasForeignKey("PrerequisitesId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -523,7 +395,7 @@ namespace MultaqaTech.Repository.Migrations
 
             modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.Course", b =>
                 {
-                    b.HasOne("MultaqaTech.Core.Entities.SettingsEntities.Subject", "Subject")
+                    b.HasOne("MultaqaTech.Core.Entities.Subject", "Subject")
                         .WithMany()
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -532,64 +404,9 @@ namespace MultaqaTech.Repository.Migrations
                     b.Navigation("Subject");
                 });
 
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.Answer", b =>
-                {
-                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.Question", "Question")
-                        .WithMany("Answers")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.CurriculumSection", b =>
-                {
-                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.Course", "Course")
-                        .WithMany("CurriculumSections")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.Lecture", b =>
-                {
-                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.CurriculumSection", "CurriculumSection")
-                        .WithMany("CurriculumSectionLectures")
-                        .HasForeignKey("CurriculumSectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CurriculumSection");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.Question", b =>
-                {
-                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.Quiz", "Quiz")
-                        .WithMany("Questions")
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Quiz");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.Quiz", b =>
-                {
-                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.CurriculumSection", "CurriculumSection")
-                        .WithMany("CurriculumSectionQuizes")
-                        .HasForeignKey("CurriculumSectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CurriculumSection");
-                });
-
             modelBuilder.Entity("MultaqaTech.Core.Entities.ZoomDomainEntites.ZoomMeeting", b =>
                 {
-                    b.HasOne("MultaqaTech.Core.Entities.SettingsEntities.Subject", null)
+                    b.HasOne("MultaqaTech.Core.Entities.Subject", null)
                         .WithMany("ZoomMeetings")
                         .HasForeignKey("SubjectId");
 
@@ -612,29 +429,7 @@ namespace MultaqaTech.Repository.Migrations
                     b.Navigation("BlogPosts");
                 });
 
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.Course", b =>
-                {
-                    b.Navigation("CurriculumSections");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.CurriculumSection", b =>
-                {
-                    b.Navigation("CurriculumSectionLectures");
-
-                    b.Navigation("CurriculumSectionQuizes");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.Question", b =>
-                {
-                    b.Navigation("Answers");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.Quiz", b =>
-                {
-                    b.Navigation("Questions");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.SettingsEntities.Subject", b =>
+            modelBuilder.Entity("MultaqaTech.Core.Entities.Subject", b =>
                 {
                     b.Navigation("ZoomMeetings");
                 });

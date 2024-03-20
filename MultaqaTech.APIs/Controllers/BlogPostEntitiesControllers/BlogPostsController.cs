@@ -1,4 +1,5 @@
 ﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+using MultaqaTech.Core.Entities.SettingsEntities;
 using MultaqaTech.Repository;
 
 namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
@@ -37,7 +38,7 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
             Title = blogPostDto.Title,
             AuthorName = user.UserName,
             Content = blogPostDto.Content,
-            PictureUrl = blogPostDto.PictureUrl,
+            PostPictureUrl = blogPostDto.PictureUrl,
             BlogPostCategoryId = blogPostDto.CategoryId,
             Category = existingCategory,
             PublishingDate = DateTime.Now,
@@ -97,7 +98,7 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
 
         updatedPost.Content = updatedBlogPostDto.Content;
 
-        updatedPost.PictureUrl = updatedBlogPostDto.PictureUrl;
+        updatedPost.PostPictureUrl = updatedBlogPostDto.PictureUrl;
 
         updatedPost.BlogPostCategoryId = updatedBlogPostDto.CategoryId;
         var existingCategory = await _blogPostCategoryService.ReadByIdAsync(updatedBlogPostDto.CategoryId);
