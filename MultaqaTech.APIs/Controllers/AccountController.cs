@@ -1,42 +1,44 @@
-﻿using MultaqaTech.APIs.Dtos.AccountDtos;
+﻿using Serilog;
+using MultaqaTech.APIs.Dtos.AccountDtos;
 
 namespace MultaqaTech.APIs.Controllers;
 
-[Route("api/[controller]")]
-[ApiController]
 public class AccountController : BaseApiController
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly SignInManager<AppUser> _signInManager;
     private readonly IAuthService _authService;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IMapper _mapper;
 
-    public AccountController(UserManager<AppUser> userManager,SignInManager<AppUser> signInManager,
+    public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
         IAuthService authService,
+        RoleManager<IdentityRole> roleManager,
         IMapper mapper)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _authService = authService;
+        _roleManager = roleManager;
         _mapper = mapper;
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<UserDto>> Login(LoginDto model )
+    public async Task<ActionResult<UserDto>> Login(LoginDto model)
     {
         if (ModelState.IsValid)
         {
             var user = await _userManager.FindByEmailAsync(model.UserNameOrEmail);
 
-            if (user == null) 
+            if (user == null)
                 user = await _userManager.FindByNameAsync(model.UserNameOrEmail);
-           
-            if(user is null)
+
+            if (user is null)
                 return Unauthorized(new ApiResponse(401));
 
-            var result= await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe,false );
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
 
-            if(!result.Succeeded)
+            if (!result.Succeeded)
                 return Unauthorized(new ApiResponse(401));
 
             return Ok(new UserDto
@@ -61,7 +63,7 @@ public class AccountController : BaseApiController
             if (user is not null)
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var resetPasswordLink = Url.Action("ResetPassword","Account",new {Email=model.Email,Token=token}, Request.Scheme);
+                var resetPasswordLink = Url.Action("ResetPassword", "Account", new { Email = model.Email, Token = token }, Request.Scheme);
                 var email = new Email()
                 {
                     Title = "Reset Password",
@@ -74,7 +76,7 @@ public class AccountController : BaseApiController
             return Unauthorized(new ApiResponse(401));
         }
 
-        return Ok(model) ;
+        return Ok(model);
     }
 
     [HttpPost("ResetPassword")]
@@ -104,7 +106,7 @@ public class AccountController : BaseApiController
     public async Task<ActionResult<UserDto>> Register(RegisterDto model)
     {
         if (CheckEmailExists(model.Email).Result.Value)
-            return BadRequest(new ApiValidationErrorResponse() { Errors= new string[] {"This email already exists!"} });
+            return BadRequest(new ApiValidationErrorResponse() { Errors = new string[] { "This email already exists!" } });
 
         if (CheckUserNameExists(model.UserName).Result.Value)
             return BadRequest(new ApiValidationErrorResponse() { Errors = new string[] { "This user name already exists!" } });
@@ -113,15 +115,16 @@ public class AccountController : BaseApiController
             return BadRequest(new ApiValidationErrorResponse() { Errors = new string[] { "This phone number already exists!" } });
 
         var user = new AppUser
-        {   Email = model.Email,
+        {
+            Email = model.Email,
             FirstName = model.FirstName,
             LastName = model.LastName,
             UserName = model.UserName,
             PhoneNumber = model.PhoneNumber,
-            RegistrationDate= DateTime.Now
+            RegistrationDate = DateTime.Now
         };
 
-        var result=await _userManager.CreateAsync(user,model.Password);
+        var result = await _userManager.CreateAsync(user, model.Password);
 
         if (!result.Succeeded)
         {
@@ -141,31 +144,49 @@ public class AccountController : BaseApiController
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<UserDto>>GetCurrentUser()
+    public async Task<ActionResult<UserDto>> GetCurrentUser()
     {
-        var email = User.FindFirstValue(ClaimTypes.Email); 
+        var email = User.FindFirstValue(ClaimTypes.Email);
 
-        var user= await _userManager.FindByEmailAsync(email);
+        var user = await _userManager.FindByEmailAsync(email);
 
         return Ok(new UserDto()
         {
-            UserName= user.UserName,
+            UserName = user.UserName,
             Email = user.Email,
-            Token= await _authService.CreateTokenAsync(user, _userManager)
+            Token = await _authService.CreateTokenAsync(user, _userManager)
         });
     }
 
     [HttpGet("emailexists")]
     public async Task<ActionResult<bool>> CheckEmailExists(string email)
-        =>await _userManager.FindByEmailAsync(email) is not null;
+        => await _userManager.FindByEmailAsync(email) is not null;
 
     [HttpGet("phonenumberexists")]
     public async Task<ActionResult<bool>> CheckPhoneNumberExists(string phoneNumber)
-       =>await _userManager.Users.FirstOrDefaultAsync(U => U.PhoneNumber == phoneNumber) is not null;
+       => await _userManager.Users.FirstOrDefaultAsync(U => U.PhoneNumber == phoneNumber) is not null;
 
     [HttpGet("usernameexists")]
     public async Task<ActionResult<bool>> CheckUserNameExists(string userName)
         => await _userManager.FindByNameAsync(userName) is not null;
 
+    [HttpPost("CreateRole")]
+    public async Task<ActionResult> CreateToken(string Name)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(Name)) return BadRequest(new ApiResponse(400, "Role cannot be Empty !!"));
 
+            bool isRoleAlreadyExists = await _roleManager.RoleExistsAsync(Name);
+            if (isRoleAlreadyExists) return BadRequest(new ApiResponse(400, $"Role: {Name} Already Exists !!"));
+
+            await _roleManager.CreateAsync(new IdentityRole(Name));
+            return Ok(Name);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.Message);
+            return BadRequest(new ApiResponse(400));
+        }
+    }
 }

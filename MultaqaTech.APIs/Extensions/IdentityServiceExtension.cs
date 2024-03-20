@@ -13,7 +13,8 @@ public static class IdentityServiceExtension
             options.Password.RequireUppercase = true;
             options.Password.RequireLowercase = true;
         }).AddEntityFrameworkStores<AppIdentityDbContext>()
-        .AddDefaultTokenProviders();
+          .AddDefaultTokenProviders()
+          .AddRoles<IdentityRole>();
 
         services.AddAuthentication(options =>
         {
@@ -22,7 +23,7 @@ public static class IdentityServiceExtension
         })
             .AddJwtBearer(options =>
             {
-                var secretKey = Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]?? string.Empty);
+                var secretKey = Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"] ?? string.Empty);
                 var requiredKeyLength = 256 / 8; // 256 bits
                 if (secretKey.Length < requiredKeyLength)
                 {
