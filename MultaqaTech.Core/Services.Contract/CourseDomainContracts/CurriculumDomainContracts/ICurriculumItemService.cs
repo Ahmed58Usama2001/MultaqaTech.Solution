@@ -1,17 +1,16 @@
-﻿
-namespace MultaqaTech.Core.Services.Contract.CourseDomainContracts.CurriculumDomainContracts;
+﻿namespace MultaqaTech.Core.Services.Contract.CourseDomainContracts.CurriculumDomainContracts;
 
 public interface ICurriculumItemService
 {
-    Task<ICurriculumItem?> CreateCurriculumItemAsync(ICurriculumItem curriculumItem);
+    Task<CurriculumItem?> CreateCurriculumItemAsync(CurriculumItem curriculumItem);
 
-    Task<IReadOnlyList<ICurriculumItem>> ReadAllAsync();
+    Task<IReadOnlyList<CurriculumItem>> ReadAllAsync();
 
-    Task<ICurriculumItem?> ReadByIdAsync(int curriculumItemId);
+    Task<CurriculumItem?> ReadByIdAsync(int curriculumItemId);
 
-    Task<ICurriculumItem?> UpdateCurriculumItem(int curriculumItemId, ICurriculumItem CurriculumItem);
+    Task<CurriculumItem?> UpdateCurriculumItem(int curriculumItemId, CurriculumItem updatedCurriculumItem);
 
-    Task<bool> DeleteCurriculumItem(int curriculumItemId);
+    Task<bool> DeleteBlogPostCurriculumItem(int CurriculumItemId);
 
-    Task<IReadOnlyList<ICurriculumItem>> ReadCurriculumItemsByIds(List<int> curriculumItemIds);
+    //Task<IReadOnlyList<CurriculumItem>> ReadCurriculumItemsByIds(List<int> curriculumItemIds);
 }

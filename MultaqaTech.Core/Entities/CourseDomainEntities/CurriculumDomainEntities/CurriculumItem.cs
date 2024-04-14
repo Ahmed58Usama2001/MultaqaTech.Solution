@@ -1,9 +1,7 @@
 ﻿namespace MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
 
-public interface ICurriculumItem
+public abstract class CurriculumItem:BaseEntity
 {
-    public int Id { get; set; }
-
     public string Title { get; set; }
 
     public string? Description { get; set; }

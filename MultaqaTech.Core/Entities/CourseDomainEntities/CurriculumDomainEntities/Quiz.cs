@@ -1,13 +1,7 @@
 ﻿namespace MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
 
-public class Quiz:BaseEntity,ICurriculumItem
+public class Quiz:CurriculumItem
 {
-    public string Title { get; set; }
-    public string? Description { get; set; }
-
-    public int CurriculumSectionId { get; set; }
-    public CurriculumSection CurriculumSection { get; set; }
-
     public List<Question>? Questions { get; set; } = new();
 
 }

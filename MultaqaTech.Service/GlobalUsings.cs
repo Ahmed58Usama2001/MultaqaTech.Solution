@@ -11,6 +11,8 @@ global using MultaqaTech.Core.Entities.BlogPostDomainEntities;
 global using MultaqaTech.Core.Services.Contract.BlogPostContracts;
 global using MultaqaTech.Core.Services.Contract.ZoomMeetingContracts;
 global using MultaqaTech.Core.Services.Contract.CourseDomainContracts;
+global using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
+global using MultaqaTech.Core.Services.Contract.CourseDomainContracts.CurriculumDomainContracts;
 
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.IdentityModel.Tokens;
