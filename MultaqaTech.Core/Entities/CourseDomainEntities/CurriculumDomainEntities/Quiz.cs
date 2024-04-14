@@ -2,6 +2,12 @@
 
 public class Quiz:CurriculumItem
 {
-    public List<Question>? Questions { get; set; } = new();
+    public string? QuizQuestionPictureUrl
+    {
+        get { return base.MediaUrl; }
+        set { base.MediaUrl = value; }
+    }
+
+    public List<QuizQuestion>? QuizQuestions { get; set; } = new();
 
 }

@@ -7,23 +7,23 @@ internal class QuestionConfiguration : IEntityTypeConfiguration<Question>
     public void Configure(EntityTypeBuilder<Question> builder)
     {
         builder.ToTable("Questions");
+        
+        builder.Property(e => e.Description)
+            .HasMaxLength(longMaxLength);
 
-        builder.Property(e => e.Title)
-        .IsRequired()
-        .HasMaxLength(shortMaxLength);
-
-        builder.Property(e => e.QuizId)
+        builder.Property(e => e.LectureId)
         .IsRequired();
 
-        builder.HasOne(bp => bp.Quiz)
+
+        builder.HasOne(bp => bp.Lecture)
                  .WithMany(c => c.Questions)
-                 .HasForeignKey(bp => bp.QuizId)
+                 .HasForeignKey(bp => bp.LectureId)
                  .IsRequired()
                  .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasMany(bp => bp.Answers)
-               .WithOne(c => c.Question)
-               .HasForeignKey(c => c.QuestionId)
-               .OnDelete(DeleteBehavior.Cascade);
+       .WithOne(c => c.Question)
+       .HasForeignKey(c => c.QuestionId)
+       .OnDelete(DeleteBehavior.Cascade);
     }
 }

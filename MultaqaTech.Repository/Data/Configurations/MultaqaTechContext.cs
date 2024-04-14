@@ -20,8 +20,8 @@ public class MultaqaTechContext : DbContext
     public DbSet<CurriculumSection> CurriculumSections { get; set; }
     public DbSet<Lecture> Lectures { get; set; }
     public DbSet<Quiz> Quizes { get; set; }
-    public DbSet<Question> Questions { get; set; }
-    public DbSet<Answer> Answers { get; set; }
+    public DbSet<QuizQuestion> Questions { get; set; }
+    public DbSet<QuizQuestionChoice> Answers { get; set; }
     public DbSet<ZoomMeetingCategory> ZoomMeetingCategories { get; set; }
     public DbSet<ZoomMeeting> ZoomMeetings { get; set; }
 }

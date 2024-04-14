@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Core.Entities;
 
-public abstract class BaseEntityWithPictureUrl : BaseEntity 
+public abstract class BaseEntityWithMediaUrl : BaseEntity 
 {
-    public virtual string PictureUrl { get; set; }
+    public virtual string MediaUrl { get; set; }
 }

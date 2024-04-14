@@ -1,9 +1,9 @@
 ﻿namespace MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
 
-public class Answer:BaseEntity
+public class Note:BaseEntity
 {
     public string Description { get; set; }
 
-    public int QuestionId { get; set; }
-    public Question Question { get; set; }
+    public int LectureId { get; set; }
+    public Lecture Lecture { get; set; }
 }

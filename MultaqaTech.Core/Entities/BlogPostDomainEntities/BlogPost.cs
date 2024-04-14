@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Core.Entities.BlogPostDomainEntities;
 
-public class BlogPost : BaseEntityWithPictureUrl
+public class BlogPost : BaseEntityWithMediaUrl
 {
     public string Title { get; set; } = string.Empty;
     public string? AuthorName { get; set; }
@@ -9,8 +9,8 @@ public class BlogPost : BaseEntityWithPictureUrl
 
     public string? PostPictureUrl
     {
-        get { return base.PictureUrl; }
-        set { base.PictureUrl = value; }
+        get { return base.MediaUrl; }
+        set { base.MediaUrl = value; }
     }
 
     public int BlogPostCategoryId { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Core.Entities.CourseDomainEntities;
 
-public class Course : BaseEntityWithPictureUrl
+public class Course : BaseEntityWithMediaUrl
 {
     public string InstructorId { get; set; }
     //public AppUser Instructor { get; set; }
@@ -14,8 +14,8 @@ public class Course : BaseEntityWithPictureUrl
     // shadowing the picture url prop in base
     public string ThumbnailUrl
     {
-        get { return base.PictureUrl; }
-        set { base.PictureUrl = value; }
+        get { return base.MediaUrl; }
+        set { base.MediaUrl = value; }
     }
 
     public decimal Price { get; set; }

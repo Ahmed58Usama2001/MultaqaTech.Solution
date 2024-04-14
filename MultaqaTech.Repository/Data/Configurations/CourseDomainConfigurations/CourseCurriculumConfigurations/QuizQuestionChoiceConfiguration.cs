@@ -1,0 +1,28 @@
+﻿namespace MultaqaTech.Repository.Data.Configurations.CourseDomainConfigurations.CourseCurriculumConfigurations;
+
+internal class QuizQuestionChoiceConfiguration : IEntityTypeConfiguration<QuizQuestionChoice>
+{
+    const int shortMaxLength = 255;
+    const int longMaxLength = 450;
+    public void Configure(EntityTypeBuilder<QuizQuestionChoice> builder)
+    {
+        builder.ToTable("QuizQuestionChoices");
+
+        builder.Property(e => e.Title)
+            .IsRequired()
+            .HasMaxLength(shortMaxLength);
+        
+        builder.Property(e => e.Description)
+            .HasMaxLength(longMaxLength);
+
+        builder.Property(e => e.QuizQuestionId)
+        .IsRequired();
+
+
+        builder.HasOne(bp => bp.QuizQuestion)
+                 .WithMany(c => c.QuizQuestionChoices)
+                 .HasForeignKey(bp => bp.QuizQuestionId)
+                 .IsRequired()
+                 .OnDelete(DeleteBehavior.NoAction);
+    }
+}

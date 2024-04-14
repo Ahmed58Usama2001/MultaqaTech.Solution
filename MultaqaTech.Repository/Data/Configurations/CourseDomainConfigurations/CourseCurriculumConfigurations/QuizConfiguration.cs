@@ -25,7 +25,7 @@ internal class QuizConfiguration : IEntityTypeConfiguration<Quiz>
                  .IsRequired()
                  .OnDelete(DeleteBehavior.NoAction);
 
-        builder.HasMany(bp => bp.Questions)
+        builder.HasMany(bp => bp.QuizQuestions)
         .WithOne(c => c.Quiz)
         .HasForeignKey(c => c.QuizId)
         .OnDelete(DeleteBehavior.Cascade);

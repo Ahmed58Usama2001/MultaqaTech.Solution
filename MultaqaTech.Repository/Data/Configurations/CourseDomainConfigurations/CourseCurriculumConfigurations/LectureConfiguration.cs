@@ -27,5 +27,15 @@ internal class LectureConfiguration : IEntityTypeConfiguration<Lecture>
                  .HasForeignKey(bp => bp.CurriculumSectionId)
                  .IsRequired()
                  .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasMany(bp => bp.Notes)
+        .WithOne(c => c.Lecture)
+        .HasForeignKey(c => c.LectureId)
+        .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.HasMany(bp => bp.Questions)
+        .WithOne(c => c.Lecture)
+        .HasForeignKey(c => c.LectureId)
+        .OnDelete(DeleteBehavior.Cascade);
     }
 }
