@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Core.Entities.SettingsEntities;
-
-namespace MultaqaTech.APIs.Dtos.BlogPostDtos;
+﻿namespace MultaqaTech.APIs.Dtos.BlogPostDtos;
 
 public class BlogPostToReturnDto
 {

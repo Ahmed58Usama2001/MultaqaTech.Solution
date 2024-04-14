@@ -1,7 +1,4 @@
-﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
-using MultaqaTech.Core.Repositories.Contract;
-
-namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
+﻿namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
 
 [Authorize]
 public class BlogPostCommentsController(IBlogPostService blogPostService, IMapper mapper, UserManager<AppUser> userManager, IBlogPostCommentService blogPostCommentService

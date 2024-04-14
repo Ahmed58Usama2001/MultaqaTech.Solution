@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Core.Entities.SettingsEntities;
-
-namespace MultaqaTech.Repository.Data.Configurations;
+﻿namespace MultaqaTech.Repository.Data.Configurations;
 
 internal class SubjectConfigurations : IEntityTypeConfiguration<Subject>
 {

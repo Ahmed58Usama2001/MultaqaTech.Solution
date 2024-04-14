@@ -1,8 +1,4 @@
-﻿using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
-using MultaqaTech.Core.Entities.SettingsEntities;
-using MultaqaTech.Core.Entities.ZoomDomainEntites;
-
-namespace MultaqaTech.Repository.Data.Configurations;
+﻿namespace MultaqaTech.Repository.Data.Configurations;
 
 public class MultaqaTechContext : DbContext
 {

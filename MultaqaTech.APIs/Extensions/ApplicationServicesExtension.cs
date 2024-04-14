@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Core.Services.Contract.ZoomMeetingContracts;
-using MultaqaTech.Service.ZoomMeetingEntitesServices;
-
+﻿
 namespace MultaqaTech.APIs.Extensions;
 
 public static class ApplicationServicesExtension

@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Core.Entities.Enums;
-
-namespace MultaqaTech.APIs.Dtos;
+﻿namespace MultaqaTech.APIs.Dtos;
 
 public class CourseDto
 {

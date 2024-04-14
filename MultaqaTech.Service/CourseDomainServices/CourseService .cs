@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Core.Entities.SettingsEntities;
-
-namespace MultaqaTech.Service.CourseDomainServices;
+﻿namespace MultaqaTech.Service.CourseDomainServices;
 
 public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectService) : ICourseService
 {

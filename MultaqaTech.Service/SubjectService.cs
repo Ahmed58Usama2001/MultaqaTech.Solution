@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Core.Entities.SettingsEntities;
-
-namespace MultaqaTech.Service;
+﻿namespace MultaqaTech.Service;
 
 public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
 {

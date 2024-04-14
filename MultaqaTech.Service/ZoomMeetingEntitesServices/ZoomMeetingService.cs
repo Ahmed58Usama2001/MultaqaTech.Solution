@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace MultaqaTech.Service.ZoomMeetingEntites;
 
-namespace MultaqaTech.Service.ZoomMeetingEntites
+public class ZoomMeetingService
 {
-    internal class ZoomMeetingService
-    {
-    }
 }

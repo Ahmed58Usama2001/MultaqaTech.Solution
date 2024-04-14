@@ -1,9 +1,4 @@
-﻿using MultaqaTech.APIs.Dtos.SettingsDtos;
-using MultaqaTech.APIs.Dtos.ZoomDtos;
-using MultaqaTech.Core.Entities.SettingsEntities;
-using MultaqaTech.Core.Entities.ZoomDomainEntites;
-
-namespace MultaqaTech.APIs.Helpers
+﻿namespace MultaqaTech.APIs.Helpers
 {
     public class MappingProfiles : Profile
     {
