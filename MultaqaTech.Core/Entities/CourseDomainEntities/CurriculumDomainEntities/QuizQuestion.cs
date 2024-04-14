@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
 
-public class QuizQuestion:BaseEntityWithMediaUrl
+public class QuizQuestion:BaseEntity
 {
     public string Title { get; set; }
 

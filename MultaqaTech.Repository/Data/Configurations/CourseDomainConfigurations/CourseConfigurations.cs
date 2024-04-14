@@ -14,6 +14,8 @@ internal class CourseConfigurations : IEntityTypeConfiguration<Course>
                .IsRequired()
                .HasMaxLength(maxLength);
 
+        builder.Ignore(l => l.MediaUrl);
+
         //builder.HasOne(e => e.Instructor)
         //       .WithMany()
         //       .HasForeignKey(e => e.InstructorId)

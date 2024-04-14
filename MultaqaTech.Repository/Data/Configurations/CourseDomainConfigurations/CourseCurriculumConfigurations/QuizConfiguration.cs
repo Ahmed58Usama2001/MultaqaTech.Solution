@@ -18,6 +18,7 @@ internal class QuizConfiguration : IEntityTypeConfiguration<Quiz>
         builder.Property(e => e.CurriculumSectionId)
         .IsRequired();
 
+        builder.Ignore(l => l.MediaUrl);
 
         builder.HasOne(bp => bp.CurriculumSection)
                  .WithMany(c => c.Quizes)

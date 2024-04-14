@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.APIs.Helpers;
 
-public class GenericPictureUrlResolver<TSource, TDestination>(IConfiguration configuration) : IValueResolver<TSource, TDestination, string> where TSource : BaseEntityWithMediaUrl
+public class GenericMediaUrlResolver<TSource, TDestination>(IConfiguration configuration) : IValueResolver<TSource, TDestination, string> where TSource : BaseEntityWithMediaUrl
 {
     private readonly IConfiguration _configuration = configuration;
 
