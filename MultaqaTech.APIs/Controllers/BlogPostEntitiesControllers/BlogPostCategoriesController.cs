@@ -43,7 +43,7 @@ public class BlogPostCategoriesController(IBlogPostCategoryService blogPostCateg
 
     [ProducesResponseType(typeof(BlogPostCategory), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    [HttpPut]
+    [HttpPut("{categoryId}")]
     public async Task<ActionResult<BlogPostCategory>> UpdateSubject(int categoryId, BlogPostCategoryCreateDto updatedCategory)
     {
         var category = await _blogPostCategoryService.UpdateBlogPostCategory(categoryId, _mapper.Map<BlogPostCategory>(updatedCategory));

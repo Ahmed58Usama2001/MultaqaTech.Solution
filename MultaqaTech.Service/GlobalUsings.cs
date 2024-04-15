@@ -13,6 +13,7 @@ global using MultaqaTech.Core.Services.Contract.ZoomMeetingContracts;
 global using MultaqaTech.Core.Services.Contract.CourseDomainContracts;
 global using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
 global using MultaqaTech.Core.Services.Contract.CourseDomainContracts.CurriculumDomainContracts;
+global using MultaqaTech.Core.Specifications.CourseDomainSpecs.CurriculumEntitiesSpecs.CurriculumSectionSpecs;
 
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.IdentityModel.Tokens;

@@ -23,7 +23,6 @@ public class Program
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
         });
 
-
         builder.Services.AddApplicationServices();
 
         builder.Services.AddIdentityServices(builder.Configuration);

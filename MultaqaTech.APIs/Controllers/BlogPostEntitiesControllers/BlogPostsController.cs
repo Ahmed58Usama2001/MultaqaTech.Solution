@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
+﻿using MultaqaTech.Core.Specifications.CourseDomainSpecs.CurriculumEntitiesSpecs.CurriculumSectionSpecs;
+
+namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
 
 [Authorize]
 public class BlogPostsController(IBlogPostService blogPostService, IMapper mapper, UserManager<AppUser> userManager, IBlogPostCategoryService blogPostCategoryService

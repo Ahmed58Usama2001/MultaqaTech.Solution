@@ -3,20 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MultaqaTech.Repository.Identity;
 
 #nullable disable
 
-namespace MultaqaTech.Repository.Identity.Migrations
+namespace MultaqaTech.Repository.Identity
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20240219195504_initIdentityDB")]
-    partial class initIdentityDB
+    partial class AppIdentityDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -183,6 +180,9 @@ namespace MultaqaTech.Repository.Identity.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsInstructor")
+                        .HasColumnType("bit");
 
                     b.Property<string>("JobTitle")
                         .HasColumnType("nvarchar(max)");

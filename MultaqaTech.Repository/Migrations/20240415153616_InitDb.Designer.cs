@@ -12,8 +12,8 @@ using MultaqaTech.Repository.Data.Configurations;
 namespace MultaqaTech.Repository.Migrations
 {
     [DbContext(typeof(MultaqaTechContext))]
-    [Migration("20240414173226_AddingNotesAndQAToEntitiesWithConfigs")]
-    partial class AddingNotesAndQAToEntitiesWithConfigs
+    [Migration("20240415153616_InitDb")]
+    partial class InitDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -199,10 +199,6 @@ namespace MultaqaTech.Repository.Migrations
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
-                    b.Property<string>("MediaUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
@@ -247,6 +243,10 @@ namespace MultaqaTech.Repository.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AnswererId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -301,10 +301,6 @@ namespace MultaqaTech.Repository.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("MediaUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -317,6 +313,9 @@ namespace MultaqaTech.Repository.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CurriculumSectionId");
+
+                    b.HasIndex("Title")
+                        .IsUnique();
 
                     b.ToTable("Lectures", (string)null);
                 });
@@ -337,6 +336,10 @@ namespace MultaqaTech.Repository.Migrations
                     b.Property<int>("LectureId")
                         .HasColumnType("int");
 
+                    b.Property<string>("WriterStudentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LectureId");
@@ -352,6 +355,10 @@ namespace MultaqaTech.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AskerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(450)
@@ -359,10 +366,6 @@ namespace MultaqaTech.Repository.Migrations
 
                     b.Property<int>("LectureId")
                         .HasColumnType("int");
-
-                    b.Property<string>("MediaUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("QuestionPictureUrl")
                         .HasColumnType("nvarchar(max)");
@@ -389,10 +392,6 @@ namespace MultaqaTech.Repository.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("MediaUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("QuizQuestionPictureUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -415,10 +414,6 @@ namespace MultaqaTech.Repository.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("MediaUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("QuizId")
                         .HasColumnType("int");

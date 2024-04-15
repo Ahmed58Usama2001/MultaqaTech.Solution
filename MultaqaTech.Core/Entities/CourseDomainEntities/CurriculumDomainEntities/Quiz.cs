@@ -8,6 +8,8 @@ public class Quiz:CurriculumItem
         set { base.MediaUrl = value; }
     }
 
+    public CurriculumItemType CurriculumItemType { get; set; } = CurriculumItemType.Quiz;
+
     public List<QuizQuestion>? QuizQuestions { get; set; } = new();
 
 }

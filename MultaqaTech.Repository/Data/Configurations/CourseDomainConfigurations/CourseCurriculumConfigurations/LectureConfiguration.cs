@@ -8,6 +8,8 @@ internal class LectureConfiguration : IEntityTypeConfiguration<Lecture>
     {
         builder.ToTable("Lectures");
 
+        builder.HasIndex(e => e.Title).IsUnique();
+
         builder.Property(e => e.Title)
             .IsRequired()
             .HasMaxLength(shortMaxLength);
@@ -22,6 +24,8 @@ internal class LectureConfiguration : IEntityTypeConfiguration<Lecture>
         .IsRequired();
 
         builder.Ignore(l => l.MediaUrl);
+
+        builder.Ignore(l => l.CurriculumItemType);
 
         builder.HasOne(bp => bp.CurriculumSection)
                  .WithMany(c => c.Lectures)

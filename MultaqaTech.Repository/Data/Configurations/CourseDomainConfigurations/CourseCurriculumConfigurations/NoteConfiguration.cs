@@ -8,6 +8,7 @@ internal class NoteConfiguration : IEntityTypeConfiguration<Note>
     {
         builder.ToTable("Notes");
 
+
         builder.Property(e => e.Description)
             .IsRequired()
             .HasMaxLength(longMaxLength);
@@ -20,5 +21,7 @@ internal class NoteConfiguration : IEntityTypeConfiguration<Note>
                  .HasForeignKey(bp => bp.LectureId)
                  .IsRequired()
                  .OnDelete(DeleteBehavior.NoAction);
+
+
     }
 }

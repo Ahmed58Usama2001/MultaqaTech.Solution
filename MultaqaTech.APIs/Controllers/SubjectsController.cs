@@ -44,7 +44,7 @@ public class SubjectsController(ISubjectService subjectService, IMapper mapper) 
 
     [ProducesResponseType(typeof(Subject), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    [HttpPut]
+    [HttpPut("{subjectId}")]
     public async Task<ActionResult<Subject>> UpdateSubject(int subjectId, SubjectCreateDto updatedSubject)
     {
         var subject = await _subjectService.UpdateSubject(subjectId, _mapper.Map<Subject>(updatedSubject));

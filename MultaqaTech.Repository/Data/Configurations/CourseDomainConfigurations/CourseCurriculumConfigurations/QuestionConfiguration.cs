@@ -7,7 +7,7 @@ internal class QuestionConfiguration : IEntityTypeConfiguration<Question>
     public void Configure(EntityTypeBuilder<Question> builder)
     {
         builder.ToTable("Questions");
-        
+
         builder.Property(e => e.Description)
             .HasMaxLength(longMaxLength);
 
@@ -26,5 +26,7 @@ internal class QuestionConfiguration : IEntityTypeConfiguration<Question>
        .WithOne(c => c.Question)
        .HasForeignKey(c => c.QuestionId)
        .OnDelete(DeleteBehavior.Cascade);
+
+  
     }
 }

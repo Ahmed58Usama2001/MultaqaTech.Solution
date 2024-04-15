@@ -20,5 +20,7 @@ internal class AnswerConfiguration : IEntityTypeConfiguration<Answer>
                  .HasForeignKey(bp => bp.QuestionId)
                  .IsRequired()
                  .OnDelete(DeleteBehavior.NoAction);
+
+
     }
 }

@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace MultaqaTech.Repository.Identity.Migrations
+namespace MultaqaTech.Repository.Identity
 {
     /// <inheritdoc />
-    public partial class initIdentityDB : Migration
+    public partial class InitDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,6 +34,7 @@ namespace MultaqaTech.Repository.Identity.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     JobTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsInstructor = table.Column<bool>(type: "bit", nullable: false),
                     RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),

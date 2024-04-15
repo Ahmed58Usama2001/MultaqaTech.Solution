@@ -8,6 +8,9 @@ public class Lecture:CurriculumItem
         set { base.MediaUrl = value; }
     }
 
+    public CurriculumItemType CurriculumItemType { get; set; }=CurriculumItemType.Lecture;
+
+
     public List<Note>? Notes { get; set; } = new();
     public List<Question>? Questions { get; set; } = new();
 

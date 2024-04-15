@@ -9,11 +9,11 @@ using MultaqaTech.Repository.Identity;
 
 #nullable disable
 
-namespace MultaqaTech.Repository.Identity.Migrations
+namespace MultaqaTech.Repository.Identity
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20240221193111_modifyAppUserValidations")]
-    partial class modifyAppUserValidations
+    [Migration("20240415153536_InitDb")]
+    partial class InitDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -183,6 +183,9 @@ namespace MultaqaTech.Repository.Identity.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsInstructor")
+                        .HasColumnType("bit");
 
                     b.Property<string>("JobTitle")
                         .HasColumnType("nvarchar(max)");

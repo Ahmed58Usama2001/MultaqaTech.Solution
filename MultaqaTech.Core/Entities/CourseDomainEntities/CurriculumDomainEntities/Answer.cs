@@ -4,6 +4,8 @@ public class Answer:BaseEntity
 {
     public string Description { get; set; }
 
+    public string AnswererId { get; set; }
+
     public int QuestionId { get; set; }
     public Question Question { get; set; }
 }

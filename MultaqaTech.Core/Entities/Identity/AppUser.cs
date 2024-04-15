@@ -10,5 +10,7 @@ public class AppUser : IdentityUser
 
     public string? JobTitle { get; set; }
 
+    public bool IsInstructor { get; set; }
+
     public DateTime RegistrationDate { get; set; }
 }

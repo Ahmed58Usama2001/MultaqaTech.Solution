@@ -10,6 +10,8 @@ public class Question:BaseEntityWithMediaUrl
         set { base.MediaUrl = value; }
     }
 
+    public string AskerId { get; set; }
+
     public int LectureId { get; set; }
     public Lecture Lecture { get; set; }
 

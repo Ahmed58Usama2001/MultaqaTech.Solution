@@ -8,6 +8,7 @@ global using MultaqaTech.Core.Entities.CourseDomainEntities;
 global using MultaqaTech.Core.Specifications.BlogPost_Specs;
 global using MultaqaTech.Core.Entities.BlogPostDomainEntities;
 global using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
+global using MultaqaTech.Core.Specifications.CourseDomainSpecs.CurriculumEntitiesSpecs.CurriculumSectionSpecs;
 
 global using Microsoft.AspNetCore.Identity;
 global using MultaqaTech.Core.Entities.Identity;

@@ -241,6 +241,10 @@ namespace MultaqaTech.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AnswererId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(450)
@@ -307,6 +311,9 @@ namespace MultaqaTech.Repository.Migrations
 
                     b.HasIndex("CurriculumSectionId");
 
+                    b.HasIndex("Title")
+                        .IsUnique();
+
                     b.ToTable("Lectures", (string)null);
                 });
 
@@ -326,6 +333,10 @@ namespace MultaqaTech.Repository.Migrations
                     b.Property<int>("LectureId")
                         .HasColumnType("int");
 
+                    b.Property<string>("WriterStudentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LectureId");
@@ -340,6 +351,10 @@ namespace MultaqaTech.Repository.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AskerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
