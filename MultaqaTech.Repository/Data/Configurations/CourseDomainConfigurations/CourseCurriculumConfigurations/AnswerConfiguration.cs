@@ -8,7 +8,7 @@ internal class AnswerConfiguration : IEntityTypeConfiguration<Answer>
     {
         builder.ToTable("Answers");
 
-        builder.Property(e => e.Description)
+        builder.Property(e => e.Content)
             .IsRequired()
             .HasMaxLength(longMaxLength);
 

@@ -68,7 +68,7 @@ public class QuestionSectionService(IUnitOfWork unitOfWork) : IQuestionService
     {
         var question = await _unitOfWork.Repository<Question>().GetByIdAsync(questionId);
 
-        if (question == null || updatedQuestion == null || string.IsNullOrWhiteSpace(updatedQuestion.Description))
+        if (question == null || updatedQuestion == null || string.IsNullOrWhiteSpace(updatedQuestion.Content))
             return null;
 
         question = updatedQuestion;

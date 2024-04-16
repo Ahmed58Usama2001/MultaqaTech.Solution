@@ -8,7 +8,7 @@ internal class QuestionConfiguration : IEntityTypeConfiguration<Question>
     {
         builder.ToTable("Questions");
 
-        builder.Property(e => e.Description)
+        builder.Property(e => e.Content)
             .HasMaxLength(longMaxLength);
 
         builder.Property(e => e.LectureId)

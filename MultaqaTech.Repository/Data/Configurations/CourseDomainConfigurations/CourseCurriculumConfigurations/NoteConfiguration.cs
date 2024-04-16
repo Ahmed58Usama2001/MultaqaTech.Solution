@@ -9,7 +9,7 @@ internal class NoteConfiguration : IEntityTypeConfiguration<Note>
         builder.ToTable("Notes");
 
 
-        builder.Property(e => e.Description)
+        builder.Property(e => e.Content)
             .IsRequired()
             .HasMaxLength(longMaxLength);
 

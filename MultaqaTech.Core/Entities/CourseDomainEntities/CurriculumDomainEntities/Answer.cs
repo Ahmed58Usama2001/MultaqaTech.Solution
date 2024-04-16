@@ -2,7 +2,7 @@
 
 public class Answer:BaseEntity
 {
-    public string Description { get; set; }
+    public string Content { get; set; }
 
     public string AnswererId { get; set; }
 

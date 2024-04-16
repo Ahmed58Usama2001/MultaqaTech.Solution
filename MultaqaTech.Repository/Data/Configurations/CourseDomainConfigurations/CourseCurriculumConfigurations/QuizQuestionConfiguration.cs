@@ -8,7 +8,7 @@ internal class QuizQuestionConfiguration : IEntityTypeConfiguration<QuizQuestion
     {
         builder.ToTable("QuizQuestions");
 
-        builder.Property(e => e.Title)
+        builder.Property(e => e.Content)
         .IsRequired()
         .HasMaxLength(shortMaxLength);
 

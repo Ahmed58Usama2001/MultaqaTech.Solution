@@ -70,7 +70,7 @@ public class AnswerSectionService(IUnitOfWork unitOfWork) : IAnswerService
     {
         var answer = await _unitOfWork.Repository<Answer>().GetByIdAsync(answerId);
 
-        if (answer == null || updatedAnswer == null || string.IsNullOrWhiteSpace(updatedAnswer.Description))
+        if (answer == null || updatedAnswer == null || string.IsNullOrWhiteSpace(updatedAnswer.Content))
             return null;
 
         answer = updatedAnswer;
