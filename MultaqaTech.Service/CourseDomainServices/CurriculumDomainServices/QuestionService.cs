@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
-
-namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
+﻿namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
 
 public class QuestionSectionService(IUnitOfWork unitOfWork) : IQuestionService
 {
@@ -63,7 +61,7 @@ public class QuestionSectionService(IUnitOfWork unitOfWork) : IQuestionService
 
         var questions = await _unitOfWork.Repository<Question>().GetAllWithSpecAsync(spec);
 
-        return questions??null;
+        return questions;
     }
 
     public async Task<Question?> UpdateQuestion(int questionId, Question updatedQuestion)
