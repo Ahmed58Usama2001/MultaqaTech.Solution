@@ -8,6 +8,8 @@ public class CurriculumSectionWithIncludesSpecifications : BaseSpecifications<Cu
 
     {
         AddIncludes();
+    
+        AddOrderBy(p => p.Order);         
     }
 
     public CurriculumSectionWithIncludesSpecifications(int id)
