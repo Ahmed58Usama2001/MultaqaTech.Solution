@@ -14,6 +14,9 @@ internal class QuestionConfiguration : IEntityTypeConfiguration<Question>
         builder.Property(e => e.LectureId)
         .IsRequired();
 
+        builder.Property(e => e.PublishingDate)
+       .IsRequired();
+
         builder.Ignore(l => l.MediaUrl);
 
         builder.HasOne(bp => bp.Lecture)

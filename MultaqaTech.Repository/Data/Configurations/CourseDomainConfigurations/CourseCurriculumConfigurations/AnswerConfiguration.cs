@@ -15,6 +15,9 @@ internal class AnswerConfiguration : IEntityTypeConfiguration<Answer>
         builder.Property(e => e.QuestionId)
         .IsRequired();
 
+        builder.Property(e => e.PublishingDate)
+       .IsRequired();
+
         builder.HasOne(bp => bp.Question)
                  .WithMany(c => c.Answers)
                  .HasForeignKey(bp => bp.QuestionId)

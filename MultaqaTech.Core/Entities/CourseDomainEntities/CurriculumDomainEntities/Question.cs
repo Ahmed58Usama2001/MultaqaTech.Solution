@@ -10,7 +10,7 @@ public class Question:BaseEntityWithMediaUrl
         set { base.MediaUrl = value; }
     }
 
-    public DateTime PublishingDate { get; set; } = DateTime.Now;
+    public DateTime PublishingDate { get; set; }
 
     public string AskerId { get; set; }
 

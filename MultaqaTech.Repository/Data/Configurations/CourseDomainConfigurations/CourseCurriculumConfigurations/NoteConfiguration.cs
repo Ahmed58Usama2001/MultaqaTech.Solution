@@ -16,6 +16,9 @@ internal class NoteConfiguration : IEntityTypeConfiguration<Note>
         builder.Property(e => e.LectureId)
         .IsRequired();
 
+        builder.Property(e => e.PublishingDate)
+       .IsRequired();
+
         builder.HasOne(bp => bp.Lecture)
                  .WithMany(c => c.Notes)
                  .HasForeignKey(bp => bp.LectureId)

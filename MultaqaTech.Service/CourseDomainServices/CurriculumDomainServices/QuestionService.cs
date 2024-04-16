@@ -61,7 +61,7 @@ public class QuestionSectionService(IUnitOfWork unitOfWork) : IQuestionService
     {
         var spec = new QuestionWithIncludesSpecifications(speceficationsParams);
 
-        var questions = await _unitOfWork.Repository<CurriculumSection>().GetAllWithSpecAsync(spec);
+        var questions = await _unitOfWork.Repository<Question>().GetAllWithSpecAsync(spec);
 
         return questions??null;
     }
@@ -70,7 +70,7 @@ public class QuestionSectionService(IUnitOfWork unitOfWork) : IQuestionService
     {
         var question = await _unitOfWork.Repository<Question>().GetByIdAsync(questionId);
 
-        if (question == null || updatedQuestion == null || string.IsNullOrWhiteSpace(updatedQuestion.Title))
+        if (question == null || updatedQuestion == null || string.IsNullOrWhiteSpace(updatedQuestion.Description))
             return null;
 
         question = updatedQuestion;
