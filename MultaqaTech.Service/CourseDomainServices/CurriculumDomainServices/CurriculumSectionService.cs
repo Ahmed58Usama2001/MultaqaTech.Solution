@@ -63,9 +63,7 @@ public class CurriculumSectionService(IUnitOfWork unitOfWork) : ICurriculumSecti
     {
         var curriculumSection = await _unitOfWork.Repository<CurriculumSection>().GetByIdAsync(curriculumSectionId);
 
-        if (curriculumSection == null) return null;
-
-        if (updatedcurriculumSection == null || string.IsNullOrWhiteSpace(updatedcurriculumSection.Title))
+        if (curriculumSection == null || updatedcurriculumSection == null || string.IsNullOrWhiteSpace(updatedcurriculumSection.Title))
             return null;
 
         curriculumSection = updatedcurriculumSection;

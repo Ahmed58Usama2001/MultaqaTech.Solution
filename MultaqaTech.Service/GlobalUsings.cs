@@ -1,4 +1,4 @@
-﻿global using MultaqaTech.Core.Entities;
+﻿global using MultaqaTech.Core.Entities.Enums;
 global using MultaqaTech.Core.Specifications;
 global using MultaqaTech.Core.Entities.Identity;
 global using MultaqaTech.Core.Services.Contract;

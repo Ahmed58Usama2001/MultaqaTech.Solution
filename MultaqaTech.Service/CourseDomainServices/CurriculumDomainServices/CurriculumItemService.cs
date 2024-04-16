@@ -1,8 +1,4 @@
-﻿using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
-using MultaqaTech.Core.Entities.Enums;
-using MultaqaTech.Core.Specifications;
-using System.Collections.Generic;
-
+﻿
 namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
 
 public class CurriculumItemService(IUnitOfWork unitOfWork) : ICurriculumItemService

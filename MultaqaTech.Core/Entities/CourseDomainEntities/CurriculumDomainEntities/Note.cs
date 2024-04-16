@@ -6,6 +6,8 @@ public class Note:BaseEntity
 
     public string WriterStudentId { get; set; }
 
+    public DateTime PublishingDate { get; set; } = DateTime.Now;
+
     public int LectureId { get; set; }
     public Lecture Lecture { get; set; }
 }

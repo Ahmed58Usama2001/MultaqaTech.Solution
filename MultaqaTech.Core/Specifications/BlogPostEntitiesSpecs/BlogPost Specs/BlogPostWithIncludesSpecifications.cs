@@ -1,5 +1,4 @@
-﻿
-namespace MultaqaTech.Core.Specifications.BlogPost_Specs;
+﻿namespace MultaqaTech.Core.Specifications.BlogPost_Specs;
 
 public class BlogPostWithIncludesSpecifications : BaseSpecifications<BlogPost>
 {

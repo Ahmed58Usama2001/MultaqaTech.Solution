@@ -10,7 +10,6 @@ public class Lecture:CurriculumItem
 
     public CurriculumItemType CurriculumItemType { get; set; }=CurriculumItemType.Lecture;
 
-
     public List<Note>? Notes { get; set; } = new();
     public List<Question>? Questions { get; set; } = new();
 
