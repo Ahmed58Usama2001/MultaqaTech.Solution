@@ -6,6 +6,8 @@ public abstract class CurriculumItem:BaseEntityWithMediaUrl
 
     public string? Description { get; set; }
 
+    public int Order { get; set; }
+
     public virtual CurriculumItemType CurriculumItemType { get; set; }
 
     public int CurriculumSectionId { get; set; }

@@ -7,6 +7,9 @@ public class LectureWithIncludesSpecifications : BaseSpecifications<Lecture>
               (!speceficationsParams.curriculumSectionId.HasValue || p.CurriculumSectionId == speceficationsParams.curriculumSectionId.Value))
 
     {
+        AddIncludes();
+
+        AddOrderBy(p => p.Order);
     }
 
     public LectureWithIncludesSpecifications(int id)
@@ -16,8 +19,8 @@ public class LectureWithIncludesSpecifications : BaseSpecifications<Lecture>
     }
 
     private void AddIncludes()
-    {      
-        //Includes.Add(p => p.Notes);
+    {
+        //Includes.Add(p => p.Notes);  ##TODO: I want to get the notes of the logged in user only 
         Includes.Add(p => p.Questions);
     }
 

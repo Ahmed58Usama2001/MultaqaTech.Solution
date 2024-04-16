@@ -7,6 +7,9 @@ public class QuizWithIncludesSpecifications : BaseSpecifications<Quiz>
               (!speceficationsParams.curriculumSectionId.HasValue || p.CurriculumSectionId == speceficationsParams.curriculumSectionId.Value))
 
     {
+        AddIncludes();
+
+        AddOrderBy(p => p.Order);
     }
 
     public QuizWithIncludesSpecifications(int id)
