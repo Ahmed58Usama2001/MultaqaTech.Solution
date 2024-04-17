@@ -8,12 +8,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Serilog" Version="3.1.1" />
-    <PackageReference Include="StackExchange.Redis" Version="2.7.33" />
+	  <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
+	  <PackageReference Include="StackExchange.Redis" Version="2.7.33" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MultaqaTech.Core\MultaqaTech.Core.csproj" />
+    <ProjectReference Include="..\MultaqaTech.Repository\MultaqaTech.Repository.csproj" />
   </ItemGroup>
 
 </Project>

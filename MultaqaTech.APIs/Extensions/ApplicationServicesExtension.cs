@@ -1,4 +1,7 @@
 ﻿
+using MultaqaTech.Core.Services.Contract.CourseDomainContracts.CurriculumDomainContracts;
+using MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
+
 namespace MultaqaTech.APIs.Extensions;
 
 public static class ApplicationServicesExtension
@@ -35,6 +38,11 @@ public static class ApplicationServicesExtension
         services.AddScoped<ICourseService, CourseService>();
         services.AddScoped<ICourseReviewService, CourseService>();
         services.AddScoped<IZoomMeetingCategoryService , ZoomMeetingCategoryService>();
+        services.AddScoped<IAnswerService , AnswerService>();
+        services.AddScoped<ICurriculumItemService , CurriculumItemService>();
+        services.AddScoped<ICurriculumSectionService , CurriculumSectionService>();
+        services.AddScoped<INoteService , NoteService>();
+        services.AddScoped<IQuestionService , QuestionService>();
 
         return services;
     }

@@ -1,3 +1,5 @@
+using DesignsAndBuild.Core.Entities.Identity.Facebook;
+using DesignsAndBuild.Core.Entities.Identity.Gmail;
 using StackExchange.Redis;
 
 namespace MultaqaTech.APIs;
@@ -34,6 +36,13 @@ public class Program
         builder.Services.AddApplicationServices();
 
         builder.Services.AddIdentityServices(builder.Configuration);
+
+        builder.Services.Configure<GoogleAuthConfig>(builder.Configuration.GetSection("Google"));
+        builder.Services.Configure<FacebookAuthConfig>(builder.Configuration.GetSection("Facebook"));
+        builder.Services.AddHttpClient("Facebook", c =>
+        {
+            c.BaseAddress = new Uri(builder.Configuration.GetValue<string>("Facebook:BaseUrl"));
+        });
 
         builder.Services.AddCors(options =>
         {

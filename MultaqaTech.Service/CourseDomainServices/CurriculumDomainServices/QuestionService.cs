@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
 
-public class QuestionSectionService(IUnitOfWork unitOfWork) : IQuestionService
+public class QuestionService(IUnitOfWork unitOfWork) : IQuestionService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 

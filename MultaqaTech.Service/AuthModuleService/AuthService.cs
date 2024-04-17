@@ -1,10 +1,25 @@
-﻿namespace MultaqaTech.Service.AuthModuleService;
+﻿using DesignsAndBuild.Core.Entities.Identity;
+using DesignsAndBuild.Core.Entities.Identity.Enums;
+using DesignsAndBuild.Core.Entities.Identity.Gmail;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using MultaqaTech.Core.Services.Contract.AccountModuleContracts;
+using MultaqaTech.Repository.Data.Configurations;
 
-public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork,IConnectionMultiplexer redis) : IAuthService
+namespace MultaqaTech.Service.AuthModuleService;
+
+public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork,IConnectionMultiplexer redis,
+        IGoogleAuthService googleAuthService,
+        IFacebookAuthService facebookAuthService) : IAuthService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IConfiguration _configuration = configuration;
     private readonly IConnectionMultiplexer _redis = redis;
+    private readonly IGoogleAuthService _googleAuthService;
+    private readonly IFacebookAuthService _facebookAuthService;
+    private readonly UserManager<AppUser> _userManager;
+    private readonly MultaqaTechContext _context;
+
 
     public async Task<string> CreateTokenAsync(AppUser user, UserManager<AppUser> userManager)
     {
@@ -59,4 +74,57 @@ public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork,IC
         }
     }
 
+    public async Task<JwtResponseVM> SignInWithFacebook(FacebookSignInVM model)
+    {
+        var validatedFbToken = await _facebookAuthService.ValidateFacebookToken(model.AccessToken);
+
+        if (validatedFbToken is null)
+            return null;
+
+        var userInfo = await _facebookAuthService.GetFacebookUserInformation(model.AccessToken);
+
+        if (userInfo is null)
+            return null;
+
+        var userToBeCreated = new CreateUserFromSocialLogin
+        {
+            UserName = userInfo.Name,
+            Email = userInfo.Email,
+            ProfilePicture = userInfo.Picture.Data.Url.AbsoluteUri,
+            LoginProviderSubject = userInfo.Id,
+        };
+
+        var user = await _userManager.CreateUserFromSocialLogin(_context, userToBeCreated, LoginProvider.Facebook);
+
+        if (user is not null)
+        {
+            var jwtResponse = await CreateTokenAsync(user, _userManager);
+
+            var data = new JwtResponseVM
+            {
+                Token = jwtResponse,
+            };
+
+            return data;
+        }
+        else
+            return null;
+    }
+
+    public async Task<JwtResponseVM> SignInWithGoogle(GoogleSignInVM model)
+    {
+        var response = await _googleAuthService.GoogleSignIn(model);
+
+        if (response is null)
+            return null;
+
+        var jwtResponse = await CreateTokenAsync(response, _userManager);
+
+        var data = new JwtResponseVM
+        {
+            Token = jwtResponse,
+        };
+
+        return data;
+    }
 }

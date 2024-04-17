@@ -2,7 +2,7 @@
 
 namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
 
-public class AnswerSectionService(IUnitOfWork unitOfWork) : IAnswerService
+public class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 

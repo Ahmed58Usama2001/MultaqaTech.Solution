@@ -15,3 +15,6 @@ global using MultaqaTech.Core.Entities.Identity;
 
 global using System.Linq.Expressions;
 global using System.Text.Json.Serialization;
+global using System.ComponentModel.DataAnnotations;
+global using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;
+

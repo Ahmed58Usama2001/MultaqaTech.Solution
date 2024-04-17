@@ -12,5 +12,7 @@ public class AppUser : IdentityUser
 
     public bool IsInstructor { get; set; }
 
+    public string? ProfilePictureUrl { get; set; }
+
     public DateTime RegistrationDate { get; set; }
 }

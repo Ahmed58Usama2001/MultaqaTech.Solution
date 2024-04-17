@@ -1,5 +1,6 @@
 ﻿
 
+using DesignsAndBuild.Core.Entities.Identity.Gmail;
 using Microsoft.EntityFrameworkCore;
 using MultaqaTech.Core.Services.Contract.AuthDomainContracts;
 
@@ -188,6 +189,42 @@ public class AccountController : BaseApiController
         catch (Exception ex)
         {
             Log.Error(ex.Message);
+            return BadRequest(new ApiResponse(400));
+        }
+    }
+
+    [HttpPost("GoogleSignIn")]
+    public async Task<IActionResult> GoogleSignIn(GoogleSignInVM model)
+    {
+        try
+        {
+            var result = (IActionResult)await _authService.SignInWithGoogle(model);
+            if (result != null)
+                return Ok(result);
+            else
+                return BadRequest(new ApiResponse(400));
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+            return BadRequest(new ApiResponse(400));
+        }
+    }
+
+    [HttpPost("FacebookSignIn")]
+    public async Task<IActionResult> FacebookSignIn(FacebookSignInVM model)
+    {
+        try
+        {
+            var result = (IActionResult)await _authService.SignInWithFacebook(model);
+            if (result != null)
+                return Ok(result);
+            else
+                return BadRequest(new ApiResponse(400));
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
             return BadRequest(new ApiResponse(400));
         }
     }

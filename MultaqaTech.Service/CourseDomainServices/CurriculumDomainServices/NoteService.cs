@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
 
-public class NoteSectionService(IUnitOfWork unitOfWork) : INoteService
+public class NoteService(IUnitOfWork unitOfWork) : INoteService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 

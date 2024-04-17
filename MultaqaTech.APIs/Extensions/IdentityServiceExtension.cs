@@ -1,4 +1,5 @@
-﻿using MultaqaTech.Core.Services.Contract.AuthDomainContracts;
+﻿using MultaqaTech.Core.Services.Contract.AccountModuleContracts;
+using MultaqaTech.Core.Services.Contract.AuthDomainContracts;
 using MultaqaTech.Service.AuthModuleService;
 
 namespace MultaqaTech.APIs.Extensions;
@@ -9,6 +10,8 @@ public static class IdentityServiceExtension
     {
 
         services.AddScoped(typeof(IAuthService), typeof(AuthService));
+        services.AddScoped(typeof(IGoogleAuthService), typeof(GoogleAuthService));
+        services.AddScoped<IFacebookAuthService, FacebookAuthService>();
 
         services.AddIdentity<AppUser, IdentityRole>(options =>
         {
