@@ -1,5 +1,4 @@
-﻿using DesignsAndBuild.Core.Entities.Identity.Facebook;
-
+﻿
 namespace MultaqaTech.Core.Services.Contract.AccountModuleContracts;
 
 public interface IFacebookAuthService

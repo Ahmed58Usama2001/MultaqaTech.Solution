@@ -1,5 +1,5 @@
 ﻿
-namespace DesignsAndBuild.Core.Entities.Identity.Gmail;
+namespace MultaqaTech.Core.Entities.Identity.Gmail;
 
 public class FacebookSignInVM
 {

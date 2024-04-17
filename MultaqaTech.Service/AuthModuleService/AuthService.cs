@@ -1,24 +1,18 @@
-﻿using DesignsAndBuild.Core.Entities.Identity;
-using DesignsAndBuild.Core.Entities.Identity.Enums;
-using DesignsAndBuild.Core.Entities.Identity.Gmail;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using MultaqaTech.Core.Services.Contract.AccountModuleContracts;
-using MultaqaTech.Repository.Data.Configurations;
-
-namespace MultaqaTech.Service.AuthModuleService;
+﻿namespace MultaqaTech.Service.AuthModuleService;
 
 public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork,IConnectionMultiplexer redis,
         IGoogleAuthService googleAuthService,
-        IFacebookAuthService facebookAuthService) : IAuthService
+        IFacebookAuthService facebookAuthService,
+        UserManager<AppUser> userManager,
+        MultaqaTechContext context) : IAuthService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IConfiguration _configuration = configuration;
     private readonly IConnectionMultiplexer _redis = redis;
-    private readonly IGoogleAuthService _googleAuthService;
-    private readonly IFacebookAuthService _facebookAuthService;
-    private readonly UserManager<AppUser> _userManager;
-    private readonly MultaqaTechContext _context;
+    private readonly IGoogleAuthService _googleAuthService= googleAuthService;
+    private readonly IFacebookAuthService _facebookAuthService= facebookAuthService;
+    private readonly UserManager<AppUser> _userManager= userManager;
+    private readonly MultaqaTechContext _context= context;
 
 
     public async Task<string> CreateTokenAsync(AppUser user, UserManager<AppUser> userManager)

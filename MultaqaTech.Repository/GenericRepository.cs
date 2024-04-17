@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-
-namespace MultaqaTech.Repository;
+﻿namespace MultaqaTech.Repository;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 {

@@ -1,4 +1,5 @@
-﻿namespace MultaqaTech.APIs.MiddleWares;
+﻿
+namespace MultaqaTech.APIs.MiddleWares;
 
 public class ExceptionMiddleWare
 {

@@ -1,5 +1,4 @@
-﻿
-namespace MultaqaTech.Core.Entities.SettingsEntities;
+﻿namespace MultaqaTech.Core.Entities.SettingsEntities;
 
 public class Subject : BaseEntity
 {

@@ -1,9 +1,4 @@
-﻿using DesignsAndBuild.Core.Entities.Identity.Facebook;
-using Microsoft.Extensions.Options;
-using MultaqaTech.Core.Services.Contract.AccountModuleContracts;
-using Newtonsoft.Json;
-
-namespace MultaqaTech.Service.AuthModuleService;
+﻿namespace MultaqaTech.Service.AuthModuleService;
 
 public class FacebookAuthService : IFacebookAuthService
 {

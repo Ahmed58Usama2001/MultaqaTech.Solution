@@ -1,4 +1,4 @@
-﻿namespace DesignsAndBuild.Core.Entities.Identity.Facebook;
+﻿namespace MultaqaTech.Core.Entities.Identity.Facebook;
 
 public class FacebookAuthConfig
 {

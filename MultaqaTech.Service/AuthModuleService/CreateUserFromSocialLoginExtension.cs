@@ -1,8 +1,4 @@
-﻿using DesignsAndBuild.Core.Entities.Identity.Enums;
-using DesignsAndBuild.Core.Entities.Identity.Gmail;
-using MultaqaTech.Repository.Data.Configurations;
-
-namespace MultaqaTech.Service.AuthModuleService;
+﻿namespace MultaqaTech.Service.AuthModuleService;
 
 public static class CreateUserFromSocialLoginExtension
 {

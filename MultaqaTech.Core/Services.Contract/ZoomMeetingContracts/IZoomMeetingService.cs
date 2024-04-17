@@ -1,6 +1,5 @@
-﻿namespace MultaqaTech.Core.Services.Contract.ZoomMeetingContracts
+﻿namespace MultaqaTech.Core.Services.Contract.ZoomMeetingContracts;
+
+internal interface IZoomMeetingService
 {
-    internal interface IZoomMeetingService
-    {
-    }
 }

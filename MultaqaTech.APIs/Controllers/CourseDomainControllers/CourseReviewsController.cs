@@ -1,5 +1,6 @@
 ﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers;
 
+[Authorize]
 public partial class CoursesController : BaseApiController
 {
     [ProducesResponseType(typeof(CourseReviewToReturnDto), StatusCodes.Status200OK)]

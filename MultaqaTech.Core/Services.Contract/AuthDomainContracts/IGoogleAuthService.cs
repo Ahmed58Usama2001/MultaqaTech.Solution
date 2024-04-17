@@ -1,6 +1,4 @@
-﻿using DesignsAndBuild.Core.Entities.Identity.Gmail;
-
-namespace MultaqaTech.Core.Services.Contract.AccountModuleContracts;
+﻿namespace MultaqaTech.Core.Services.Contract.AccountModuleContracts;
 
 public interface IGoogleAuthService
 {

@@ -1,6 +1,3 @@
-using DesignsAndBuild.Core.Entities.Identity.Facebook;
-using DesignsAndBuild.Core.Entities.Identity.Gmail;
-using StackExchange.Redis;
 
 namespace MultaqaTech.APIs;
 

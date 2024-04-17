@@ -1,15 +1,14 @@
-﻿namespace MultaqaTech.Core.Services.Contract.ZoomMeetingContracts
+﻿namespace MultaqaTech.Core.Services.Contract.ZoomMeetingContracts;
+
+public interface IZoomMeetingCategoryService
 {
-    public interface IZoomMeetingCategoryService
-    {
-        Task<ZoomMeetingCategory?> CreateZoomMeetingCategoryAsync(ZoomMeetingCategory category);
-        
-     // Task<IReadOnlyList<ZoomMeetingCategory>> ReadAllAsync();
+    Task<ZoomMeetingCategory?> CreateZoomMeetingCategoryAsync(ZoomMeetingCategory category);
+    
+ // Task<IReadOnlyList<ZoomMeetingCategory>> ReadAllAsync();
 
-        Task<ZoomMeetingCategory?> ReadByIdAsync(int categoryId);
+    Task<ZoomMeetingCategory?> ReadByIdAsync(int categoryId);
 
-        Task<ZoomMeetingCategory?> UpdateZoomMeetingCategory(int categoryId, ZoomMeetingCategory category);
+    Task<ZoomMeetingCategory?> UpdateZoomMeetingCategory(int categoryId, ZoomMeetingCategory category);
 
-        Task<bool> DeleteZoomMeetingCategory(int categoryId);
-    }
+    Task<bool> DeleteZoomMeetingCategory(int categoryId);
 }

@@ -1,8 +1,4 @@
-﻿using MultaqaTech.Core.Services.Contract.AccountModuleContracts;
-using MultaqaTech.Core.Services.Contract.AuthDomainContracts;
-using MultaqaTech.Service.AuthModuleService;
-
-namespace MultaqaTech.APIs.Extensions;
+﻿namespace MultaqaTech.APIs.Extensions;
 
 public static class IdentityServiceExtension
 {

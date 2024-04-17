@@ -1,5 +1,6 @@
 ﻿namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
 
+[Authorize]
 public class BlogPostCategoriesController(IBlogPostCategoryService blogPostCategoryService, IMapper mapper) : BaseApiController
 {
     private readonly IBlogPostCategoryService _blogPostCategoryService = blogPostCategoryService;

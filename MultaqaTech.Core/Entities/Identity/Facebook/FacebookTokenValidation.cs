@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace DesignsAndBuild.Core.Entities.Identity.Facebook;
+﻿namespace MultaqaTech.Core.Entities.Identity.Facebook;
 
 public class FacebookTokenValidationResponse
 {

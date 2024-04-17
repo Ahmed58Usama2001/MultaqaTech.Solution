@@ -1,8 +1,4 @@
-﻿
-using MultaqaTech.Core.Services.Contract.CourseDomainContracts.CurriculumDomainContracts;
-using MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
-
-namespace MultaqaTech.APIs.Extensions;
+﻿namespace MultaqaTech.APIs.Extensions;
 
 public static class ApplicationServicesExtension
 {

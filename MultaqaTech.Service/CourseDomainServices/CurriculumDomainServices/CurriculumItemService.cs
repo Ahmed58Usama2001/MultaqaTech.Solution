@@ -1,5 +1,4 @@
-﻿
-namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
+﻿namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
 
 public class CurriculumItemService(IUnitOfWork unitOfWork) : ICurriculumItemService
 {

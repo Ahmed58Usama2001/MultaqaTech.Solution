@@ -1,11 +1,4 @@
-﻿using DesignsAndBuild.Core.Entities.Identity.Enums;
-using DesignsAndBuild.Core.Entities.Identity.Gmail;
-using Microsoft.Extensions.Options;
-using MultaqaTech.Core.Services.Contract.AccountModuleContracts;
-using MultaqaTech.Repository.Data.Configurations;
-using static Google.Apis.Auth.GoogleJsonWebSignature;
-
-namespace MultaqaTech.Service.AuthModuleService;
+﻿namespace MultaqaTech.Service.AuthModuleService;
 
 public class GoogleAuthService : IGoogleAuthService
 {

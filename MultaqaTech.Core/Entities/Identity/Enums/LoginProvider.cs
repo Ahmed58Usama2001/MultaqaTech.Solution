@@ -1,4 +1,4 @@
-﻿namespace DesignsAndBuild.Core.Entities.Identity.Enums;
+﻿namespace MultaqaTech.Core.Entities.Identity.Enums;
 
 public enum LoginProvider
 {

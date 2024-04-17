@@ -1,4 +1,4 @@
-﻿namespace DesignsAndBuild.Core.Entities.Identity;
+﻿namespace MultaqaTech.Core.Entities.Identity;
 
 public class JwtResponseVM
 {

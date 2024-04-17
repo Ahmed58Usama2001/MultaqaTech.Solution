@@ -1,6 +1,4 @@
-﻿using DesignsAndBuild.Core.Entities.Identity.Gmail;
-using DesignsAndBuild.Core.Entities.Identity;
-
+﻿
 namespace MultaqaTech.Core.Services.Contract.AuthDomainContracts;
 
 public interface IAuthService

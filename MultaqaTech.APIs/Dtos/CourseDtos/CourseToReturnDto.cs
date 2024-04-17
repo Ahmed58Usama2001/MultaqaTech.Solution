@@ -1,4 +1,4 @@
-﻿namespace MultaqaTech.Core.Entities.CourseDomainEntities;
+﻿namespace MultaqaTech.APIs.Dtos;
 
 public class CourseToReturnDto
 {

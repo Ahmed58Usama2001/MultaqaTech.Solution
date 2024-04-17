@@ -1,10 +1,4 @@
-﻿
-
-using DesignsAndBuild.Core.Entities.Identity.Gmail;
-using Microsoft.EntityFrameworkCore;
-using MultaqaTech.Core.Services.Contract.AuthDomainContracts;
-
-namespace MultaqaTech.APIs.Controllers;
+﻿namespace MultaqaTech.APIs.Controllers;
 
 public class AccountController : BaseApiController
 {

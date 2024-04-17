@@ -1,6 +1,4 @@
-﻿
-
-namespace MultaqaTech.Service.ZoomMeetingEntitesServices;
+﻿namespace MultaqaTech.Service.ZoomMeetingEntitesServices;
 
 public class ZoomMeetingCategoryService(IUnitOfWork unitOfWork) : IZoomMeetingCategoryService
 {
