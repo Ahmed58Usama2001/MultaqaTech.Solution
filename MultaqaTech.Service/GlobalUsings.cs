@@ -9,6 +9,7 @@ global using MultaqaTech.Core.Specifications.BlogPost_Specs;
 global using MultaqaTech.Core.Entities.CourseDomainEntities;
 global using MultaqaTech.Core.Entities.BlogPostDomainEntities;
 global using MultaqaTech.Core.Services.Contract.BlogPostContracts;
+global using MultaqaTech.Core.Services.Contract.AuthDomainContracts;
 global using MultaqaTech.Core.Services.Contract.ZoomMeetingContracts;
 global using MultaqaTech.Core.Services.Contract.CourseDomainContracts;
 global using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
@@ -24,3 +25,5 @@ global using System.Security.Claims;
 global using System.IdentityModel.Tokens.Jwt;
 
 global using Serilog;
+global using StackExchange.Redis;
+

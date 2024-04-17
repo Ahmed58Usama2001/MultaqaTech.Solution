@@ -45,3 +45,4 @@ global using System.ComponentModel.DataAnnotations;
 
 global using Serilog;
 global using AutoMapper;
+global using StackExchange.Redis;

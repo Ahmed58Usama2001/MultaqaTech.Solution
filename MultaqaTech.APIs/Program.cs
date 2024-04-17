@@ -1,3 +1,5 @@
+using StackExchange.Redis;
+
 namespace MultaqaTech.APIs;
 
 public class Program
@@ -21,6 +23,12 @@ public class Program
         builder.Services.AddDbContext<AppIdentityDbContext>(options =>
         {
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+        });
+
+        builder.Services.AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
+        {
+            var connection = builder.Configuration.GetConnectionString("Redis");
+            return ConnectionMultiplexer.Connect(connection);
         });
 
         builder.Services.AddApplicationServices();
@@ -72,6 +80,7 @@ public class Program
         #region Configure Middlewares
 
         app.UseMiddleware<ExceptionMiddleWare>();
+        app.UseMiddleware<JwtBlacklistMiddleware>();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

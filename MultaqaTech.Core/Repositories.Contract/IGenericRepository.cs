@@ -6,6 +6,8 @@ public interface IGenericRepository<T> where T : BaseEntity
 
     Task<T?> GetByIdWithSpecAsync(ISpecifications<T> specs);
 
+    Task<T> FindAsync(Expression<Func<T, bool>> predicate);
+
     Task<IReadOnlyList<T>> GetAllAsync();
 
     Task<IReadOnlyList<T>> GetAllByIdsAsync(List<int> ids);

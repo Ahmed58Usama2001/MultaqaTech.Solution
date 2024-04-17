@@ -1,5 +1,8 @@
 ﻿
 
+using Microsoft.EntityFrameworkCore;
+using MultaqaTech.Core.Services.Contract.AuthDomainContracts;
+
 namespace MultaqaTech.APIs.Controllers;
 
 public class AccountController : BaseApiController
@@ -188,4 +191,30 @@ public class AccountController : BaseApiController
             return BadRequest(new ApiResponse(400));
         }
     }
+
+    [Authorize]
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+
+        var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+        if (token != null)
+        {
+            try
+            {
+                await _authService.InvalidateSignedInTokenAsync(token); // Call your AuthService method
+                return Ok(new { message = "Logged out successfully" });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message); // Log the error
+                return BadRequest(new { message = "Error during logout" });
+            }
+        }
+
+        return BadRequest(new { message = "Unable to logout" });
+    }
+
 }

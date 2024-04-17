@@ -38,6 +38,6 @@ public class MultaqaTechContext : DbContext
 
     #region Zoom Meetings
     public DbSet<ZoomMeetingCategory> ZoomMeetingCategories { get; set; }
-    public DbSet<ZoomMeeting> ZoomMeetings { get; set; } 
+    public DbSet<ZoomMeeting> ZoomMeetings { get; set; }
     #endregion
 }

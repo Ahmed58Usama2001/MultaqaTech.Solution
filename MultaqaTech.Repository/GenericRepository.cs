@@ -1,4 +1,7 @@
-﻿namespace MultaqaTech.Repository;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+
+namespace MultaqaTech.Repository;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 {
@@ -29,6 +32,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return await _dbContext.Set<T>().FindAsync(id);
     }
 
+    public async Task<T?> FindAsync(Expression<Func<T, bool>> predicate)
+    {
+        return await _dbContext.Set<T>().FirstOrDefaultAsync(predicate);
+    }
+
     public async Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecifications<T> specs)
     {
         return await ApplySpecifications(specs).ToListAsync();
@@ -57,4 +65,5 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
     public void Delete(T entity)
     => _dbContext.Remove(entity);
+
 }

@@ -1,5 +1,4 @@
-﻿using MultaqaTech.Core.Specifications.CourseDomainSpecs.CurriculumEntitiesSpecs.CurriculumSectionSpecs;
-
+﻿
 namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
 
 [Authorize]

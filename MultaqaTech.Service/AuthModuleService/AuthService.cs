@@ -1,13 +1,10 @@
-﻿namespace MultaqaTech.Service;
+﻿namespace MultaqaTech.Service.AuthModuleService;
 
-public class AuthService : IAuthService
+public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork,IConnectionMultiplexer redis) : IAuthService
 {
-    private readonly IConfiguration _configuration;
-
-    public AuthService(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly IConfiguration _configuration = configuration;
+    private readonly IConnectionMultiplexer _redis = redis;
 
     public async Task<string> CreateTokenAsync(AppUser user, UserManager<AppUser> userManager)
     {
@@ -40,6 +37,26 @@ public class AuthService : IAuthService
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public async Task<bool> InvalidateSignedInTokenAsync(string token)
+    {
+        try
+        {
+            var redis = _redis.GetDatabase(); // Access the Redis database using dependency injection
+
+            var key = $"blacklisted_token:{token}"; // Use a descriptive key format
+            var expiration = TimeSpan.FromDays(1); // Set expiration for 1 day
+
+            var added = await redis.StringSetAsync(key, string.Empty, expiration, (When)CommandFlags.None);
+
+            return added;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+            return false;
+        }
     }
 
 }
