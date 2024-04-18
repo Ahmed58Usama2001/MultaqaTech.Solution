@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.APIs.Controllers;
+﻿using System.Net.Http;
+
+namespace MultaqaTech.APIs.Controllers;
 
 public class AccountController : BaseApiController
 {
@@ -7,17 +9,23 @@ public class AccountController : BaseApiController
     private readonly IAuthService _authService;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IMapper _mapper;
+    private readonly IConfiguration _configuration;
+    private readonly HttpClient _httpClient;
 
     public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
         IAuthService authService,
         RoleManager<IdentityRole> roleManager,
-        IMapper mapper)
+        IMapper mapper,
+        IConfiguration configuration,
+        HttpClient httpClient)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _authService = authService;
         _roleManager = roleManager;
         _mapper = mapper;
+        _configuration = configuration;
+        _httpClient = httpClient;
     }
 
     [HttpPost("login")]
@@ -247,5 +255,37 @@ public class AccountController : BaseApiController
 
         return BadRequest(new { message = "Unable to logout" });
     }
+
+    [HttpGet("Captcha")]
+    public async Task<bool> GetreCaptchaResponse(string userResponse)
+    {
+        var reCaptchaSecretKey = _configuration["reCaptcha:SecretKey"];
+
+        if (reCaptchaSecretKey != null && userResponse != null)
+        {
+            var content = new FormUrlEncodedContent(new Dictionary<string, string>
+                {
+                    {"secret", reCaptchaSecretKey },
+                    {"response", userResponse }
+                });
+            var response = await _httpClient.PostAsync("https://www.google.com/recaptcha/api/siteverify", content);
+            if (response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var result = await response.Content.ReadFromJsonAsync<reCaptchaResponse>();
+                    return result.Success;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                    return false;
+                }
+
+            }
+        }
+        return false;
+    }
+
 
 }

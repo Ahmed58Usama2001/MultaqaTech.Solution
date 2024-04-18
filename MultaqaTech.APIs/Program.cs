@@ -40,6 +40,8 @@ public class Program
         {
             c.BaseAddress = new Uri(builder.Configuration.GetValue<string>("Facebook:BaseUrl"));
         });
+        builder.Services.AddHttpClient();
+
 
         builder.Services.AddCors(options =>
         {
