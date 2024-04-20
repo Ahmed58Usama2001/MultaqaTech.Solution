@@ -2,13 +2,11 @@
 
 public class BlogPostCreateDto
 {
-    public string Title { get; set; }
-
-    public string Content { get; set; }
-
-    public string PictureUrl { get; set; }
-
     public int CategoryId { get; set; }
 
-    public List<int>? Tags { get; set; } = new();
+    public string Title { get; set; } = string.Empty;
+    public string Content { get; set; } = string.Empty;
+    public string PictureUrl { get; set; } = string.Empty;
+
+    public List<int>? Tags { get; set; } = [];
 }

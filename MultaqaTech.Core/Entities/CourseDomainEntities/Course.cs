@@ -2,13 +2,13 @@
 
 public class Course : BaseEntityWithMediaUrl
 {
-    public string InstructorId { get; set; }
+    public string InstructorId { get; set; } = string.Empty;
     //public AppUser Instructor { get; set; }
 
     public int SubjectId { get; set; }
-    public Subject Subject { get; set; }
+    public Subject Subject { get; set; } = new();
 
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
     public string? Language { get; set; }
 
     // shadowing the picture url prop in base
