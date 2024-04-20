@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-
-namespace MultaqaTech.APIs.Controllers;
+﻿namespace MultaqaTech.APIs.Controllers;
 
 public class AccountController : BaseApiController
 {
@@ -176,21 +174,21 @@ public class AccountController : BaseApiController
         => await _userManager.FindByNameAsync(userName) is not null;
 
     [HttpPost("CreateRole")]
-    public async Task<ActionResult> CreateToken(string Name)
+    public async Task<ActionResult> CreateToken(string? name)
     {
         try
         {
-            if (string.IsNullOrEmpty(Name)) return BadRequest(new ApiResponse(400, "Role cannot be Empty !!"));
+            if (string.IsNullOrEmpty(name)) return BadRequest(new ApiResponse(400, "Role cannot be Empty !!"));
 
-            bool isRoleAlreadyExists = await _roleManager.RoleExistsAsync(Name);
-            if (isRoleAlreadyExists) return BadRequest(new ApiResponse(400, $"Role: {Name} Already Exists !!"));
+            bool isRoleAlreadyExists = await _roleManager.RoleExistsAsync(name);
+            if (isRoleAlreadyExists) return BadRequest(new ApiResponse(400, $"Role: {name} Already Exists !!"));
 
-            await _roleManager.CreateAsync(new IdentityRole(Name));
-            return Ok(Name);
+            await _roleManager.CreateAsync(new IdentityRole(name));
+            return Ok(name);
         }
         catch (Exception ex)
         {
-            Log.Error(ex.Message);
+            Log.Error(ex,ex.Message);
             return BadRequest(new ApiResponse(400));
         }
     }
@@ -208,7 +206,7 @@ public class AccountController : BaseApiController
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex,ex.ToString());
             return BadRequest(new ApiResponse(400));
         }
     }
@@ -286,6 +284,4 @@ public class AccountController : BaseApiController
         }
         return false;
     }
-
-
 }

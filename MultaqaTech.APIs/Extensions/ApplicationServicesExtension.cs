@@ -1,4 +1,5 @@
-﻿namespace MultaqaTech.APIs.Extensions;
+﻿
+namespace MultaqaTech.APIs.Extensions;
 
 public static class ApplicationServicesExtension
 {

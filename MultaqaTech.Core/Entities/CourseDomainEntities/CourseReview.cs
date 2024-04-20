@@ -10,7 +10,4 @@ public class CourseReview : BaseEntityWithMediaUrl
     public string ProfiePictureUrl { get => base.MediaUrl; set => base.MediaUrl = value; }
 
     public DateTime Date { get; set; } = DateTime.Now;
-
-    //public int StudentId { get; set; }
-    //public AppUser Student { get; set; }
 }

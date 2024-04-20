@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
 
-public abstract class CurriculumItem:BaseEntityWithMediaUrl
+public abstract class CurriculumItem : BaseEntityWithMediaUrl
 {
     public string Title { get; set; }
 

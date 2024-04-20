@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
 
-public class Answer:BaseEntity
+public class Answer : BaseEntity
 {
     public string Content { get; set; }
 

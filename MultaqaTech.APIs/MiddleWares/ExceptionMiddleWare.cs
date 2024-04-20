@@ -7,7 +7,7 @@ public class ExceptionMiddleWare
     private readonly ILogger<ExceptionMiddleWare> logger;
     private readonly IHostEnvironment env;
 
-    public ExceptionMiddleWare(RequestDelegate next,ILogger<ExceptionMiddleWare> logger,IHostEnvironment env)
+    public ExceptionMiddleWare(RequestDelegate next, ILogger<ExceptionMiddleWare> logger, IHostEnvironment env)
     {
         this.next = next;
         this.logger = logger;
@@ -33,12 +33,12 @@ public class ExceptionMiddleWare
                 new ApiExceptionResponse((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace?.ToString()) :
                 new ApiExceptionResponse((int)HttpStatusCode.InternalServerError);
 
-            var options=new JsonSerializerOptions() {PropertyNamingPolicy=JsonNamingPolicy.CamelCase};
+            var options = new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
-            var json=JsonSerializer.Serialize(response, options);
+            var json = JsonSerializer.Serialize(response, options);
 
             await httpContext.Response.WriteAsync(json);
-        }      
-    
+        }
+
     }
 }

@@ -1,4 +1,3 @@
-
 namespace MultaqaTech.APIs;
 
 public class Program
@@ -69,7 +68,7 @@ public class Program
         var loggerFactory = services.GetRequiredService<ILoggerFactory>();
 
         try
-        {    
+        {
             await _dbContext.Database.MigrateAsync(); // Update-Database
             //await MultaqaTechContextSeed.SeedAsync(_dbContext); // Data Seeding
 

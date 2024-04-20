@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
 
-public class QuizQuestionChoice:BaseEntity
+public class QuizQuestionChoice : BaseEntity
 {
     public string Content { get; set; }
     public string? Clarification { get; set; }
