@@ -25,18 +25,38 @@ public class BlogPostService(IUnitOfWork unitOfWork) : IBlogPostService
     {
         var spec = new BlogPostWithIncludesSpecifications(blogPostId);
 
-        var blogPost = await _unitOfWork.Repository<BlogPost>().GetByIdWithSpecAsync(spec);
+        try
+        {
+            var blogPost = await _unitOfWork.Repository<BlogPost>().GetByIdWithSpecAsync(spec);
 
-        return blogPost;
+            if (blogPost is null) return null;
+
+            return blogPost;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+            return null;
+        }
     }
 
     public async Task<IReadOnlyList<BlogPost>> ReadBlogPostsAsync(BlogPostSpeceficationsParams speceficationsParams)
     {
         var spec = new BlogPostWithIncludesSpecifications(speceficationsParams);
 
-        var blogPosts = await _unitOfWork.Repository<BlogPost>().GetAllWithSpecAsync(spec);
+        try
+        {
+            var blogPosts = await _unitOfWork.Repository<BlogPost>().GetAllWithSpecAsync(spec);
 
-        return blogPosts;
+            if (blogPosts is null) return null;
+
+            return blogPosts;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+            return null;
+        }
     }
 
     public async Task<BlogPost?> UpdateBlogPost(int blogPostId, BlogPost updatedBlogPost)

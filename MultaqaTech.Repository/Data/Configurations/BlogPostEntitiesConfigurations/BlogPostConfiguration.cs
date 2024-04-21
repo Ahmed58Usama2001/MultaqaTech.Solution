@@ -3,14 +3,16 @@ namespace MultaqaTech.Repository.Data.Configurations.BlogPostEntitiesConfigurati
 
 internal class BlogPostConfiguration : IEntityTypeConfiguration<BlogPost>
 {
-    const int maxLength = 255;
+    const int shortMaxLength = 255;
+    const int longMaxLength = 450;
+
     public void Configure(EntityTypeBuilder<BlogPost> builder)
     {
         builder.ToTable("BlogPosts");
 
         builder.Property(e => e.Title)
             .IsRequired()
-            .HasMaxLength(maxLength);
+            .HasMaxLength(longMaxLength);
 
         builder.Property(e => e.Content)
         .IsRequired();

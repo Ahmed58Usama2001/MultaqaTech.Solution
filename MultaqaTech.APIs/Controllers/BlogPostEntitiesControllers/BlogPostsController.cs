@@ -59,7 +59,7 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
         var blogPosts = await _blogPostService.ReadBlogPostsAsync(speceficationsParams);
 
         if (blogPosts == null)
-            return NotFound(new { Message = "Not Found", StatusCode = 404 });
+            return NotFound(new ApiResponse(404));
 
         var count = await _blogPostService.GetCountAsync(speceficationsParams);
 
@@ -76,7 +76,7 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
         var blogPost = await _blogPostService.ReadByIdAsync(id);
 
         if (blogPost == null)
-            return NotFound(new { Message = "Not Found", StatusCode = 404 });
+            return NotFound(new ApiResponse(404));
 
         await _blogPostService.IncrementViewCountAsync(id);
 
