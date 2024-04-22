@@ -4,7 +4,7 @@ public interface ICurriculumItemService
 {
     Task<CurriculumItem?> CreateCurriculumItemAsync(CurriculumItem curriculumItem);
 
-    Task<IReadOnlyList<CurriculumItem>> ReadCurriculumSectionsAsync(CurriculumItemSpeceficationsParams speceficationsParams);
+    Task<IReadOnlyList<CurriculumItem>> ReadCurriculumItemsAsync(CurriculumItemSpeceficationsParams speceficationsParams);
 
     Task<CurriculumItem?> ReadByIdAsync(int curriculumItemId);
 
