@@ -117,7 +117,7 @@ namespace MultaqaTech.Repository.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
                     AuthorName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PostPictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),

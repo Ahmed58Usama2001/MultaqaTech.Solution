@@ -6,7 +6,8 @@ public class BlogPostCreateDto
 
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
-    public string PictureUrl { get; set; } = string.Empty;
+    public IFormFile PictureUrl { get; set; }
+
 
     public List<int>? Tags { get; set; } = [];
 }

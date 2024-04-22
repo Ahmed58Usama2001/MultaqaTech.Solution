@@ -8,7 +8,7 @@ public interface IBlogPostService
 
     Task<BlogPost?> ReadByIdAsync(int blogPostId);
 
-    Task<BlogPost?> UpdateBlogPost(int blogPostId, BlogPost updatedBlogPost);
+    Task<BlogPost?> UpdateBlogPost(BlogPost storedBlogPost, BlogPost newBlogPost);
 
     Task<bool> DeleteBlogPost(BlogPost blogPost);
 

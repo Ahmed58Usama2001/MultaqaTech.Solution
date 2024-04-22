@@ -12,7 +12,7 @@ using MultaqaTech.Repository.Data.Configurations;
 namespace MultaqaTech.Repository.Migrations
 {
     [DbContext(typeof(MultaqaTechContext))]
-    [Migration("20240420222115_InitDb")]
+    [Migration("20240422134312_InitDb")]
     partial class InitDb
     {
         /// <inheritdoc />
@@ -118,8 +118,8 @@ namespace MultaqaTech.Repository.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
