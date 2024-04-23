@@ -16,10 +16,10 @@ internal class CourseConfigurations : IEntityTypeConfiguration<Course>
 
         builder.Ignore(l => l.MediaUrl);
 
-        //builder.HasOne(e => e.Instructor)
-        //       .WithMany()
-        //       .HasForeignKey(e => e.InstructorId)
-        //       .OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(e => e.Instructor)
+               .WithMany(i => i.Courses)
+               .HasForeignKey(e => e.InstructorId)
+               .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(e => e.Subject)
                .WithMany()
@@ -32,15 +32,17 @@ internal class CourseConfigurations : IEntityTypeConfiguration<Course>
                .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(c => c.Tags)
-               .WithMany(s=>s.AssociatedCourses)
+               .WithMany(s => s.AssociatedCourses)
                .UsingEntity(j => j.ToTable("CourseTags"));
 
         builder.HasMany(c => c.Prerequisites)
                .WithMany()
                .UsingEntity(j => j.ToTable("CousePrerequests"));
 
-         builder.Property(e => e.Reviews)
-                .HasConversion(v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null), v => JsonSerializer.Deserialize<List<CourseReview>>(v, (JsonSerializerOptions)null));
+        builder.Property(e => e.Reviews)
+               .HasConversion(v => JsonSerializer
+               .Serialize(v, (JsonSerializerOptions?)null), v => JsonSerializer
+               .Deserialize<List<CourseReview>>(v, (JsonSerializerOptions?)null));
 
         builder.Property(e => e.Price).HasColumnType("decimal(18,2)");
     }

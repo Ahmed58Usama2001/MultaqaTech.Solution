@@ -2,13 +2,13 @@
 
 public class Course : BaseEntityWithMediaUrl
 {
-    public string InstructorId { get; set; }
-    //public AppUser Instructor { get; set; }
+    public string InstructorId { get; set; } = string.Empty;
+    public Instractor Instructor { get; set; } = new ();
 
     public int SubjectId { get; set; }
-    public Subject Subject { get; set; }
+    public Subject Subject { get; set; } = new();
 
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
     public string? Language { get; set; }
 
     // shadowing the picture url prop in base
@@ -46,6 +46,7 @@ public class Course : BaseEntityWithMediaUrl
     public List<string>? LearningObjectives { get; set; } = new();
     public List<string>? LecturesLinks { get; set; } = new();
     public List<string> EnrolledStudentsIds { get; set; } = new();
+    public List<Student> Students { get; set; } = new();
 
     [NotMapped] public List<int>? TagsIds { get; set; } = new();
     [NotMapped] public List<int>? PrerequisitesIds { get; set; } = new();

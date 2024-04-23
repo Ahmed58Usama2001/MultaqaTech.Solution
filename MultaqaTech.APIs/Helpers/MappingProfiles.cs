@@ -8,11 +8,13 @@ public class MappingProfiles : Profile
 
         CreateMap<SubjectCreateDto, Subject>().ReverseMap();
 
-        CreateMap<BlogPostCategoryCreateDto, BlogPostCategory>();
         CreateMap<CourseDto, Course>()
            .ForMember(dest => dest.PrerequisitesIds, opt => opt.MapFrom(src => src.PrerequisitesIds))
            .ForMember(dest => dest.TagsIds, opt => opt.MapFrom(src => src.TagsIds));
 
+        CreateMap<BlogPostCategoryCreateDto, BlogPostCategory>();
+        CreateMap<BlogPostCreateDto, BlogPost>()
+            .ForMember(dest => dest.PostPictureUrl, opt => opt.Ignore());
         CreateMap<BlogPost, BlogPostToReturnDto>()
             .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
             .ForMember(dest => dest.PublishingDate, opt => opt.MapFrom(src => src.PublishingDate.ToString("dddd, MMMM dd, yyyy 'at' hh:mm:ss tt")))

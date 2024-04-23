@@ -71,9 +71,7 @@ public class SubjectService(IUnitOfWork unitOfWork) : ISubjectService
     {
         var subject = await _unitOfWork.Repository<Subject>().GetByIdAsync(subjectId);
 
-        if (subject == null) return null;
-
-        if (updatedSubject == null || string.IsNullOrWhiteSpace(updatedSubject.Name))
+        if (updatedSubject == null || subject == null)
             return null;
 
         subject.Name = updatedSubject.Name;

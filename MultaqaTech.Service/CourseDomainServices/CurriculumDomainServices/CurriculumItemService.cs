@@ -79,7 +79,7 @@ public class CurriculumItemService(IUnitOfWork unitOfWork) : ICurriculumItemServ
         return curriculumItemWithIncludes??null;
     }
 
-    public async Task<IReadOnlyList<CurriculumItem>> ReadCurriculumSectionsAsync(CurriculumItemSpeceficationsParams speceficationsParams)
+    public async Task<IReadOnlyList<CurriculumItem>> ReadCurriculumItemsAsync(CurriculumItemSpeceficationsParams speceficationsParams)
     {
         var curriculumItems = await _unitOfWork.Repository<CurriculumItem>().GetAllAsync();
 

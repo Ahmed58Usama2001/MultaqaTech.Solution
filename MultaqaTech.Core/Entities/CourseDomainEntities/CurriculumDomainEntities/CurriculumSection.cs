@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
 
-public class CurriculumSection:BaseEntity
+public class CurriculumSection : BaseEntity
 {
     public string Title { get; set; }
 
@@ -11,5 +11,4 @@ public class CurriculumSection:BaseEntity
 
     public List<Lecture>? Lectures { get; set; } = new();
     public List<Quiz>? Quizes { get; set; } = new();
-
 }

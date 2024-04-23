@@ -1,18 +1,17 @@
 ﻿namespace MultaqaTech.Service.AuthModuleService;
 
-public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork,IConnectionMultiplexer redis,
+public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork, IConnectionMultiplexer redis,
         IGoogleAuthService googleAuthService,
         IFacebookAuthService facebookAuthService,
         UserManager<AppUser> userManager,
         MultaqaTechContext context) : IAuthService
 {
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IConfiguration _configuration = configuration;
     private readonly IConnectionMultiplexer _redis = redis;
-    private readonly IGoogleAuthService _googleAuthService= googleAuthService;
-    private readonly IFacebookAuthService _facebookAuthService= facebookAuthService;
-    private readonly UserManager<AppUser> _userManager= userManager;
-    private readonly MultaqaTechContext _context= context;
+    private readonly IGoogleAuthService _googleAuthService = googleAuthService;
+    private readonly IFacebookAuthService _facebookAuthService = facebookAuthService;
+    private readonly UserManager<AppUser> _userManager = userManager;
+    private readonly MultaqaTechContext _context = context;
 
 
     public async Task<string> CreateTokenAsync(AppUser user, UserManager<AppUser> userManager)
@@ -20,8 +19,8 @@ public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork,IC
         // Private claims (user-defined)
         var authClaims = new List<Claim>()
         {
-            new Claim(ClaimTypes.GivenName, user.UserName),
-            new Claim(ClaimTypes.Email, user.Email)
+            new(ClaimTypes.GivenName, user.UserName),
+            new(ClaimTypes.Email, user.Email)
         };
 
         var userRoles = await userManager.GetRolesAsync(user);
@@ -63,22 +62,20 @@ public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork,IC
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex,ex.ToString());
             return false;
         }
     }
 
-    public async Task<JwtResponseVM> SignInWithFacebook(FacebookSignInVM model)
+    public async Task<JwtResponseVM?> SignInWithFacebook(FacebookSignInVM model)
     {
-        var validatedFbToken = await _facebookAuthService.ValidateFacebookToken(model.AccessToken);
+        FacebookTokenValidationResponse? validatedFbToken = await _facebookAuthService.ValidateFacebookToken(model.AccessToken);
 
-        if (validatedFbToken is null)
-            return null;
+        if (validatedFbToken is null) return null;
 
-        var userInfo = await _facebookAuthService.GetFacebookUserInformation(model.AccessToken);
+        FacebookUserInfoResponse? userInfo = await _facebookAuthService.GetFacebookUserInformation(model.AccessToken);
 
-        if (userInfo is null)
-            return null;
+        if (userInfo is null) return null;
 
         var userToBeCreated = new CreateUserFromSocialLogin
         {
@@ -94,31 +91,29 @@ public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork,IC
         {
             var jwtResponse = await CreateTokenAsync(user, _userManager);
 
-            var data = new JwtResponseVM
+            return new JwtResponseVM
             {
                 Token = jwtResponse,
             };
-
-            return data;
         }
         else
+        {
             return null;
+        }
     }
 
-    public async Task<JwtResponseVM> SignInWithGoogle(GoogleSignInVM model)
+    public async Task<JwtResponseVM?> SignInWithGoogle(GoogleSignInVM model)
     {
-        var response = await _googleAuthService.GoogleSignIn(model);
+        AppUser? response = await _googleAuthService.GoogleSignIn(model);
 
         if (response is null)
             return null;
 
         var jwtResponse = await CreateTokenAsync(response, _userManager);
 
-        var data = new JwtResponseVM
+        return new JwtResponseVM
         {
             Token = jwtResponse,
         };
-
-        return data;
     }
 }

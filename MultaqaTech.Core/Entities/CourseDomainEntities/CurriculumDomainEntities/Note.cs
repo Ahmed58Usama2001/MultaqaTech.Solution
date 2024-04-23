@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
 
-public class Note:BaseEntity
+public class Note : BaseEntity
 {
     public string Content { get; set; }
 

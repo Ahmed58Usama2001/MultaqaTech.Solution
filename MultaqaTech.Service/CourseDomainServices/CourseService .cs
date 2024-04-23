@@ -86,13 +86,11 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
     {
         try
         {
-            IEnumerable<Course>? courses = await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(new CoursesSpecifications(courseSpeceficationsParams));
-
-            return courses;
+            return await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(new CoursesSpecifications(courseSpeceficationsParams));
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex.Message);
             return null;
         }
     }
@@ -135,8 +133,8 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         courseFromDb.Price = course.Price;
         courseFromDb.LearningObjectives = course.LearningObjectives;
         courseFromDb.Subject = await _subjectService.ReadByIdAsync(course.SubjectId) ?? new();
-        courseFromDb.Tags = await MapSubjectsAsync(course.TagsIds ?? new());
-        courseFromDb.Prerequisites = await MapSubjectsAsync(course.PrerequisitesIds ?? new());
+        courseFromDb.Tags = await MapSubjectsAsync(course.TagsIds ?? []);
+        courseFromDb.Prerequisites = await MapSubjectsAsync(course.PrerequisitesIds ?? []);
         courseFromDb.LastUpdatedDate = DateTime.Now;
 
         try
@@ -180,14 +178,13 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
 
     private async Task<List<Subject>> MapSubjectsAsync(List<int> subjectIds)
     {
-        if (!subjectIds.Any()) return new();
+        if (!subjectIds.Any()) return [];
 
-        var subjects = new List<Subject>();
+        List<Subject> subjects = [];
 
-        var subjectsFromDb = await _subjectService.ReadSubjectsByIds(subjectIds);
+        IReadOnlyList<Subject>? subjectsFromDb = await _subjectService.ReadSubjectsByIds(subjectIds);
 
-        foreach (var subject in subjectsFromDb)
-            subjects.Add(subject);
+        subjects.AddRange(subjectsFromDb);
 
         return subjects;
     }

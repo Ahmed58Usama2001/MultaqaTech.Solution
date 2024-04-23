@@ -1,4 +1,3 @@
-
 namespace MultaqaTech.APIs;
 
 public class Program
@@ -38,8 +37,10 @@ public class Program
         builder.Services.Configure<FacebookAuthConfig>(builder.Configuration.GetSection("Facebook"));
         builder.Services.AddHttpClient("Facebook", c =>
         {
-            c.BaseAddress = new Uri(builder.Configuration.GetValue<string>("Facebook:BaseUrl"));
+            c.BaseAddress = new Uri("https://graph.facebook.com/v15.0/");
         });
+        builder.Services.AddHttpClient();
+
 
         builder.Services.AddCors(options =>
         {
@@ -67,7 +68,7 @@ public class Program
         var loggerFactory = services.GetRequiredService<ILoggerFactory>();
 
         try
-        {    
+        {
             await _dbContext.Database.MigrateAsync(); // Update-Database
             //await MultaqaTechContextSeed.SeedAsync(_dbContext); // Data Seeding
 

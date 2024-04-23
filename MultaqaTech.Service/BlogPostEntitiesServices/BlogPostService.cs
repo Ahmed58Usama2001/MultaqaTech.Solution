@@ -25,38 +25,63 @@ public class BlogPostService(IUnitOfWork unitOfWork) : IBlogPostService
     {
         var spec = new BlogPostWithIncludesSpecifications(blogPostId);
 
-        var blogPost = await _unitOfWork.Repository<BlogPost>().GetByIdWithSpecAsync(spec);
+        try
+        {
+            var blogPost = await _unitOfWork.Repository<BlogPost>().GetByIdWithSpecAsync(spec);
 
-        return blogPost;
+            if (blogPost is null) return null;
+
+            return blogPost;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+            return null;
+        }
     }
 
     public async Task<IReadOnlyList<BlogPost>> ReadBlogPostsAsync(BlogPostSpeceficationsParams speceficationsParams)
     {
         var spec = new BlogPostWithIncludesSpecifications(speceficationsParams);
 
-        var blogPosts = await _unitOfWork.Repository<BlogPost>().GetAllWithSpecAsync(spec);
+        try
+        {
+            var blogPosts = await _unitOfWork.Repository<BlogPost>().GetAllWithSpecAsync(spec);
 
-        return blogPosts;
+            if (blogPosts is null) return null;
+
+            return blogPosts;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+            return null;
+        }
     }
 
-    public async Task<BlogPost?> UpdateBlogPost(int blogPostId, BlogPost updatedBlogPost)
+    public async Task<BlogPost?> UpdateBlogPost(BlogPost storedBlogPost, BlogPost newBlogPost)
     {
-        var blogPost = await _unitOfWork.Repository<BlogPost>().GetByIdAsync(blogPostId);
-
-        if (blogPost == null) return null;
-
-        if (updatedBlogPost == null || string.IsNullOrWhiteSpace(updatedBlogPost.Title))
+        if (newBlogPost == null || storedBlogPost == null)
             return null;
 
-        blogPost= updatedBlogPost;
+        storedBlogPost.Id= newBlogPost.Id;
+        storedBlogPost.Title= newBlogPost.Title;
+        storedBlogPost.Content= newBlogPost.Content;
+        storedBlogPost.PostPictureUrl= newBlogPost.PostPictureUrl;
+        storedBlogPost.Category= newBlogPost.Category;
+        storedBlogPost.BlogPostCategoryId= newBlogPost.BlogPostCategoryId;
+        storedBlogPost.PublishingDate= newBlogPost.PublishingDate;
+        storedBlogPost.NumberOfViews= newBlogPost.NumberOfViews;
+        storedBlogPost.Tags= newBlogPost.Tags;
+        storedBlogPost.Comments= newBlogPost.Comments;
 
         try
         {
-            _unitOfWork.Repository<BlogPost>().Update(blogPost);
+            _unitOfWork.Repository<BlogPost>().Update(storedBlogPost);
             var result = await _unitOfWork.CompleteAsync();
             if (result <= 0) return null;
 
-            return blogPost;
+            return storedBlogPost;
         }
         catch (Exception ex)
         {

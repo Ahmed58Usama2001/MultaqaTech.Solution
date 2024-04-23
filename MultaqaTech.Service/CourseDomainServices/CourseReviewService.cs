@@ -8,8 +8,8 @@ public partial class CourseService
         {
             review.StudentName = student?.FirstName + " " + student?.LastName;
 
-            Course courseFromDb = await _unitOfWork.Repository<Course>().GetByIdAsync(review.CourseId) ?? new();
-            review.Id = courseFromDb.Reviews is null ? 1 : courseFromDb.Reviews.Count;
+            Course? courseFromDb = await _unitOfWork.Repository<Course>().GetByIdAsync(review.CourseId);
+            review.Id = courseFromDb?.Reviews is null ? 1 : courseFromDb.Reviews.Count;
 
             courseFromDb?.Reviews?.Add(review);
 
@@ -36,7 +36,7 @@ public partial class CourseService
             if (courseFromDb == null || courseFromDb.Reviews == null)
                 return null;
 
-            CourseReview? reviewToBeUpdated = courseFromDb.Reviews.FirstOrDefault(cr => cr.Id.Equals(review.Id));
+            CourseReview? reviewToBeUpdated = courseFromDb.Reviews.Find(cr => cr.Id.Equals(review.Id));
             if (reviewToBeUpdated == null)
                 return null;
 
@@ -61,7 +61,7 @@ public partial class CourseService
     {
         try
         {
-            Course courseFromDb = await _unitOfWork.Repository<Course>().GetByIdAsync(review.CourseId) ?? new();
+            Course? courseFromDb = await _unitOfWork.Repository<Course>().GetByIdAsync(review.CourseId);
 
             CourseReview reviewToBeRemoved = courseFromDb?.Reviews?.Find(cr => cr.Id.Equals(review.Id)) ?? new();
             courseFromDb?.Reviews?.Remove(reviewToBeRemoved);
@@ -76,7 +76,7 @@ public partial class CourseService
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex.Message);
             return false;
         }
     }

@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
 
-public class Lecture:CurriculumItem
+public class Lecture : CurriculumItem
 {
     public string VideoUrl
     {
@@ -8,7 +8,7 @@ public class Lecture:CurriculumItem
         set { base.MediaUrl = value; }
     }
 
-    public CurriculumItemType CurriculumItemType { get; set; }=CurriculumItemType.Lecture;
+    public CurriculumItemType CurriculumItemType { get; set; } = CurriculumItemType.Lecture;
 
     public List<Note>? Notes { get; set; } = new();
     public List<Question>? Questions { get; set; } = new();

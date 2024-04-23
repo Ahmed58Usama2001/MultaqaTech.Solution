@@ -1,4 +1,5 @@
 ﻿
+
 namespace MultaqaTech.Core.Services.Contract.AccountModuleContracts;
 
 public interface IFacebookAuthService
