@@ -4,7 +4,7 @@ public class Note : BaseEntity
 {
     public string Content { get; set; }
 
-    public string WriterStudentId { get; set; }
+    public int WriterStudentId { get; set; }
 
     public DateTime PublishingDate { get; set; }
 

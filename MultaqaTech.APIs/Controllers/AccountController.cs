@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.APIs.Controllers;
+﻿using MultaqaTech.Repository;
+
+namespace MultaqaTech.APIs.Controllers;
 
 public class AccountController : BaseApiController
 {
@@ -9,13 +11,15 @@ public class AccountController : BaseApiController
     private readonly IMapper _mapper;
     private readonly IConfiguration _configuration;
     private readonly HttpClient _httpClient;
+    private readonly IUnitOfWork _unitOfWork;
 
     public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
         IAuthService authService,
         RoleManager<IdentityRole> roleManager,
         IMapper mapper,
         IConfiguration configuration,
-        HttpClient httpClient)
+        HttpClient httpClient,
+        IUnitOfWork unitOfWork)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -24,6 +28,7 @@ public class AccountController : BaseApiController
         _mapper = mapper;
         _configuration = configuration;
         _httpClient = httpClient;
+        _unitOfWork= unitOfWork;
     }
 
     [HttpPost("login")]
@@ -117,6 +122,9 @@ public class AccountController : BaseApiController
         if (CheckPhoneNumberExists(model.PhoneNumber).Result.Value)
             return BadRequest(new ApiValidationErrorResponse() { Errors = new string[] { "This phone number already exists!" } });
 
+        Student? student = new();   
+        await _unitOfWork.Repository<Student>().AddAsync(student);
+
         var user = new AppUser
         {
             Email = model.Email,
@@ -124,7 +132,9 @@ public class AccountController : BaseApiController
             LastName = model.LastName,
             UserName = model.UserName,
             PhoneNumber = model.PhoneNumber,
-            RegistrationDate = DateTime.Now
+            RegistrationDate = DateTime.Now,
+            Student=student,
+            StudentId=student.Id
         };
 
         var result = await _userManager.CreateAsync(user, model.Password);
@@ -132,8 +142,14 @@ public class AccountController : BaseApiController
         if (!result.Succeeded)
         {
             string errors = string.Join(", ", result.Errors.Select(error => error.Description));
+            _unitOfWork.Repository<Student>().Delete(student);
             return BadRequest(new ApiResponse(400, errors));
         }
+
+        student.AppUser=user;
+        student.AppUserId=user.Id;
+        _unitOfWork.Repository<Student>().Update(student);
+
 
         return Ok(new UserDto
         {

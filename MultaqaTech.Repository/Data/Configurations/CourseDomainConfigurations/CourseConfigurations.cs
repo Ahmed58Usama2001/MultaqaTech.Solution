@@ -1,4 +1,7 @@
-﻿namespace MultaqaTech.Repository.Data.Configurations.CourseDomainConfigurations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
+
+namespace MultaqaTech.Repository.Data.Configurations.CourseDomainConfigurations;
 
 internal class CourseConfigurations : IEntityTypeConfiguration<Course>
 {
@@ -16,9 +19,9 @@ internal class CourseConfigurations : IEntityTypeConfiguration<Course>
 
         builder.Ignore(l => l.MediaUrl);
 
-        builder.HasOne(e => e.Instructor)
+        builder.HasOne(e => e.Instractor)
                .WithMany(i => i.Courses)
-               .HasForeignKey(e => e.InstructorId)
+               .HasForeignKey(e => e.InstractorId)
                .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(e => e.Subject)
@@ -29,15 +32,15 @@ internal class CourseConfigurations : IEntityTypeConfiguration<Course>
         builder.HasMany(bp => bp.CurriculumSections)
                .WithOne(c => c.Course)
                .HasForeignKey(c => c.CourseId)
-               .OnDelete(DeleteBehavior.Cascade);
+        .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(c => c.Tags)
-               .WithMany(s => s.AssociatedCourses)
-               .UsingEntity(j => j.ToTable("CourseTags"));
+         .WithMany(s => s.AssociatedCoursesTags)
+         .UsingEntity(j => j.ToTable("CourseTags"));
 
         builder.HasMany(c => c.Prerequisites)
-               .WithMany()
-               .UsingEntity(j => j.ToTable("CousePrerequests"));
+          .WithMany()
+          .UsingEntity(j => j.ToTable("CoursePrerequisites"));
 
         builder.Property(e => e.Reviews)
                .HasConversion(v => JsonSerializer

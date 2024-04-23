@@ -2,8 +2,8 @@
 
 public class Course : BaseEntityWithMediaUrl
 {
-    public string InstructorId { get; set; } = string.Empty;
-    public Instractor Instructor { get; set; } = new ();
+    public int InstractorId { get; set; }
+    public Instructor Instractor { get; set; } = new ();
 
     public int SubjectId { get; set; }
     public Subject Subject { get; set; } = new();
@@ -42,11 +42,11 @@ public class Course : BaseEntityWithMediaUrl
     public List<CourseReview>? Reviews { get; set; } = new();
 
     public List<CurriculumSection>? CurriculumSections { get; set; } = new();
+    public List<StudentCourse>? StudentCourses { get; set; } = new();
 
     public List<string>? LearningObjectives { get; set; } = new();
     public List<string>? LecturesLinks { get; set; } = new();
-    public List<string> EnrolledStudentsIds { get; set; } = new();
-    public List<Student> Students { get; set; } = new();
+    public List<int> EnrolledStudentsIds { get; set; } = new();
 
     [NotMapped] public List<int>? TagsIds { get; set; } = new();
     [NotMapped] public List<int>? PrerequisitesIds { get; set; } = new();

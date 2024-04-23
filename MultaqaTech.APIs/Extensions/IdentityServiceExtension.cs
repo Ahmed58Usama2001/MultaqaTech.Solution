@@ -14,7 +14,7 @@ public static class IdentityServiceExtension
             options.Password.RequireNonAlphanumeric = true;
             options.Password.RequireUppercase = true;
             options.Password.RequireLowercase = true;
-        }).AddEntityFrameworkStores<AppIdentityDbContext>()
+        }).AddEntityFrameworkStores<MultaqaTechContext>()
           .AddDefaultTokenProviders()
           .AddRoles<IdentityRole>();
 

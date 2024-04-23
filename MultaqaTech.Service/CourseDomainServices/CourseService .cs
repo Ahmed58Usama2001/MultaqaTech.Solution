@@ -5,20 +5,23 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ISubjectService _subjectService = subjectService;
 
-    private async Task BeforeCreate(Course course, AppUser? instructor)
+    private async Task BeforeCreate(Course course, Instructor? instructor)
     {
+      
+
         course.UploadDate = DateTime.Now;
         course.LastUpdatedDate = DateTime.Now;
-        course.InstructorId = instructor.Id;
-        //course.Instructor = instructor;
+        course.InstractorId = instructor.Id;
+        course.Instractor = instructor;
         course.Subject = await _subjectService.ReadByIdAsync(course.SubjectId) ?? new();
         course.Tags = await MapSubjectsAsync(course.TagsIds ?? new());
         course.Prerequisites = await MapSubjectsAsync(course.PrerequisitesIds ?? new());
         //
         //
+
         await Task.CompletedTask;
     }
-    public async Task<Course?> CreateCourseAsync(Course course, AppUser? instructor)
+    public async Task<Course?> CreateCourseAsync(Course course, Instructor? instructor)
     {
         ArgumentNullException.ThrowIfNull(course);
 

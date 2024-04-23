@@ -5,7 +5,7 @@ public class NoteWithIncludesSpecifications : BaseSpecifications<Note>
     public NoteWithIncludesSpecifications(NoteSpeceficationsParams speceficationsParams)
         : base(e =>
            (
-                 (string.IsNullOrEmpty(speceficationsParams.writerStudentId) || e.WriterStudentId == speceficationsParams.writerStudentId) &&
+                 (speceficationsParams.writerStudentId == null || e.WriterStudentId == speceficationsParams.writerStudentId) &&
                  (speceficationsParams.lectureId == null || e.LectureId == speceficationsParams.lectureId)
            ))
 

@@ -2,12 +2,12 @@
 
 public class GoogleAuthService : IGoogleAuthService
 {
-    private readonly UserManager<AppUser> _userManager;
+    private readonly UserManager<Core.Entities.Identity.AppUser> _userManager;
     private readonly MultaqaTechContext _context;
     private readonly GoogleAuthConfig _googleAuthConfig;
 
     public GoogleAuthService(
-        UserManager<AppUser> userManager,
+        UserManager<Core.Entities.Identity.AppUser> userManager,
         MultaqaTechContext context,
         IOptions<GoogleAuthConfig> googleAuthConfig
         )
@@ -17,7 +17,7 @@ public class GoogleAuthService : IGoogleAuthService
         _googleAuthConfig = googleAuthConfig.Value;
     }
 
-    public async Task<AppUser> GoogleSignIn(GoogleSignInVM model)
+    public async Task<Core.Entities.Identity.AppUser> GoogleSignIn(GoogleSignInVM model)
     {
 
         Payload payload = new();

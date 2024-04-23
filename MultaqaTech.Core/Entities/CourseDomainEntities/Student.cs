@@ -1,6 +1,10 @@
 ﻿namespace MultaqaTech.Core.Entities.CourseDomainEntities;
 
-public class Student : AppUser
+public class Student : BaseEntity
 {
-    public List<Course>? Courses { get; set; }
+    public string AppUserId { get; set; }
+    public AppUser AppUser { get; set; }
+
+    public List<StudentCourse>? StudentCourses { get; set; } = new();
+
 }

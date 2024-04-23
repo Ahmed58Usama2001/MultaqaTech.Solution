@@ -18,10 +18,10 @@ public class Program
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
         });
 
-        builder.Services.AddDbContext<AppIdentityDbContext>(options =>
-        {
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-        });
+        //builder.Services.AddDbContext<AppIdentityDbContext>(options =>
+        //{
+        //    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+        //});
 
         builder.Services.AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
         {
@@ -62,7 +62,7 @@ public class Program
         var _dbContext = services.GetRequiredService<MultaqaTechContext>();
         ////Ask CLR for creating object from Context explicitly
 
-        var _identityDbContext = services.GetRequiredService<AppIdentityDbContext>();
+        //var _identityDbContext = services.GetRequiredService<AppIdentityDbContext>();
 
 
         var loggerFactory = services.GetRequiredService<ILoggerFactory>();
@@ -72,10 +72,10 @@ public class Program
             await _dbContext.Database.MigrateAsync(); // Update-Database
             //await MultaqaTechContextSeed.SeedAsync(_dbContext); // Data Seeding
 
-            await _identityDbContext.Database.MigrateAsync(); // Update-Database
+            //await _identityDbContext.Database.MigrateAsync(); // Update-Database
 
-            var _userManager = services.GetRequiredService<UserManager<AppUser>>();
-            await AppIdentityDbContextSeed.SeedUsersAsync(_userManager); // Data Seeding
+            var _userManager = services.GetRequiredService<UserManager<Core.Entities.Identity.AppUser>>();
+            /*await AppIdentityDbContextSeed.SeedUsersAsync(_userManager);*/ // Data Seeding
         }
         catch (Exception ex)
         {

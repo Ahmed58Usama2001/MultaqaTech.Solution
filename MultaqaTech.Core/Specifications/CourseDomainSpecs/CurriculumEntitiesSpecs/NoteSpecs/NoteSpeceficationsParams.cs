@@ -3,7 +3,7 @@
 public class NoteSpeceficationsParams
 {
     public int? lectureId { get; set; }
-    public string? writerStudentId { get; set; }
+    public int? writerStudentId { get; set; }
 
     public string? sort { get; set; }
 

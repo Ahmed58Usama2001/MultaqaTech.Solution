@@ -1,12 +1,12 @@
 ﻿namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
 
 [Authorize]
-public class BlogPostCommentsController(IBlogPostService blogPostService, IMapper mapper, UserManager<AppUser> userManager, IBlogPostCommentService blogPostCommentService
+public class BlogPostCommentsController(IBlogPostService blogPostService, IMapper mapper, UserManager<Core.Entities.Identity.AppUser> userManager, IBlogPostCommentService blogPostCommentService
     ,IUnitOfWork unitOfWork) : BaseApiController
 {
     private readonly IBlogPostService _blogPostService = blogPostService;
     private readonly IMapper _mapper = mapper;
-    private readonly UserManager<AppUser> _userManager = userManager;
+    private readonly UserManager<Core.Entities.Identity.AppUser> _userManager = userManager;
     private readonly IBlogPostCommentService _blogPostCommentService = blogPostCommentService;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 

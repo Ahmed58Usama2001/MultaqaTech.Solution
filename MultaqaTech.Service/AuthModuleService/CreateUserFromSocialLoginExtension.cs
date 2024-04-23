@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.Service.AuthModuleService;
+﻿using MultaqaTech.Core.Entities.CourseDomainEntities;
+
+namespace MultaqaTech.Service.AuthModuleService;
 
 public static class CreateUserFromSocialLoginExtension
 {
@@ -15,21 +17,42 @@ public static class CreateUserFromSocialLoginExtension
 
         if (user is null)
         {
-            user = new AppUser
+                Student? student = new();
+                context.Students.Add(student);
+
+                user = new AppUser
+                {
+                    Email = model.Email,
+                    UserName = model.UserName,
+                    ProfilePictureUrl = model.ProfilePicture,
+                    RegistrationDate = DateTime.Now,
+                    Student = student,
+                    StudentId = student.Id
+                };
+
+            try
             {
-                Email = model.Email,
-                UserName = model.Email.Split('@').First(),
-                ProfilePictureUrl = model.ProfilePicture,
-                RegistrationDate = DateTime.Now
-            };
+                await userManager.CreateAsync(user);
 
-            await userManager.CreateAsync(user);
+                student.AppUser = user;
+                student.AppUserId = user.Id;
+                context.Students.Update(student);
 
-            //EMAIL IS CONFIRMED; IT IS COMING FROM AN IDENTITY PROVIDER            
-            user.EmailConfirmed = true;
 
-            await userManager.UpdateAsync(user);
-            await context.SaveChangesAsync();
+                //EMAIL IS CONFIRMED; IT IS COMING FROM AN IDENTITY PROVIDER            
+                user.EmailConfirmed = true;
+
+                await userManager.UpdateAsync(user);
+
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                context.Students.Remove(student);
+                Log.Error(ex.ToString());
+                return null;
+            }
+
         }
         else
             return null;

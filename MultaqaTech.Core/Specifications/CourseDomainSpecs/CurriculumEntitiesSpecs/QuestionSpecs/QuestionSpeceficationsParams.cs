@@ -3,7 +3,7 @@
 public class QuestionSpeceficationsParams
 {
     public int? lectureId { get; set; }
-    public string? askerId { get; set; }
+    public int? askerId { get; set; }
 
     public string? sort { get; set; }
 

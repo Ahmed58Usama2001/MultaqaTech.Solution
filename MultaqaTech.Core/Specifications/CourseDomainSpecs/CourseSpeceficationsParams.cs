@@ -2,9 +2,11 @@
 
 public class CourseSpeceficationsParams
 {
-    public string? InstractorId { get; set; }
-    public string? StudentId { get; set; }
+    public int? InstractorId { get; set; }
+    public int? StudentId { get; set; }
     public string? Language { get; set; }
+
+    public string? sort { get; set; }
 
     public int? SubjectId { get; set; }
     public decimal? MinPrice { get; set; }

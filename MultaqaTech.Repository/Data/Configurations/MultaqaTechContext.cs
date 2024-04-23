@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Repository.Data.Configurations;
 
-public class MultaqaTechContext : DbContext
+public class MultaqaTechContext : IdentityDbContext<AppUser>
 {
 
     public MultaqaTechContext(DbContextOptions<MultaqaTechContext> options)
@@ -9,8 +9,25 @@ public class MultaqaTechContext : DbContext
 
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder) 
-        => modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<AppUser>()
+            .HasOne(u => u.Instructor)
+            .WithOne(i => i.AppUser)
+            .HasForeignKey<AppUser>(u => u.InstructorId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<AppUser>()
+           .HasOne(u => u.Student)
+           .WithOne(i => i.AppUser)
+           .HasForeignKey<AppUser>(u => u.StudentId)
+           .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+    }
 
     public DbSet<Subject> Subjects { get; set; }
 
@@ -33,7 +50,12 @@ public class MultaqaTechContext : DbContext
 
     public DbSet<Quiz> Quizes { get; set; }
     public DbSet<QuizQuestion> QuizQuestions { get; set; }
-    public DbSet<QuizQuestionChoice> QuizQuestionChoices { get; set; } 
+    public DbSet<QuizQuestionChoice> QuizQuestionChoices { get; set; }
+
+
+    public DbSet<Student> Students { get; set; }
+    public DbSet<Instructor> Instructors { get; set; }
+    public DbSet<StudentCourse> StudentCourses { get; set; }
     #endregion
 
     #region Zoom Meetings

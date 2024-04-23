@@ -12,7 +12,7 @@ public class Question : BaseEntityWithMediaUrl
 
     public DateTime PublishingDate { get; set; }
 
-    public string AskerId { get; set; }
+    public int AskerId { get; set; }
 
     public int LectureId { get; set; }
     public Lecture Lecture { get; set; }

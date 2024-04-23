@@ -6,7 +6,10 @@ internal class StudentConfigurations : IEntityTypeConfiguration<Student>
     {
         builder.ToTable("Students");
 
-        builder.HasMany(bp => bp.Courses)
-               .WithMany(c => c.Students);
+        builder.HasOne(s => s.AppUser) // Student or Instructor
+.WithOne(u => u.Student)   // Clarifies dependent side (optional for Student)
+.HasForeignKey<Student>(s => s.AppUserId) // Or Instructor.AppUserId
+.OnDelete(DeleteBehavior.Restrict); // Adjust if needed
+
     }
 }

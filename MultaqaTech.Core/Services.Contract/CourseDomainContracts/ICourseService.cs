@@ -2,7 +2,7 @@
 
 public interface ICourseService : ICourseReviewService
 {
-    Task<Course?> CreateCourseAsync(Course course, AppUser? instructor);
+    Task<Course?> CreateCourseAsync(Course course,Instructor? instructor);
 
     Task<Course?> ReadByIdAsync(int courseId);
 
@@ -16,4 +16,6 @@ public interface ICourseService : ICourseReviewService
 
     Task<IEnumerable<Course>?> ReadCoursesForInstructor(CourseSpeceficationsParams courseSpeceficationsParams);
     Task<(bool isUnique, int courseIdWithSameTitle)> CheckTitleUniqueness(string title);
+
+
 }

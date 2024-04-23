@@ -4,7 +4,7 @@ public class Answer : BaseEntity
 {
     public string Content { get; set; }
 
-    public string AnswererId { get; set; }
+    public int AnswererId { get; set; }
 
     public DateTime PublishingDate { get; set; }
 

@@ -5,12 +5,12 @@ using Pipelines.Sockets.Unofficial.Arenas;
 namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
 
 [Authorize]
-public class BlogPostsController(IBlogPostService blogPostService, IMapper mapper, UserManager<AppUser> userManager, IBlogPostCategoryService blogPostCategoryService
+public class BlogPostsController(IBlogPostService blogPostService, IMapper mapper, UserManager<Core.Entities.Identity.AppUser> userManager, IBlogPostCategoryService blogPostCategoryService
     ,ISubjectService subjectService,IUnitOfWork unitOfWork) : BaseApiController
 {
     private readonly IBlogPostService _blogPostService = blogPostService;
     private readonly IMapper _mapper = mapper;
-    private readonly UserManager<AppUser> _userManager = userManager;
+    private readonly UserManager<Core.Entities.Identity.AppUser> _userManager = userManager;
     private readonly IBlogPostCategoryService _blogPostCategoryService = blogPostCategoryService;
     private readonly ISubjectService _subjectService = subjectService;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;

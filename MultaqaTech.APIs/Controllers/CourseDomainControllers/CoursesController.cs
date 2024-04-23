@@ -1,11 +1,11 @@
 ﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers;
 
 [Authorize]
-public partial class CoursesController(ICourseService courseService, IMapper mapper, UserManager<AppUser> userManager) : BaseApiController
+public partial class CoursesController(ICourseService courseService, IMapper mapper, UserManager<Core.Entities.Identity.AppUser> userManager) : BaseApiController
 {
     private readonly ICourseService _courseService = courseService;
     private readonly IMapper _mapper = mapper;
-    private readonly UserManager<AppUser> _userManager = userManager;
+    private readonly UserManager<Core.Entities.Identity.AppUser> _userManager = userManager;
 
     [ProducesResponseType(typeof(CourseToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -18,8 +18,14 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         string? instructorEmail = User.FindFirstValue(ClaimTypes.Email);
         if (instructorEmail is null) return NotFound(new ApiResponse(401));
 
-        AppUser? instructor = await _userManager.FindByEmailAsync(instructorEmail);
-        if (instructor is null) return NotFound(new ApiResponse(401));
+        AppUser? storedUser = await _userManager.FindByEmailAsync(instructorEmail);
+        if (storedUser is null) return NotFound(new ApiResponse(401));
+
+        Instructor? instructor = new()
+        {
+            AppUser=storedUser,
+            AppUserId=storedUser.Id
+        };
 
         (bool isTitleUnique, _) = await _courseService.CheckTitleUniqueness(courseDto.Title);
         if (!isTitleUnique) return BadRequest(new ApiResponse(400, "Course Title Should Be Unique"));
@@ -60,7 +66,7 @@ public partial class CoursesController(ICourseService courseService, IMapper map
     [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("GetCoursesForInstructorByInstructorId/{instructorId}")]
-    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForInstructorByInstructorId(string instructorId, [FromQuery] CourseSpeceficationsParams courseSpeceficationsParams)
+    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForInstructorByInstructorId(int instructorId, [FromQuery] CourseSpeceficationsParams courseSpeceficationsParams)
     {
         courseSpeceficationsParams.InstractorId = instructorId;
 

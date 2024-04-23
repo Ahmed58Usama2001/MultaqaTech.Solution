@@ -5,7 +5,7 @@ public class AnswerWithFilterationForCountSpecifications : BaseSpecifications<An
     public AnswerWithFilterationForCountSpecifications(AnswerSpeceficationsParams speceficationsParams) :
          base(e =>
            (
-                 (string.IsNullOrEmpty(speceficationsParams.answererId) || e.AnswererId == speceficationsParams.answererId) &&                
+                 (speceficationsParams.answererId == null || e.AnswererId == speceficationsParams.answererId) &&
                  (speceficationsParams.questionId == null || e.QuestionId == speceficationsParams.questionId)                 
            ))
     {

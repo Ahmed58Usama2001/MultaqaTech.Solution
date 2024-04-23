@@ -2,7 +2,7 @@
 
 public partial class CourseService
 {
-    public async Task<CourseReview?> CreateCourseReviewAsync(CourseReview review, AppUser? student)
+    public async Task<CourseReview?> CreateCourseReviewAsync(CourseReview review, Core.Entities.Identity.AppUser? student)
     {
         try
         {

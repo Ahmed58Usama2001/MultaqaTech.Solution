@@ -9,7 +9,6 @@ global using MultaqaTech.APIs.MiddleWares;
 global using MultaqaTech.APIs.Dtos.ZoomDtos;
 global using MultaqaTech.Core.Entities.Enums;
 global using MultaqaTech.Core.Specifications;
-global using MultaqaTech.Repository.Identity;
 global using MultaqaTech.APIs.Dtos.AccountDtos;
 global using MultaqaTech.Core.Services.Contract;
 global using MultaqaTech.Core.Entities.Identity;

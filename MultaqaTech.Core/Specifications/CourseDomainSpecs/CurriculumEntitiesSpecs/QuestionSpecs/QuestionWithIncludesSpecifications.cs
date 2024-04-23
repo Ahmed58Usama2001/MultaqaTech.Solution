@@ -5,7 +5,7 @@ public class QuestionWithIncludesSpecifications : BaseSpecifications<Question>
     public QuestionWithIncludesSpecifications(QuestionSpeceficationsParams speceficationsParams)
         : base(e =>
            (
-                 (string.IsNullOrEmpty(speceficationsParams.askerId) || e.AskerId == speceficationsParams.askerId) &&
+                 (speceficationsParams.askerId == null || e.AskerId == speceficationsParams.askerId) &&
                  (speceficationsParams.lectureId == null || e.LectureId == speceficationsParams.lectureId)
            ))
 
