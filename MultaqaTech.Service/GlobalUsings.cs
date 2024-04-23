@@ -15,6 +15,7 @@ global using MultaqaTech.Core.Entities.BlogPostDomainEntities;
 global using MultaqaTech.Core.Services.Contract.BlogPostContracts;
 global using MultaqaTech.Core.Services.Contract.AuthDomainContracts;
 global using MultaqaTech.Core.Services.Contract.ZoomMeetingContracts;
+global using MultaqaTech.Core.Specifications.ZoomMeetingEntitiesSpecs;
 global using MultaqaTech.Core.Services.Contract.AccountModuleContracts;
 global using MultaqaTech.Core.Services.Contract.CourseDomainContracts;
 global using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;

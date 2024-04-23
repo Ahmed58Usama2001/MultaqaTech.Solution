@@ -35,6 +35,8 @@ global using MultaqaTech.Core.Services.Contract.CourseDomainContracts;
 global using MultaqaTech.Core.Services.Contract.AccountModuleContracts;
 global using MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
 global using MultaqaTech.Core.Services.Contract.CourseDomainContracts.CurriculumDomainContracts;
+global using MultaqaTech.Core.Specifications.ZoomMeetingEntitiesSpecs;
+global using System.Security.Cryptography;
 
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;

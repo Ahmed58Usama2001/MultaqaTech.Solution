@@ -21,7 +21,12 @@
 
             builder.Property(e => e.MeetingId)
             .IsRequired();
-            
+
+            builder.Property(e => e.MeetingUrl)
+            .IsRequired();
+
+            builder.Property(e => e.TimeZone)
+            .IsRequired();
 
             builder.Property(e => e.ZoomMeetingCategoryId)
              .IsRequired();

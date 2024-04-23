@@ -9,6 +9,7 @@ public class ZoomMeetingCreateDto
     public int Duration { get; set; }
 
     public string PictureUrl { get; set; }
+    public string TimeZone { get; set; }
 
     public int CategoryId { get; set; }
 }

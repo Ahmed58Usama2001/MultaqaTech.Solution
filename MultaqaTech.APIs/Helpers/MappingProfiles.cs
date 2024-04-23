@@ -34,5 +34,9 @@ public class MappingProfiles : Profile
         CreateMap<CourseReview, CourseReviewToReturnDto>()
            .ForMember(d => d.ProfilePictureUrl, O => O.MapFrom<GenericMediaUrlResolver<CourseReview, CourseReviewToReturnDto>>());
         CreateMap<ZoomMeetingCategoryCreateDto, ZoomMeetingCategory>();
+        CreateMap<ZoomMeeting , ZoomMeetingToReturnDto>()
+            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
+            .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate.ToString("dddd, MMMM dd, yyyy 'at' hh:mm:ss tt")))
+            .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<GenericMediaUrlResolver<ZoomMeeting, ZoomMeetingToReturnDto>>());
     }
 }

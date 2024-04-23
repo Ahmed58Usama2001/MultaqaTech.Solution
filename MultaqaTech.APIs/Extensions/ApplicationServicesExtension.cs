@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.APIs.Extensions;
+﻿using MultaqaTech.Service.ZoomMeetingEntites;
+
+namespace MultaqaTech.APIs.Extensions;
 
 public static class ApplicationServicesExtension
 {
@@ -34,6 +36,7 @@ public static class ApplicationServicesExtension
         services.AddScoped<ICourseService, CourseService>();
         services.AddScoped<ICourseReviewService, CourseService>();
         services.AddScoped<IZoomMeetingCategoryService , ZoomMeetingCategoryService>();
+        services.AddScoped<IZoomMeetingService , ZoomMeetingService>();
         services.AddScoped<IAnswerService , AnswerService>();
         services.AddScoped<ICurriculumItemService , CurriculumItemService>();
         services.AddScoped<ICurriculumSectionService , CurriculumSectionService>();

@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.APIs.Dtos.ZoomDtos;
 
-public class ZoomMeetingToReturn
+public class ZoomMeetingToReturnDto
 {
     public int Id { get; set; }
 
@@ -13,9 +13,11 @@ public class ZoomMeetingToReturn
     public string? PictureUrl { get; set; }
 
     public int Duration { get; set; }
-    public int MeetingId { get; set; }
+    public string MeetingId { get; set; }
     public int CategoryId { get; set; }
     public string Category { get; set; }
+    public string MeetingUrl { get; set; }
+    public string TimeZone { get; set; }
 
     public string StartDate { get; set; }
 
