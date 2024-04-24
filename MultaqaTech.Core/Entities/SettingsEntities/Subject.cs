@@ -9,7 +9,4 @@ public class Subject : BaseEntity
 
     [JsonIgnore]
     public List<Course> AssociatedCoursesTags { get; set; } = new();
-
-    public List<ZoomMeeting> ZoomMeetings { get; set; } = [];
-
 }

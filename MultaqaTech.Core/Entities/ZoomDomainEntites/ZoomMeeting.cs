@@ -14,8 +14,10 @@ public class ZoomMeeting : BaseEntityWithMediaUrl
         get { return base.MediaUrl; }
         set { base.MediaUrl = value; }
     }
+
     public int ZoomMeetingCategoryId { get; set; }
     public ZoomMeetingCategory Category { get; set; }
+
     public DateTime StartDate { get; set; }
     public int Duration { get; set; }
 }
