@@ -44,7 +44,7 @@ public class ZoomMeetingCategoryService(IUnitOfWork unitOfWork) : IZoomMeetingCa
             return false;
         }
     }
-/*
+
     public async Task<IReadOnlyList<ZoomMeetingCategory>> ReadAllAsync()
     {
         try
@@ -59,7 +59,7 @@ public class ZoomMeetingCategoryService(IUnitOfWork unitOfWork) : IZoomMeetingCa
             return null;
         }
     }
-*/
+
     public async Task<ZoomMeetingCategory?> ReadByIdAsync(int categoryId)
     {
         try

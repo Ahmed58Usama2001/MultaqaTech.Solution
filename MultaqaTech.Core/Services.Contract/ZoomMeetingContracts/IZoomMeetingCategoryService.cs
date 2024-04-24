@@ -4,7 +4,7 @@ public interface IZoomMeetingCategoryService
 {
     Task<ZoomMeetingCategory?> CreateZoomMeetingCategoryAsync(ZoomMeetingCategory category);
     
- // Task<IReadOnlyList<ZoomMeetingCategory>> ReadAllAsync();
+    Task<IReadOnlyList<ZoomMeetingCategory>> ReadAllAsync();
 
     Task<ZoomMeetingCategory?> ReadByIdAsync(int categoryId);
 

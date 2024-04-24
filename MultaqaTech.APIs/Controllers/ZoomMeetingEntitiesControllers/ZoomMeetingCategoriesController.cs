@@ -11,7 +11,7 @@ namespace MultaqaTech.APIs.Controllers.ZoomMeetingEntitiesControllers
         [ProducesResponseType(typeof(ZoomMeetingCategory), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [HttpPost]
-        public async Task<ActionResult<ZoomMeetingCategory>> CreateSubject(ZoomMeetingCategoryCreateDto zoomMeetingCategoryDto)
+        public async Task<ActionResult<ZoomMeetingCategory>> CreatezoomMeetingCategory(ZoomMeetingCategoryCreateDto zoomMeetingCategoryDto)
         {
             if (zoomMeetingCategoryDto is null) return BadRequest(new ApiResponse(400));
             var createdCategory = await _zoomMeetingCategoryService.CreateZoomMeetingCategoryAsync(_mapper.Map<ZoomMeetingCategory>(zoomMeetingCategoryDto));
@@ -21,11 +21,24 @@ namespace MultaqaTech.APIs.Controllers.ZoomMeetingEntitiesControllers
             return Ok(createdCategory);
         }
 
+        [ProducesResponseType(typeof(ZoomMeetingCategory), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [HttpGet]
+        public async Task<ActionResult<IReadOnlyList<ZoomMeetingCategory>>> GetAllBlogPostCategories()
+        {
+            var categories = await _zoomMeetingCategoryService.ReadAllAsync();
+
+            if (categories == null)
+                return NotFound(new { Message = "Not Found", StatusCode = 404 });
+
+            return Ok(categories);
+        }
+
 
         [ProducesResponseType(typeof(ZoomMeetingCategory), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ZoomMeetingCategory>> GetSubject(int id)
+        public async Task<ActionResult<ZoomMeetingCategory>> GetzoomMeetingCategory(int id)
         {
             var category = await _zoomMeetingCategoryService.ReadByIdAsync(id);
 
@@ -37,9 +50,9 @@ namespace MultaqaTech.APIs.Controllers.ZoomMeetingEntitiesControllers
 
         [ProducesResponseType(typeof(ZoomMeetingCategory), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        [HttpPut]
-        
-        public async Task<ActionResult<ZoomMeetingCategory>> UpdateSubject(int categoryId, ZoomMeetingCategoryCreateDto updatedCategory)
+        [HttpPut("{categoryId}")]
+
+        public async Task<ActionResult<ZoomMeetingCategory>> UpdatezoomMeetingCategory(int categoryId, ZoomMeetingCategoryCreateDto updatedCategory)
         {
             var category = await _zoomMeetingCategoryService.UpdateZoomMeetingCategory(categoryId, _mapper.Map<ZoomMeetingCategory>(updatedCategory));
            

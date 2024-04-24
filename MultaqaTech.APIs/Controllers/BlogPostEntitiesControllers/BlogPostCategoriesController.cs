@@ -10,7 +10,7 @@ public class BlogPostCategoriesController(IBlogPostCategoryService blogPostCateg
     [ProducesResponseType(typeof(BlogPostCategory), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPost]
-    public async Task<ActionResult<BlogPostCategory>> CreateSubject(BlogPostCategoryCreateDto blogPostCategoryDto)
+    public async Task<ActionResult<BlogPostCategory>> CreateBlogPostCategory(BlogPostCategoryCreateDto blogPostCategoryDto)
     {
         if (blogPostCategoryDto is null) return BadRequest(new ApiResponse(400));
 
@@ -21,10 +21,16 @@ public class BlogPostCategoriesController(IBlogPostCategoryService blogPostCateg
         return Ok(createdCategory);
     }
 
+    [ProducesResponseType(typeof(BlogPostCategory), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<BlogPostCategory>>> GetAllSubjects()
+    public async Task<ActionResult<IReadOnlyList<BlogPostCategory>>> GetAllBlogPostCategories()
     {
         var categories = await _blogPostCategoryService.ReadAllAsync();
+
+        if (categories == null)
+            return NotFound(new { Message = "Not Found", StatusCode = 404 });
+
         return Ok(categories);
     }
 
@@ -32,7 +38,7 @@ public class BlogPostCategoriesController(IBlogPostCategoryService blogPostCateg
     [ProducesResponseType(typeof(BlogPostCategory), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("{id}")]
-    public async Task<ActionResult<BlogPostCategory>> GetSubject(int id)
+    public async Task<ActionResult<BlogPostCategory>> GetBlogPostCategory(int id)
     {
         var category = await _blogPostCategoryService.ReadByIdAsync(id);
 
@@ -45,7 +51,7 @@ public class BlogPostCategoriesController(IBlogPostCategoryService blogPostCateg
     [ProducesResponseType(typeof(BlogPostCategory), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpPut("{categoryId}")]
-    public async Task<ActionResult<BlogPostCategory>> UpdateSubject(int categoryId, BlogPostCategoryCreateDto updatedCategory)
+    public async Task<ActionResult<BlogPostCategory>> UpdateBlogPostCategory(int categoryId, BlogPostCategoryCreateDto updatedCategory)
     {
         var category = await _blogPostCategoryService.UpdateBlogPostCategory(categoryId, _mapper.Map<BlogPostCategory>(updatedCategory));
 
