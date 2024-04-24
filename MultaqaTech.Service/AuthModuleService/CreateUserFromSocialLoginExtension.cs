@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Core.Entities.CourseDomainEntities;
-
-namespace MultaqaTech.Service.AuthModuleService;
+﻿namespace MultaqaTech.Service.AuthModuleService;
 
 public static class CreateUserFromSocialLoginExtension
 {
@@ -54,8 +52,7 @@ public static class CreateUserFromSocialLoginExtension
             }
 
         }
-        else
-            return null;
+       
 
         UserLoginInfo userLoginInfo = null;
         switch (loginProvider)
