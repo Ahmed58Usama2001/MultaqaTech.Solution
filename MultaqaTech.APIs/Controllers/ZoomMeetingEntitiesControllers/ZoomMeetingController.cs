@@ -52,7 +52,7 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
             var response = await client.PostAsync(_configuration["ZoomApi:Url"], requestContent);
             if (response.IsSuccessStatusCode)
             {
-                 meetingData = JsonConvert.DeserializeObject<Meeting>(await response.Content.ReadAsStringAsync());
+                 meetingData = (JsonConvert.DeserializeObject<Meeting>(await response?.Content?.ReadAsStringAsync()));
 
             }
             else
@@ -77,8 +77,8 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
             Duration = zoomMeetingDto.Duration,
             StartDate = zoomMeetingDto.StartDate,
             TimeZone = zoomMeetingDto.TimeZone,
-            MeetingUrl = meetingData?.join_url,
-            MeetingId = meetingData?.id,
+            MeetingUrl = meetingData?.join_url??string.Empty,
+            MeetingId = meetingData?.id ?? string.Empty,
 
         };
 

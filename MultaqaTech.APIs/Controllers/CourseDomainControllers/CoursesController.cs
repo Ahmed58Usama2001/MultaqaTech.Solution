@@ -1,11 +1,11 @@
 ﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers;
 
 [Authorize]
-public partial class CoursesController(ICourseService courseService, IMapper mapper, UserManager<Core.Entities.Identity.AppUser> userManager) : BaseApiController
+public partial class CoursesController(ICourseService courseService, IMapper mapper, UserManager<AppUser> userManager) : BaseApiController
 {
     private readonly ICourseService _courseService = courseService;
     private readonly IMapper _mapper = mapper;
-    private readonly UserManager<Core.Entities.Identity.AppUser> _userManager = userManager;
+    private readonly UserManager<AppUser> _userManager = userManager;
 
     [ProducesResponseType(typeof(CourseToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]

@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Service.ZoomMeetingEntites;
-
-namespace MultaqaTech.APIs.Extensions;
+﻿namespace MultaqaTech.APIs.Extensions;
 
 public static class ApplicationServicesExtension
 {
@@ -30,18 +28,24 @@ public static class ApplicationServicesExtension
         });
 
         services.AddScoped<ISubjectService, SubjectService>();
+
         services.AddScoped<IBlogPostCategoryService, BlogPostCategoryService>();
         services.AddScoped<IBlogPostService, BlogPostService>();
         services.AddScoped<IBlogPostCommentService, BlogPostCommentService>();
-        services.AddScoped<ICourseService, CourseService>();
-        services.AddScoped<ICourseReviewService, CourseService>();
+
         services.AddScoped<IZoomMeetingCategoryService , ZoomMeetingCategoryService>();
         services.AddScoped<IZoomMeetingService , ZoomMeetingService>();
+
+        services.AddScoped<ICourseService, CourseService>();
+        services.AddScoped<ICourseReviewService, CourseService>();
+
+        services.AddScoped<INoteService , NoteService>();
         services.AddScoped<IAnswerService , AnswerService>();
+        services.AddScoped<IQuestionService , QuestionService>();
+        services.AddScoped<IQuizQuestionService , QuizQuestionService>();
+        services.AddScoped<IQuizQuestionChoiceService , QuizQuestionChoiceService>();
         services.AddScoped<ICurriculumItemService , CurriculumItemService>();
         services.AddScoped<ICurriculumSectionService , CurriculumSectionService>();
-        services.AddScoped<INoteService , NoteService>();
-        services.AddScoped<IQuestionService , QuestionService>();
 
         return services;
     }

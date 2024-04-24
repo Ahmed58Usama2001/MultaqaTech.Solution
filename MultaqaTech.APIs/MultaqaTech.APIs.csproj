@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\CourseDtos\CurriculumDtos\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

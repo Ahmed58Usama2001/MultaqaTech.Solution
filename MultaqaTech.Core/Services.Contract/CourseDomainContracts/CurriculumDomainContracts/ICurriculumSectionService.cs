@@ -8,9 +8,12 @@ public interface ICurriculumSectionService
 
     Task<CurriculumSection?> ReadByIdAsync(int curriculumSectionId);
 
-    Task<CurriculumSection?> UpdateCurriculumSection(int curriculumSectionId, CurriculumSection updatedcurriculumSection);
+    Task<CurriculumSection?> UpdateCurriculumSection(CurriculumSection storedCurriculumSection, CurriculumSection newCurriculumSection);
+
 
     Task<bool> DeleteCurriculumSection(CurriculumSection curriculumSection);
+
+    Task<bool> ReorderSections(int courseId, List<int> newOrder);
 
     //Task<IReadOnlyList<CurriculumItem>> ReadCurriculumItemsByIds(List<int> curriculumItemIds);
 }

@@ -1,4 +1,7 @@
-﻿namespace MultaqaTech.APIs.Helpers;
+﻿using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.SectionDtos;
+using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
+
+namespace MultaqaTech.APIs.Helpers;
 
 public class MappingProfiles : Profile
 {
@@ -11,6 +14,10 @@ public class MappingProfiles : Profile
         CreateMap<CourseDto, Course>()
            .ForMember(dest => dest.PrerequisitesIds, opt => opt.MapFrom(src => src.PrerequisitesIds))
            .ForMember(dest => dest.TagsIds, opt => opt.MapFrom(src => src.TagsIds));
+
+        CreateMap<CurriculumSectionCreateDto, CurriculumSection>();
+        CreateMap<CurriculumSectionUpdateDto, CurriculumSection>();
+        CreateMap<CurriculumSection, CurriculumSectionReturnDto>();
 
         CreateMap<BlogPostCategoryCreateDto, BlogPostCategory>();
         CreateMap<BlogPostCreateDto, BlogPost>()

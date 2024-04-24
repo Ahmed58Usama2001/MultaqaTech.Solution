@@ -2,6 +2,7 @@
 
 namespace MultaqaTech.APIs.Controllers.ZoomMeetingEntitiesControllers
 {
+    [Authorize]
     public class ZoomMeetingCategoriesController(IZoomMeetingCategoryService zoomMeetingCategoryService, IMapper mapper) : BaseApiController
     {
         private readonly IZoomMeetingCategoryService _zoomMeetingCategoryService = zoomMeetingCategoryService;

@@ -1,4 +1,8 @@
-﻿namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
+﻿
+using Microsoft.EntityFrameworkCore;
+using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
+
+namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
 
 public class CurriculumSectionService(IUnitOfWork unitOfWork) : ICurriculumSectionService
 {
@@ -59,22 +63,54 @@ public class CurriculumSectionService(IUnitOfWork unitOfWork) : ICurriculumSecti
         return curriculumSections;
     }
 
-    public async Task<CurriculumSection?> UpdateCurriculumSection(int curriculumSectionId, CurriculumSection updatedcurriculumSection)
+    public async Task<bool> ReorderSections(int courseId, List<int> newOrder)
     {
-        var curriculumSection = await _unitOfWork.Repository<CurriculumSection>().GetByIdAsync(curriculumSectionId);
+        var speceficationsParams = new CurriculumSectionSpeceficationsParams
+        {
+            courseId = courseId
+        };
+        var spec = new CurriculumSectionWithIncludesSpecifications(speceficationsParams);
+        var sections = await _unitOfWork.Repository<CurriculumSection>().GetAllWithSpecAsync(spec);
 
-        if (curriculumSection == null || updatedcurriculumSection == null || string.IsNullOrWhiteSpace(updatedcurriculumSection.Title))
+        for (int i = 0; i < newOrder.Count; i++)
+        {
+            var sectionId = newOrder[i];
+            CurriculumSection? section = sections.FirstOrDefault(s => s.Id == sectionId);
+            if (section != null)    
+                section.Order = i + 1; // Adjust order starting from 1 (optional)
+
+            try
+            {
+                _unitOfWork.Repository<CurriculumSection>().Update(section);               
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.ToString());
+                return false;
+            }
+        }
+
+        var result = await _unitOfWork.CompleteAsync();
+        if (result <= newOrder.Count) return false;
+
+        return true;
+    }
+
+    public async Task<CurriculumSection?> UpdateCurriculumSection(CurriculumSection storedCurriculumSection, CurriculumSection newCurriculumSection)
+    {
+        if (newCurriculumSection == null || storedCurriculumSection == null)
             return null;
 
-        curriculumSection = updatedcurriculumSection;
+        storedCurriculumSection.Title = newCurriculumSection.Title;
+        storedCurriculumSection.Objectives = newCurriculumSection.Objectives;
 
         try
         {
-            _unitOfWork.Repository<CurriculumSection>().Update(curriculumSection);
+            _unitOfWork.Repository<CurriculumSection>().Update(storedCurriculumSection);
             var result = await _unitOfWork.CompleteAsync();
             if (result <= 0) return null;
 
-            return curriculumSection;
+            return storedCurriculumSection;
         }
         catch (Exception ex)
         {

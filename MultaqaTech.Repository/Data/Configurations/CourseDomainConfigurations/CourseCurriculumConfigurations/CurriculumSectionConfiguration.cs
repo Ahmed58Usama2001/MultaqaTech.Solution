@@ -2,14 +2,19 @@
 
 internal class CurriculumSectionConfiguration : IEntityTypeConfiguration<CurriculumSection>
 {
-    const int maxLength = 255;
+    const int shortMaxLength = 255;
+    const int longMaxLength = 450;
     public void Configure(EntityTypeBuilder<CurriculumSection> builder)
     {
         builder.ToTable("CurriculumSections");
 
         builder.Property(e => e.Title)
             .IsRequired()
-            .HasMaxLength(maxLength);
+            .HasMaxLength(shortMaxLength);
+
+
+        builder.Property(e => e.Objectives)
+            .HasMaxLength(longMaxLength);
 
         builder.Property(e => e.CourseId)
         .IsRequired();
