@@ -236,7 +236,7 @@ public class AccountController : BaseApiController
 
     [Authorize]
     [HttpPost("logout")]
-    public async Task<IActionResult> Logout()
+    public async Task<IActionResult> Logout(string dummyString)
     {
         await _signInManager.SignOutAsync();
 
