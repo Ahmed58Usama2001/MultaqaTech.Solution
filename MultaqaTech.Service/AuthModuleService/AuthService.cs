@@ -102,18 +102,13 @@ public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork, I
         }
     }
 
-    public async Task<JwtResponseVM?> SignInWithGoogle(GoogleSignInVM model)
+    public async Task<AppUser> SignInWithGoogle(GoogleSignInVM model)
     {
-        AppUser? response = await _googleAuthService.GoogleSignIn(model);
+        var response = await _googleAuthService.GoogleSignIn(model);
 
         if (response is null)
             return null;
 
-        var jwtResponse = await CreateTokenAsync(response, _userManager);
-
-        return new JwtResponseVM
-        {
-            Token = jwtResponse,
-        };
+        return response;
     }
 }
