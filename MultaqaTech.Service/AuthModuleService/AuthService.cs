@@ -19,8 +19,8 @@ public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork, I
         // Private claims (user-defined)
         var authClaims = new List<Claim>()
         {
-            new(ClaimTypes.GivenName, user.UserName),
-            new(ClaimTypes.Email, user.Email)
+           new Claim(ClaimTypes.GivenName, user?.UserName??string.Empty),
+            new Claim(ClaimTypes.Email, user?.Email??string.Empty)
         };
 
         var userRoles = await userManager.GetRolesAsync(user);
@@ -28,7 +28,7 @@ public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork, I
         foreach (var role in userRoles)
             authClaims.Add(new Claim(ClaimTypes.Role, role));
 
-        var secretKey = Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]);
+        var secretKey = Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"] ?? string.Empty);
         var requiredKeyLength = 256 / 8; // 256 bits
         if (secretKey.Length < requiredKeyLength)
         {
@@ -39,7 +39,7 @@ public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork, I
         var token = new JwtSecurityToken(
             audience: _configuration["JWT:ValidAudience"],
             issuer: _configuration["JWT:ValidIssuer"],
-            expires: DateTime.UtcNow.AddDays(double.Parse(_configuration["JWT:DurationInDays"])),
+            expires: DateTime.UtcNow.AddDays(double.Parse(_configuration["JWT:DurationInDays"] ?? "0")),
             claims: authClaims,
             signingCredentials: new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature)
         );
@@ -67,15 +67,19 @@ public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork, I
         }
     }
 
-    public async Task<JwtResponseVM?> SignInWithFacebook(FacebookSignInVM model)
+    public async Task<AppUser> SignInWithFacebook(FacebookSignInVM model)
     {
         FacebookTokenValidationResponse? validatedFbToken = await _facebookAuthService.ValidateFacebookToken(model.AccessToken);
 
-        if (validatedFbToken is null) return null;
+        if (validatedFbToken is null)
+            return new AppUser();
+
 
         FacebookUserInfoResponse? userInfo = await _facebookAuthService.GetFacebookUserInformation(model.AccessToken);
 
-        if (userInfo is null) return null;
+        if (userInfo is null)
+            return new AppUser();
+
 
         var userToBeCreated = new CreateUserFromSocialLogin
         {
@@ -87,19 +91,10 @@ public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork, I
 
         var user = await _userManager.CreateUserFromSocialLogin(_context, userToBeCreated, LoginProvider.Facebook);
 
-        if (user is not null)
-        {
-            var jwtResponse = await CreateTokenAsync(user, _userManager);
+        if (user is null)
+            return new AppUser();
 
-            return new JwtResponseVM
-            {
-                Token = jwtResponse,
-            };
-        }
-        else
-        {
-            return null;
-        }
+        return user;
     }
 
     public async Task<AppUser> SignInWithGoogle(GoogleSignInVM model)
@@ -107,7 +102,7 @@ public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork, I
         var response = await _googleAuthService.GoogleSignIn(model);
 
         if (response is null)
-            return null;
+            return new AppUser();
 
         return response;
     }

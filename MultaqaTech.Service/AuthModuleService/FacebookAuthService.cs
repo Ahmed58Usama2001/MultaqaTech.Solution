@@ -4,24 +4,29 @@ public class FacebookAuthService : IFacebookAuthService
 {
 
     private readonly HttpClient _httpClient;
-    private readonly FacebookAuthConfig _facebookAuthConfig;
+    private readonly IConfiguration _configuration;
 
     public FacebookAuthService(
         IHttpClientFactory httpClientFactory,
-        IConfiguration configuration,
-        IOptions<FacebookAuthConfig> facebookAuthConfig)
+        IConfiguration configuration)
     {
         _httpClient = httpClientFactory.CreateClient("Facebook");
-        _facebookAuthConfig = facebookAuthConfig.Value;
+        _configuration = configuration;
     }
 
 
     public async Task<FacebookTokenValidationResponse> ValidateFacebookToken(string accessToken)
     {
+        var appId = _configuration["Facebook:AppId"];
+        var secretKey = _configuration["Facebook:AppSecret"];
+        var url = _configuration["Facebook:TokenValidationUrl"];
         try
         {
-            string TokenValidationUrl = _facebookAuthConfig.TokenValidationUrl;
-            var url = string.Format(TokenValidationUrl, accessToken, _facebookAuthConfig.AppId, _facebookAuthConfig.AppSecret);
+
+
+            url = string.Format(url??string.Empty, accessToken, appId, secretKey);
+
+
             var response = await _httpClient.GetAsync(url);
 
             if (response.IsSuccessStatusCode)
@@ -30,24 +35,26 @@ public class FacebookAuthService : IFacebookAuthService
 
                 var tokenValidationResponse = JsonConvert.DeserializeObject<FacebookTokenValidationResponse>(responseAsString);
 
-                return tokenValidationResponse;
+                return tokenValidationResponse ?? new FacebookTokenValidationResponse();
             }
         }
         catch (Exception ex)
         {
             Log.Error(ex.ToString());
-            return null;
+            return new FacebookTokenValidationResponse();
         }
 
-        return null;
+        return new FacebookTokenValidationResponse();
     }
+
 
     public async Task<FacebookUserInfoResponse> GetFacebookUserInformation(string accessToken)
     {
         try
         {
-            string userInfoUrl = _facebookAuthConfig.UserInfoUrl;
-            string url = string.Format(userInfoUrl, accessToken);
+            var userInfoUrl = _configuration["Facebook:UserInfoUrl"];
+
+            string url = string.Format(userInfoUrl ?? string.Empty, accessToken);
 
             var response = await _httpClient.GetAsync(url);
 
@@ -55,16 +62,16 @@ public class FacebookAuthService : IFacebookAuthService
             {
                 var responseAsString = await response.Content.ReadAsStringAsync();
                 var userInfoResponse = JsonConvert.DeserializeObject<FacebookUserInfoResponse>(responseAsString);
-                return userInfoResponse;
+                return userInfoResponse ?? new FacebookUserInfoResponse();
             }
         }
         catch (Exception ex)
         {
             Log.Error(ex.ToString());
-            return null;
+            return new FacebookUserInfoResponse();
         }
 
-        return null;
+        return new FacebookUserInfoResponse();
 
     }
 

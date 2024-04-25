@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace MultaqaTech.Service.AuthModuleService;
 
@@ -19,7 +18,7 @@ public static class CreateUserFromSocialLoginExtension
 
         if (user is null)
         {
-            var userName = IsUsernameLatinChars(user.UserName) ? user.UserName : model.Email.Split('@').First();
+            var userName = IsUsernameLatinChars(model.UserName) ? model?.UserName : model.Email.Split('@').First();
 
 
             user = new AppUser

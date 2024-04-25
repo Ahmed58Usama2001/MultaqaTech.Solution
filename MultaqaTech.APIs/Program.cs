@@ -37,7 +37,7 @@ public class Program
         builder.Services.Configure<FacebookAuthConfig>(builder.Configuration.GetSection("Facebook"));
         builder.Services.AddHttpClient("Facebook", c =>
         {
-            c.BaseAddress = new Uri("https://graph.facebook.com/v15.0/");
+            c.BaseAddress = new Uri("https://graph.facebook.com/v19.0/");
         });
         builder.Services.AddHttpClient();
 
