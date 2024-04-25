@@ -151,7 +151,7 @@ public class AccountController : BaseApiController
 
 
     [Authorize]
-    [HttpGet]
+    [HttpGet("GetCurrentUser")]
     public async Task<ActionResult<UserDto>> GetCurrentUser()
     {
         var email = User.FindFirstValue(ClaimTypes.Email);
@@ -257,7 +257,7 @@ public class AccountController : BaseApiController
 
     [Authorize]
     [HttpPost("logout")]
-    public async Task<IActionResult> Logout(string dummyString)
+    public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
 
