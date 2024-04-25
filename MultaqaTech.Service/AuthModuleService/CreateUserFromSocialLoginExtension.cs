@@ -1,4 +1,7 @@
-﻿namespace MultaqaTech.Service.AuthModuleService;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
+
+namespace MultaqaTech.Service.AuthModuleService;
 
 public static class CreateUserFromSocialLoginExtension
 {
@@ -12,20 +15,19 @@ public static class CreateUserFromSocialLoginExtension
             return user; //USER ALREADY EXISTS.
 
         user = await userManager.FindByEmailAsync(model.Email);
+                Student? student = new();
 
         if (user is null)
         {
-                Student? student = new();
-                context.Students.Add(student);
+            var userName = IsUsernameLatinChars(user.UserName) ? user.UserName : model.Email.Split('@').First();
 
-                user = new AppUser
+
+            user = new AppUser
                 {
                     Email = model.Email,
-                    UserName = model.UserName,
+                    UserName = userName,
                     ProfilePictureUrl = model.ProfilePicture,
                     RegistrationDate = DateTime.Now,
-                    Student = student,
-                    StudentId = student.Id
                 };
 
             try
@@ -34,7 +36,10 @@ public static class CreateUserFromSocialLoginExtension
 
                 student.AppUser = user;
                 student.AppUserId = user.Id;
-                context.Students.Update(student);
+                context.Students.Add(student);
+
+                user.Student = student;
+                user.StudentId = student.Id;    
 
 
                 //EMAIL IS CONFIRMED; IT IS COMING FROM AN IDENTITY PROVIDER            
@@ -42,7 +47,6 @@ public static class CreateUserFromSocialLoginExtension
 
                 await userManager.UpdateAsync(user);
 
-                await context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -51,6 +55,7 @@ public static class CreateUserFromSocialLoginExtension
                 return null;
             }
 
+                await context.SaveChangesAsync();
         }
        
 
@@ -79,5 +84,12 @@ public static class CreateUserFromSocialLoginExtension
 
         else
             return null;
+    }
+
+    private static bool IsUsernameLatinChars(string username)
+    {
+        // Matches only letters (a-z and A-Z)
+        var regex = @"^[a-zA-Z]+$";
+        return Regex.IsMatch(username, regex);
     }
 }

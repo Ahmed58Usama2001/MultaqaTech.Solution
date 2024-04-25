@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.APIs.Controllers;
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace MultaqaTech.APIs.Controllers;
 
 public class AccountController : BaseApiController
 {
@@ -111,8 +113,6 @@ public class AccountController : BaseApiController
         if (CheckPhoneNumberExists(model.PhoneNumber).Result.Value)
             return BadRequest(new ApiValidationErrorResponse() { Errors = new string[] { "This phone number already exists!" } });
 
-        Student? student = new();   
-        await _unitOfWork.Repository<Student>().AddAsync(student);
 
         var user = new AppUser
         {
@@ -122,8 +122,7 @@ public class AccountController : BaseApiController
             UserName = model.UserName,
             PhoneNumber = model.PhoneNumber,
             RegistrationDate = DateTime.Now,
-            Student=student,
-            StudentId=student.Id
+           
         };
 
         var result = await _userManager.CreateAsync(user, model.Password);
@@ -131,14 +130,15 @@ public class AccountController : BaseApiController
         if (!result.Succeeded)
         {
             string errors = string.Join(", ", result.Errors.Select(error => error.Description));
-            _unitOfWork.Repository<Student>().Delete(student);
             return BadRequest(new ApiResponse(400, errors));
         }
 
+        Student? student = new();
         student.AppUser=user;
         student.AppUserId=user.Id;
-        _unitOfWork.Repository<Student>().Update(student);
+        await _unitOfWork.Repository<Student>().AddAsync(student);
 
+        await _userManager.UpdateAsync(user);
 
         return Ok(new UserDto
         {

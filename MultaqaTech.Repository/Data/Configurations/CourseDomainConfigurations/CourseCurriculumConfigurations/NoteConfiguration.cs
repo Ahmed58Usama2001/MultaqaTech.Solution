@@ -8,6 +8,8 @@ internal class NoteConfiguration : IEntityTypeConfiguration<Note>
     {
         builder.ToTable("Notes");
 
+        builder.HasIndex(e => e.WriterStudentId);
+        builder.HasIndex(e => e.LectureId);
 
         builder.Property(e => e.Content)
             .IsRequired()

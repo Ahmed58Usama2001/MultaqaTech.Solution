@@ -13,7 +13,7 @@ public partial class CoursesController : BaseApiController
         string? studentEmail = User.FindFirstValue(ClaimTypes.Email);
         if (studentEmail is null) return NotFound(new ApiResponse(404));
 
-        Core.Entities.Identity.AppUser? student = await _userManager.FindByEmailAsync(studentEmail);
+        AppUser? student = await _userManager.FindByEmailAsync(studentEmail);
         if (student is null) return NotFound(new ApiResponse(404));
 
         CourseReview? createdCourseReview = await _courseService.CreateCourseReviewAsync(_mapper.Map<CourseReview>(reviewDto), student);

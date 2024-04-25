@@ -8,6 +8,8 @@ internal class QuizQuestionChoiceConfiguration : IEntityTypeConfiguration<QuizQu
     {
         builder.ToTable("QuizQuestionChoices");
 
+        builder.HasIndex(e => e.QuizQuestionId);
+
         builder.Property(e => e.Content)
             .IsRequired()
             .HasMaxLength(shortMaxLength);

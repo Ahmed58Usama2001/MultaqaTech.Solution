@@ -8,6 +8,8 @@ internal class AnswerConfiguration : IEntityTypeConfiguration<Answer>
     {
         builder.ToTable("Answers");
 
+        builder.HasIndex(e => e.QuestionId);
+
         builder.Property(e => e.Content)
             .IsRequired()
             .HasMaxLength(longMaxLength);
