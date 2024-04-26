@@ -1,6 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
-using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
+﻿using MultaqaTech.Core.Entities.CourseDomainEntities;
 
 namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
 
@@ -29,11 +27,25 @@ public class CurriculumSectionService(IUnitOfWork unitOfWork) : ICurriculumSecti
     {
         try
         {
+            int changes = 0;
             _unitOfWork.Repository<CurriculumSection>().Delete(curriculumSection);
+
+            CurriculumSectionSpeceficationsParams speceficationsParams = new CurriculumSectionSpeceficationsParams
+            {
+                courseId = curriculumSection.CourseId
+            };
+
+            var remainingSections = await ReadCurriculumSectionsAsync(speceficationsParams);
+
+            foreach (var section in remainingSections.Where(s => s.Order > curriculumSection.Order))
+            {
+                section.Order--;
+                changes++;
+            }
 
             var result = await _unitOfWork.CompleteAsync();
 
-            if (result <= 0)
+            if (result <= changes)
                 return false;
 
             return true;
