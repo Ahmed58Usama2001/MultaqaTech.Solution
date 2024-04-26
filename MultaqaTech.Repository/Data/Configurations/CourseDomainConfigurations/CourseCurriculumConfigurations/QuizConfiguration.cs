@@ -8,8 +8,6 @@ internal class QuizConfiguration : IEntityTypeConfiguration<Quiz>
     {
         builder.ToTable("Quizes");
 
-        builder.HasIndex(e => e.CurriculumSectionId);
-
 
         builder.Property(e => e.Title)
             .IsRequired()

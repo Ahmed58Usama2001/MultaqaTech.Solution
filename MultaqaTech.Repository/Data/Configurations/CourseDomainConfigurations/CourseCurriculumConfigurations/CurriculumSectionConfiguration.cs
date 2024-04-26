@@ -8,8 +8,6 @@ internal class CurriculumSectionConfiguration : IEntityTypeConfiguration<Curricu
     {
         builder.ToTable("CurriculumSections");
 
-        builder.HasIndex(e => e.CourseId);
-
 
         builder.Property(e => e.Title)
             .IsRequired()

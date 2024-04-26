@@ -9,7 +9,6 @@ internal class LectureConfiguration : IEntityTypeConfiguration<Lecture>
         builder.ToTable("Lectures");
 
         builder.HasIndex(e => e.Title).IsUnique();
-        builder.HasIndex(e => e.CurriculumSectionId);
 
         builder.Property(e => e.Title)
             .IsRequired()

@@ -521,6 +521,8 @@ namespace MultaqaTech.Repository.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AskerId");
+
                     b.HasIndex("LectureId");
 
                     b.ToTable("Questions", (string)null);
@@ -561,18 +563,23 @@ namespace MultaqaTech.Repository.Migrations
 
             modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.QuizQuestion", b =>
                 {
-                    b.Property<int>("QuizId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("Id")
+                    b.Property<int>("QuizId")
                         .HasColumnType("int");
 
-                    b.HasKey("QuizId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuizId");
 
                     b.ToTable("QuizQuestions", (string)null);
                 });
@@ -693,6 +700,9 @@ namespace MultaqaTech.Repository.Migrations
 
                     b.Property<int?>("InstructorId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsInstructor")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()

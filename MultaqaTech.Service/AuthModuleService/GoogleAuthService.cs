@@ -4,6 +4,8 @@ public class GoogleAuthService : IGoogleAuthService
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly MultaqaTechContext _context;
+    private readonly GoogleAuthConfig _googleAuthConfig;
+
 
     public GoogleAuthService(
         UserManager<AppUser> userManager,
@@ -13,6 +15,7 @@ public class GoogleAuthService : IGoogleAuthService
     {
         _userManager = userManager;
         _context = context;
+        _googleAuthConfig = googleAuthConfig.Value;
     }
 
     public async Task<AppUser> GoogleSignIn(GoogleSignInVM model)

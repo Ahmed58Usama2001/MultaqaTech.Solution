@@ -34,6 +34,7 @@ public class Program
         builder.Services.AddIdentityServices(builder.Configuration);
 
         builder.Services.Configure<GoogleAuthConfig>(builder.Configuration.GetSection("Google"));
+
         builder.Services.Configure<FacebookAuthConfig>(builder.Configuration.GetSection("Facebook"));
         builder.Services.AddHttpClient("Facebook", c =>
         {

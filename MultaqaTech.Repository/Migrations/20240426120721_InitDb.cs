@@ -33,7 +33,8 @@ namespace MultaqaTech.Repository.Migrations
                     ProfilePictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StudentId = table.Column<int>(type: "int", nullable: false),
+                    IsInstructor = table.Column<bool>(type: "bit", nullable: false),
+                    StudentId = table.Column<int>(type: "int", nullable: true),
                     InstructorId = table.Column<int>(type: "int", nullable: true),
                     RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -283,17 +284,11 @@ namespace MultaqaTech.Repository.Migrations
                     ZoomMeetingCategoryId = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Duration = table.Column<int>(type: "int", nullable: false),
-                    SubjectId = table.Column<int>(type: "int", nullable: true),
                     MediaUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ZoomMeetings", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ZoomMeetings_Subjects_SubjectId",
-                        column: x => x.SubjectId,
-                        principalTable: "Subjects",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ZoomMeetings_ZoomMeetingCategories_ZoomMeetingCategoryId",
                         column: x => x.ZoomMeetingCategoryId,
@@ -445,6 +440,7 @@ namespace MultaqaTech.Repository.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Objectives = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     Order = table.Column<int>(type: "int", nullable: false),
                     CourseId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -745,6 +741,16 @@ namespace MultaqaTech.Repository.Migrations
                 column: "LectureId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notes_WriterStudentId",
+                table: "Notes",
+                column: "WriterStudentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Questions_AskerId",
+                table: "Questions",
+                column: "AskerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Questions_LectureId",
                 table: "Questions",
                 column: "LectureId");
@@ -780,11 +786,6 @@ namespace MultaqaTech.Repository.Migrations
                 table: "Subjects",
                 column: "Name",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ZoomMeetings_SubjectId",
-                table: "ZoomMeetings",
-                column: "SubjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ZoomMeetings_ZoomMeetingCategoryId",
