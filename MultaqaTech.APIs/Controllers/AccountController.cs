@@ -44,6 +44,7 @@ public class AccountController : BaseApiController
             {
                 UserName = user.UserName ?? string.Empty,
                 Email = user.Email??string.Empty,
+                IsInstructor = user?.IsInstructor ?? false,
                 Token = await _authService.CreateTokenAsync(user, _userManager)
             }); ;
         }
@@ -144,6 +145,7 @@ public class AccountController : BaseApiController
         {
             UserName = user.UserName,
             Email = user.Email,
+            IsInstructor = user?.IsInstructor ?? false,
             Token = await _authService.CreateTokenAsync(user, _userManager)
         });
 
@@ -160,9 +162,10 @@ public class AccountController : BaseApiController
 
         return Ok(new UserDto()
         {
-            UserName = user.UserName??string.Empty,
-            Email = user.Email ?? string.Empty,
-            Token = await _authService.CreateTokenAsync(user, _userManager)
+            UserName = user?.UserName??string.Empty,
+            Email = user?.Email ?? string.Empty,
+            IsInstructor=user?.IsInstructor??false,
+            Token = await _authService.CreateTokenAsync(user??new AppUser(), _userManager)
         });
     }
 

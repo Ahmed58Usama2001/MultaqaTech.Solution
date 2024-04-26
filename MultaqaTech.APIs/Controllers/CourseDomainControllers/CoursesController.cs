@@ -34,6 +34,9 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         if (createdCourse is null) return BadRequest(new ApiResponse(400));
 
+        storedUser.IsInstructor=true;
+        await _userManager.UpdateAsync(storedUser);
+
         return Ok(_mapper.Map<CourseToReturnDto>(createdCourse));
     }
 

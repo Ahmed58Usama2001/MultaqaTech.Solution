@@ -30,9 +30,10 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         try
         {
             await _unitOfWork.Repository<Course>().AddAsync(course);
+            await _unitOfWork.Repository<Instructor>().AddAsync(instructor);
 
             var result = await _unitOfWork.CompleteAsync();
-            if (result <= 0) return null;
+            if (result <= 1) return null;
 
             return course;
         }
