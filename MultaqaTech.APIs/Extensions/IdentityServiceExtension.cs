@@ -46,16 +46,6 @@ public static class IdentityServiceExtension
                     ClockSkew = TimeSpan.FromDays(double.Parse(configuration["JWT:DurationInDays"] ?? string.Empty))
                 };
 
-            }).AddGoogle(options =>
-            {
-                IConfigurationSection googleAuthSection = configuration.GetSection("Authentication:Google");
-
-                options.ClientId = googleAuthSection["ClientId"];
-                options.ClientSecret = googleAuthSection["ClientSecret"];
-            }).AddFacebook(facebookOptions =>
-            {
-                facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
-                facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
             });
 
 
