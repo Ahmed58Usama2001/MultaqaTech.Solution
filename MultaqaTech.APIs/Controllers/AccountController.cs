@@ -139,6 +139,9 @@ public class AccountController : BaseApiController
         student.AppUserId=user.Id;
         await _unitOfWork.Repository<Student>().AddAsync(student);
 
+        user.Student= student;
+        user.StudentId= student.Id;
+
         await _userManager.UpdateAsync(user);
 
         return Ok(new UserDto
