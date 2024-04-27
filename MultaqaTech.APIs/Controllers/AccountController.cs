@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace MultaqaTech.APIs.Controllers;
+﻿namespace MultaqaTech.APIs.Controllers;
 
 public class AccountController : BaseApiController
 {
@@ -185,7 +183,7 @@ public class AccountController : BaseApiController
         => await _userManager.FindByNameAsync(userName) is not null;
 
     [HttpPost("CreateRole")]
-    public async Task<ActionResult> CreateToken(string? name)
+    public async Task<ActionResult> CreateRole(string? name)
     {
         try
         {

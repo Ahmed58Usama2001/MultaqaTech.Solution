@@ -4,7 +4,7 @@ public interface IBlogPostCommentService
 {
     Task<BlogPostComment?> CreateBlogPostAsync(BlogPostComment blogPostComment);
 
-    Task<IReadOnlyList<BlogPostComment>> ReadBlogPostCommentsAsync(BlogPostCommentSpeceficationsParams speceficationsParams);
+    Task<IReadOnlyList<BlogPostComment>> ReadAllBlogPostCommentsAsync(BlogPostCommentSpeceficationsParams speceficationsParams);
 
     Task<BlogPostComment?> ReadByIdAsync(int blogPostCommentId);
 

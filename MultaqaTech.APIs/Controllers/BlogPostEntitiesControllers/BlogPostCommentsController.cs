@@ -50,7 +50,7 @@ public class BlogPostCommentsController(IBlogPostService blogPostService, IMappe
     [HttpGet]
     public async Task<ActionResult<Pagination<BlogPostCommentToReturnDto>>> GetBlogPostComments([FromQuery] BlogPostCommentSpeceficationsParams speceficationsParams)
     {
-        var blogPostComments = await _blogPostCommentService.ReadBlogPostCommentsAsync(speceficationsParams);
+        var blogPostComments = await _blogPostCommentService.ReadAllBlogPostCommentsAsync(speceficationsParams);
 
         if (blogPostComments == null)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });

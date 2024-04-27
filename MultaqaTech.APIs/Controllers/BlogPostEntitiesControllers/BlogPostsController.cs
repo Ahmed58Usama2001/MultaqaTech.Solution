@@ -58,7 +58,7 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
     [HttpGet]
     public async Task<ActionResult<Pagination<BlogPostToReturnDto>>> GetBlogPosts([FromQuery] BlogPostSpeceficationsParams speceficationsParams)
     {
-        var blogPosts = await _blogPostService.ReadBlogPostsAsync(speceficationsParams);
+        var blogPosts = await _blogPostService.ReadAllBlogPostsAsync(speceficationsParams);
 
         if (blogPosts == null)
             return NotFound(new ApiResponse(404));

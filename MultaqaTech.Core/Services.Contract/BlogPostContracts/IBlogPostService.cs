@@ -4,7 +4,7 @@ public interface IBlogPostService
 {
     Task<BlogPost?> CreateBlogPostAsync(BlogPost blogPost);
 
-    Task<IReadOnlyList<BlogPost>> ReadBlogPostsAsync(BlogPostSpeceficationsParams speceficationsParams);
+    Task<IReadOnlyList<BlogPost>> ReadAllBlogPostsAsync(BlogPostSpeceficationsParams speceficationsParams);
 
     Task<BlogPost?> ReadByIdAsync(int blogPostId);
 

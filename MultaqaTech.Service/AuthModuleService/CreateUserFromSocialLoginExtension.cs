@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace MultaqaTech.Service.AuthModuleService;
+﻿namespace MultaqaTech.Service.AuthModuleService;
 
 public static class CreateUserFromSocialLoginExtension
 {

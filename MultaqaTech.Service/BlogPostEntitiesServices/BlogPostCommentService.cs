@@ -50,7 +50,7 @@ public class BlogPostCommentService(IUnitOfWork unitOfWork) : IBlogPostCommentSe
         return count;
     }
 
-    public async Task<IReadOnlyList<BlogPostComment>> ReadBlogPostCommentsAsync(BlogPostCommentSpeceficationsParams speceficationsParams)
+    public async Task<IReadOnlyList<BlogPostComment>> ReadAllBlogPostCommentsAsync(BlogPostCommentSpeceficationsParams speceficationsParams)
     {
         var spec = new BlogPostCommentWithIncludesSpecifications(speceficationsParams);
 

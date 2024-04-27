@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
-
-namespace MultaqaTech.Repository.Data.Configurations.CourseDomainConfigurations;
+﻿namespace MultaqaTech.Repository.Data.Configurations.CourseDomainConfigurations;
 
 internal class CourseConfigurations : IEntityTypeConfiguration<Course>
 {

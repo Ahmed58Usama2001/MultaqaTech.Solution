@@ -40,7 +40,7 @@ public class BlogPostService(IUnitOfWork unitOfWork) : IBlogPostService
         }
     }
 
-    public async Task<IReadOnlyList<BlogPost>> ReadBlogPostsAsync(BlogPostSpeceficationsParams speceficationsParams)
+    public async Task<IReadOnlyList<BlogPost>> ReadAllBlogPostsAsync(BlogPostSpeceficationsParams speceficationsParams)
     {
         var spec = new BlogPostWithIncludesSpecifications(speceficationsParams);
 

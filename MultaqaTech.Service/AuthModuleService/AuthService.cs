@@ -1,6 +1,6 @@
 ﻿namespace MultaqaTech.Service.AuthModuleService;
 
-public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork, IConnectionMultiplexer redis,
+public class AuthService(IConfiguration configuration, IConnectionMultiplexer redis,
         IGoogleAuthService googleAuthService,
         IFacebookAuthService facebookAuthService,
         UserManager<AppUser> userManager,
