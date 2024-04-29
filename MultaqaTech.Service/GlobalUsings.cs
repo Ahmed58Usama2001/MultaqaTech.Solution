@@ -1,4 +1,5 @@
-﻿global using MultaqaTech.Core.Entities.Enums;
+﻿global using MultaqaTech.Core.Entities;
+global using MultaqaTech.Core.Entities.Enums;
 global using MultaqaTech.Core.Specifications;
 global using MultaqaTech.Core.Entities.Identity;
 global using MultaqaTech.Core.Services.Contract;
@@ -22,6 +23,7 @@ global using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEnti
 global using MultaqaTech.Core.Services.Contract.CourseDomainContracts.CurriculumDomainContracts;
 global using MultaqaTech.Core.Specifications.CourseDomainSpecs.CurriculumEntitiesSpecs.CurriculumSectionSpecs;
 
+global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 global using Microsoft.AspNetCore.Identity;
 global using Microsoft.IdentityModel.Tokens;
@@ -33,6 +35,10 @@ global using System.Text.RegularExpressions;
 global using System.IdentityModel.Tokens.Jwt;
 
 global using Serilog;
+global using MimeKit;
 global using Newtonsoft.Json;
+global using MailKit.Security;
+global using MailKit.Net.Smtp;
 global using StackExchange.Redis;
 global using static Google.Apis.Auth.GoogleJsonWebSignature;
+

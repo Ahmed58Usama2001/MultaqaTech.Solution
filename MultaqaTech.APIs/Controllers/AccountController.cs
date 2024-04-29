@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.APIs.Controllers;
+﻿using System.Text.Encodings.Web;
+
+namespace MultaqaTech.APIs.Controllers;
 
 public class AccountController : BaseApiController
 {
@@ -7,99 +9,27 @@ public class AccountController : BaseApiController
     private readonly IAuthService _authService;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMaillingService _mailService;
+    private readonly IConfiguration _configuration;
+
 
     public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
         IAuthService authService,
         RoleManager<IdentityRole> roleManager,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IMaillingService maillingService,
+        IConfiguration configuration)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _authService = authService;
         _roleManager = roleManager;
-        _unitOfWork= unitOfWork;
+        _unitOfWork = unitOfWork;
+        _mailService = maillingService;
+        _configuration = configuration;
     }
 
-    [HttpPost("login")]
-    public async Task<ActionResult<UserDto>> Login(LoginDto model)
-    {
-        if (ModelState.IsValid)
-        {
-            var user = await _userManager.FindByEmailAsync(model.UserNameOrEmail);
-
-            if (user == null)
-                user = await _userManager.FindByNameAsync(model.UserNameOrEmail);
-
-            if (user is null)
-                return Unauthorized(new ApiResponse(401));
-
-            var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
-
-            if (!result.Succeeded)
-                return Unauthorized(new ApiResponse(401));
-
-            return Ok(new UserDto
-            {
-                UserName = user.UserName ?? string.Empty,
-                Email = user.Email??string.Empty,
-                IsInstructor = user?.IsInstructor ?? false,
-                Token = await _authService.CreateTokenAsync(user, _userManager)
-            }); ;
-        }
-
-        return Unauthorized(new ApiResponse(401));
-    }
-
-    [HttpPost("forgetPassword")]
-    public async Task<ActionResult<UserDto>> ForgetPassword(ForgetPasswordDto model)
-    {
-        if (ModelState.IsValid)
-        {
-            var user = await _userManager.FindByEmailAsync(model.Email);
-
-
-            if (user is not null)
-            {
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var resetPasswordLink = Url.Action("ResetPassword", "Account", new { Email = model.Email, Token = token }, Request.Scheme);
-                var email = new Email()
-                {
-                    Title = "Reset Password",
-                    To = model.Email,
-                    Body = resetPasswordLink??string.Empty
-                };
-                EmailSettings.SendEmail(email);
-                return Ok(model);
-            }
-            return Unauthorized(new ApiResponse(401));
-        }
-
-        return Ok(model);
-    }
-
-    [HttpPost("ResetPassword")]
-    public async Task<ActionResult<UserDto>> ResetPassword(ResetPasswordDto model)
-    {
-        if (ModelState.IsValid)
-        {
-            var user = await _userManager.FindByEmailAsync(model.Email);
-
-
-            if (user is not null)
-            {
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
-                if (result.Succeeded)
-                    return Ok(model);
-                string errors = string.Join(", ", result.Errors.Select(error => error.Description));
-                return BadRequest(new ApiResponse(400, errors));
-
-            }
-        }
-
-        return Ok(model);
-    }
-
+    
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Register(RegisterDto model)
     {
@@ -121,7 +51,8 @@ public class AccountController : BaseApiController
             UserName = model.UserName,
             PhoneNumber = model.PhoneNumber,
             RegistrationDate = DateTime.Now,
-           
+            EmailConfirmed = false
+
         };
 
         var result = await _userManager.CreateAsync(user, model.Password);
@@ -142,14 +73,75 @@ public class AccountController : BaseApiController
 
         await _userManager.UpdateAsync(user);
 
-        return Ok(new UserDto
-        {
-            UserName = user.UserName,
-            Email = user.Email,
-            IsInstructor = user?.IsInstructor ?? false,
-            Token = await _authService.CreateTokenAsync(user, _userManager)
-        });
+        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var callbackUrl = Request.Scheme + "://" + Request.Host + Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = UrlEncoder.Default.Encode(code) });
 
+        var bodyUrl = $"{Directory.GetCurrentDirectory()}\\wwwroot\\TempleteHtml\\2-StepVerificationTemplete.html";
+        var body = new StreamReader(bodyUrl);
+        var mailText = body.ReadToEnd();
+        body.Close();
+
+        mailText = mailText.Replace("[username]", user.UserName).Replace("[LinkHere]",
+            HtmlEncoder.Default.Encode(callbackUrl));
+
+        var emailResult = await _mailService.SendEmailAsync(model.Email, "Confirm Email", mailText);
+        if (emailResult == false)
+            return BadRequest(new ApiResponse(400));
+
+        return Ok("Please verify your email address through the verification we have just sent.");
+
+    }
+
+    [HttpGet("ConfirmEmail")]
+    public async Task<IActionResult> ConfirmEmail(string userId, string code)
+    {
+        if (userId == null || code == null)
+            return BadRequest(new ApiResponse(400));
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null)
+            Unauthorized(new ApiResponse(401));
+
+        var decodedCode = System.Web.HttpUtility.UrlDecode(code);
+        var result = await _userManager.ConfirmEmailAsync(user, decodedCode);
+
+        var status = result.Succeeded ? "Thank you for confirming your Email."
+            : "Your Email is not confirmed, please try again later.";
+
+        return Ok(status);
+    }
+
+    [HttpPost("login")]
+    public async Task<ActionResult<UserDto>> Login(LoginDto model)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = await _userManager.FindByEmailAsync(model.UserNameOrEmail);
+
+            if (user == null)
+                user = await _userManager.FindByNameAsync(model.UserNameOrEmail);
+
+            if (user is null)
+                return Unauthorized(new ApiResponse(401));
+
+            if (!user.EmailConfirmed)
+                return Unauthorized(new ApiResponse(401, "Email Needs to be confirmed"));
+
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
+
+            if (!result.Succeeded)
+                return Unauthorized(new ApiResponse(401));
+
+            return Ok(new UserDto
+            {
+                UserName = user.UserName ?? string.Empty,
+                Email = user.Email ?? string.Empty,
+                IsInstructor = user?.IsInstructor ?? false,
+                Token = await _authService.CreateTokenAsync(user, _userManager)
+            }); ;
+        }
+
+        return Unauthorized(new ApiResponse(401));
     }
 
 
@@ -257,6 +249,61 @@ public class AccountController : BaseApiController
             Log.Error(ex.ToString());
             return BadRequest(new ApiResponse(400));
         }
+    }
+
+    [HttpPost("forgetPassword")]
+    public async Task<ActionResult<UserDto>> ForgetPassword(ForgetPasswordDto model)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+
+            if (user is not null)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var resetPasswordLink = Url.Action("ResetPassword", "Account", new { Email = model.Email, Token = token }, "http", _configuration["AngularBaseUrl"]);
+                var bodyUrl = $"{Directory.GetCurrentDirectory()}\\wwwroot\\TempleteHtml\\ForgetPasswordTemplete.html";
+                var body = new StreamReader(bodyUrl);
+                var mailText = body.ReadToEnd();
+                body.Close();
+
+                mailText = mailText.Replace("[username]", user.UserName).Replace("[LinkHere]", resetPasswordLink);
+
+                var result = await _mailService.SendEmailAsync(model.Email, "Reset Password", mailText);
+                if (result == false)
+                    return BadRequest(new ApiResponse(400, "No Internet Connection"));
+
+
+                return Ok(model);
+            }
+            return Unauthorized(new ApiResponse(401));
+        }
+
+        return Ok(model);
+    }
+
+    [HttpPost("ResetPassword")]
+    public async Task<ActionResult<UserDto>> ResetPassword(ResetPasswordDto model)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+
+            if (user is not null)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+                if (result.Succeeded)
+                    return Ok(model);
+                string errors = string.Join(", ", result.Errors.Select(error => error.Description));
+                return BadRequest(new ApiResponse(400, errors));
+
+            }
+        }
+
+        return Ok(model);
     }
 
     [Authorize]
