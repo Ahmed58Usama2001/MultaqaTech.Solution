@@ -31,6 +31,7 @@
             builder.Property(e => e.ZoomMeetingCategoryId)
              .IsRequired();
 
+            builder.Ignore(l => l.MediaUrl);
 
             builder.HasOne(bp => bp.Category)
                      .WithMany(c => c.ZoomMeetings)

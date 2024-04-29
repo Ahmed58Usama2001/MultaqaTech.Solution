@@ -73,7 +73,6 @@ public class BlogPostService(IUnitOfWork unitOfWork) : IBlogPostService
         storedBlogPost.PublishingDate= newBlogPost.PublishingDate;
         storedBlogPost.NumberOfViews= newBlogPost.NumberOfViews;
         storedBlogPost.Tags= newBlogPost.Tags;
-        storedBlogPost.Comments= newBlogPost.Comments;
 
         try
         {

@@ -1,4 +1,7 @@
-﻿namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
+﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+using static System.Net.Mime.MediaTypeNames;
+
+namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
 
 [Authorize]
 public class BlogPostsController(IBlogPostService blogPostService, IMapper mapper, UserManager<AppUser> userManager, IBlogPostCategoryService blogPostCategoryService
@@ -92,6 +95,10 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
     {
         var storedPost = await _blogPostService.ReadByIdAsync(blogPostId);
 
+        var updatedCategory = await _blogPostCategoryService.ReadByIdAsync(updatedBlogPostDto.CategoryId);
+        if (updatedCategory is null)
+            return NotFound(new { Message = "Category wasn't Not Found", StatusCode = 404 });
+
         if (storedPost == null)
             return NotFound(new ApiResponse(404));
 
@@ -105,11 +112,13 @@ public class BlogPostsController(IBlogPostService blogPostService, IMapper mappe
         if (!string.IsNullOrEmpty(storedPost?.PostPictureUrl))
             DocumentSetting.DeleteFile(storedPost.PostPictureUrl);
 
+
         var newPost = _mapper.Map<BlogPostCreateDto, BlogPost>(updatedBlogPostDto);
         newPost.Id = storedPost.Id;
+        newPost.Category = updatedCategory;
+        newPost.BlogPostCategoryId = updatedCategory.Id;
 
-
-        if (!string.IsNullOrEmpty(newPost?.PostPictureUrl))
+        if (updatedBlogPostDto.PictureUrl is not null)
             newPost.PostPictureUrl = DocumentSetting.UploadFile(updatedBlogPostDto?.PictureUrl, "BlogPosts\\PostsImages");
 
         storedPost = await _blogPostService.UpdateBlogPost(storedPost, newPost);

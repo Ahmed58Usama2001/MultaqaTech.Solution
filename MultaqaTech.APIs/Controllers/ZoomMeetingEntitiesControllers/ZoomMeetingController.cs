@@ -1,10 +1,10 @@
-﻿namespace MultaqaTech.APIs.Controllers.ZoomMeetingEntitiesControllers;
+﻿using System.Net.Http;
 
-
+namespace MultaqaTech.APIs.Controllers.ZoomMeetingEntitiesControllers;
 [Authorize]
 public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapper mapper, UserManager<AppUser> userManager, IZoomMeetingCategoryService zoomMeetingCategoryService
-    , IUnitOfWork unitOfWork, IConfiguration configuration) : BaseApiController
-{
+    , IUnitOfWork unitOfWork , IConfiguration configuration) : BaseApiController
+    {
     private readonly IZoomMeetingService _zoomMeetingService = zoomMeetingService;
     private readonly IMapper _mapper = mapper;
     private readonly UserManager<AppUser> _userManager = userManager;
@@ -12,6 +12,7 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IConfiguration _configuration = configuration;
     private readonly HttpClient httpClient = new HttpClient();
+
 
 
     [ProducesResponseType(typeof(ZoomMeetingToReturnDto), StatusCodes.Status200OK)]
@@ -30,7 +31,6 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
         var existingCategory = await _zoomMeetingCategoryService.ReadByIdAsync(zoomMeetingDto.CategoryId);
         if (existingCategory is null)
             return NotFound(new { Message = "Category wasn't Not Found", StatusCode = 404 });
-
 
         var accessToken = await GenerateToken();
         var requestBody = new
@@ -51,10 +51,9 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
         try
         {
             string url = "https://api.zoom.us/v2/users/me/meetings";
-            var response = await httpClient.PostAsync(url, requestContent);
-            if (response.IsSuccessStatusCode)
+            var response = await httpClient.PostAsync(url, requestContent); if (response.IsSuccessStatusCode)
             {
-                meetingData = (JsonConvert.DeserializeObject<Meeting>(await response?.Content?.ReadAsStringAsync()));
+                 meetingData = (JsonConvert.DeserializeObject<Meeting>(await response?.Content?.ReadAsStringAsync()));
 
             }
             else
@@ -66,20 +65,20 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
         catch (Exception ex)
         {
             return StatusCode(500, ex.Message);
-
+        
         }
         var mappedzoomMeeting = new ZoomMeeting
         {
             Title = zoomMeetingDto.Title,
             AuthorName = user.UserName,
             Content = zoomMeetingDto.Content,
-            ZoomPictureUrl = zoomMeetingDto.PictureUrl,
+            ZoomPictureUrl = DocumentSetting.UploadFile(zoomMeetingDto?.PictureUrl, "ZoomMeetings\\MeetingsImages"),
             ZoomMeetingCategoryId = zoomMeetingDto.CategoryId,
             Category = existingCategory,
             Duration = zoomMeetingDto.Duration,
             StartDate = zoomMeetingDto.StartDate,
             TimeZone = zoomMeetingDto.TimeZone,
-            MeetingUrl = meetingData?.join_url ?? string.Empty,
+            MeetingUrl = meetingData?.join_url??string.Empty,
             MeetingId = meetingData?.id ?? string.Empty,
 
         };
@@ -95,7 +94,7 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
     [HttpGet]
     public async Task<ActionResult<Pagination<ZoomMeetingToReturnDto>>> GetZoomMeetings([FromQuery] ZoomMeetingSpeceficationsParams speceficationsParams)
     {
-        var zoomMeetings = await _zoomMeetingService.ReadZoomMeetingAsync(speceficationsParams);
+        var zoomMeetings = await _zoomMeetingService.ReadAllZoomMeetingsAsync(speceficationsParams);
 
         if (zoomMeetings == null)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
@@ -122,38 +121,55 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
 
     [ProducesResponseType(typeof(ZoomMeetingToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    [HttpPut("{ZoomMeetingId}")]
+    [HttpPut("{zoomMeetingId}")]
+
     public async Task<ActionResult<ZoomMeetingToReturnDto>> UpdateZoomMeeting(int zoomMeetingId, ZoomMeetingCreateDto updatedZoomMeetingDto)
     {
-        var updatedMeeting = await _zoomMeetingService.ReadByIdAsync(zoomMeetingId);
+        var storedMeeting = await _zoomMeetingService.ReadByIdAsync(zoomMeetingId);
 
-        updatedMeeting.Content = updatedZoomMeetingDto.Content;
-        updatedMeeting.ZoomPictureUrl = updatedZoomMeetingDto.PictureUrl;
-        updatedMeeting.TimeZone = updatedZoomMeetingDto.TimeZone;
-
-        updatedMeeting.ZoomMeetingCategoryId = updatedZoomMeetingDto.CategoryId;
-        var existingCategory = await _zoomMeetingCategoryService.ReadByIdAsync(updatedZoomMeetingDto.CategoryId);
-        if (existingCategory is null)
+        var updatedCategory = await _zoomMeetingCategoryService.ReadByIdAsync(updatedZoomMeetingDto.CategoryId);
+        if (updatedCategory is null)
             return NotFound(new { Message = "Category wasn't Not Found", StatusCode = 404 });
-        updatedMeeting.Category = existingCategory;
+
+        if (storedMeeting is null)
+            return NotFound(new ApiResponse(404));
+
+        var authorEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (authorEmail is null) return BadRequest(new ApiResponse(404));
+
+        var user = await _userManager.FindByEmailAsync(authorEmail);
+        if (user is null || user.UserName != storedMeeting?.AuthorName)
+            return BadRequest(new ApiResponse(401));
+
+        if (!string.IsNullOrEmpty(storedMeeting?.ZoomPictureUrl))
+            DocumentSetting.DeleteFile(storedMeeting.ZoomPictureUrl);
+
+        var newMeeting = _mapper.Map<ZoomMeetingCreateDto, ZoomMeeting>(updatedZoomMeetingDto);
+        newMeeting.Id = storedMeeting.Id;
+        newMeeting.Category = updatedCategory;
+        newMeeting.ZoomMeetingCategoryId = updatedCategory.Id;
 
 
-        var zoomMeeting = await _zoomMeetingService.UpdateZoomMeeting(zoomMeetingId, updatedMeeting);
+        if (updatedZoomMeetingDto.PictureUrl is not null)
+            newMeeting.ZoomPictureUrl = DocumentSetting.UploadFile(updatedZoomMeetingDto?.PictureUrl, "ZoomMeetings\\MeetingsImages");
 
-        if (zoomMeeting == null)
-            return NotFound(new { Message = "Not Found", StatusCode = 404 });
+        storedMeeting = await _zoomMeetingService.UpdateZoomMeeting(storedMeeting, newMeeting);
 
-        return Ok(_mapper.Map<ZoomMeetingToReturnDto>(zoomMeeting));
+
+        if (storedMeeting == null)
+            return BadRequest(new ApiResponse(400));
+
+        return Ok(_mapper.Map<ZoomMeetingToReturnDto>(storedMeeting));
     }
 
     [ProducesResponseType(typeof(ZoomMeetingToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpDelete("{id}")]
-    public async Task<ActionResult<ZoomMeetingToReturnDto>> DeleteZoomMeeting(int id)
+    public async Task<IActionResult> DeleteZoomMeeting(int id)
     {
         var zoomMeeting = await _unitOfWork.Repository<ZoomMeeting>().GetByIdAsync(id);
         if (zoomMeeting == null)
-            return NotFound(new { Message = "Not Found", StatusCode = 404 });
+            return NotFound(new ApiResponse(404));
 
         var authorEmail = User.FindFirstValue(ClaimTypes.Email);
         if (authorEmail is null) return BadRequest(new ApiResponse(404));
@@ -164,28 +180,31 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
 
         var result = await _zoomMeetingService.DeleteZoomMeeting(zoomMeeting);
 
-        if (!result)
-            return NotFound(new { Message = "Not Found", StatusCode = 404 });
+        if (result)
+        {
+            if (!string.IsNullOrEmpty(zoomMeeting.ZoomPictureUrl))
+                DocumentSetting.DeleteFile(zoomMeeting.ZoomPictureUrl);
 
-        return NoContent();
+            return Ok(true);
+        }
+
+        return BadRequest(new ApiResponse(400));
     }
 
     private async Task<string> GenerateToken()
     {
         httpClient.BaseAddress = new Uri("https://zoom.us/oauth/token");
         var request = new HttpRequestMessage(HttpMethod.Post, string.Empty);
-
         string clientId = _configuration["Zoom:clientId"];
         string clientSecret = _configuration["Zoom:clientSecret"];
         string accountId = _configuration["Zoom:accountId"];
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{clientSecret}")));
-
         request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
-    {
-        { "grant_type", "account_credentials" },
-        { "account_id", accountId }
-    });
+        {
+            { "grant_type", "account_credentials" },
+            { "account_id", accountId  }
+        });
 
         request.Headers.Host = "zoom.us";
 
@@ -206,6 +225,13 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
     }
 
 
+public class Meeting 
+    {
+        public string id { get; set; }
+        public string join_url { get; set; }
+        
+    }
+
     public class ZoomAccessToken
     {
         public string access_token { get; set; }
@@ -213,10 +239,5 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
         public int expires_in { get; set; }
     }
 
-    public class Meeting
-    {
-        public string id { get; set; }
-        public string join_url { get; set; }
-    }
-
 }
+

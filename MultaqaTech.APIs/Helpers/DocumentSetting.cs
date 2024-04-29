@@ -4,7 +4,7 @@ public static class DocumentSetting
 {
     public static string UploadFile(IFormFile file,string folderName)
     {
-        string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\", folderName);
+        string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Files\\", folderName);
         
         if(!Directory.Exists(folderPath))
             Directory.CreateDirectory(folderPath);

@@ -23,6 +23,8 @@ internal class BlogPostConfiguration : IEntityTypeConfiguration<BlogPost>
         builder.Property(e => e.BlogPostCategoryId)
          .IsRequired();
 
+        builder.Ignore(l => l.MediaUrl);
+
 
         builder.HasOne(bp => bp.Category)
                  .WithMany(c => c.BlogPosts)

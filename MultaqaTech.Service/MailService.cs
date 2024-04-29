@@ -1,14 +1,15 @@
 ﻿namespace MultaqaTech.Service;
 
-public class MailService : IMaillingService
+public class MailingService : IMaillingService
 {
     private readonly IOptions<MailSettings> _mailSetting;
-    private readonly ILoggerFactory _logger;
+    private readonly IConfiguration _configuration ;
 
-    public MailService(IOptions<MailSettings> mailSetting, ILoggerFactory logger)
+
+    public MailingService(IOptions<MailSettings> mailSetting, IConfiguration configuration)
     {
         _mailSetting = mailSetting;
-        _logger = logger;
+        _configuration = configuration;
     }
     public async Task<bool> SendEmailAsync(string mailTo, string subject, string body)
     {
@@ -16,11 +17,11 @@ public class MailService : IMaillingService
         {
             using var email = new MimeMessage()
             {
-                Sender = MailboxAddress.Parse(_mailSetting.Value.Email),
+                Sender = MailboxAddress.Parse(_configuration["MailSettings:Email"]),
                 Subject = subject
             };
 
-            email.From.Add(new MailboxAddress(_mailSetting.Value.DisplayName, _mailSetting.Value.Email));
+            email.From.Add(new MailboxAddress(_configuration["MailSettings:DisplayName"], _configuration["MailSettings:Email"]));
 
             email.To.Add(MailboxAddress.Parse(mailTo));
 
@@ -30,8 +31,8 @@ public class MailService : IMaillingService
             email.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();
-            await smtp.ConnectAsync(_mailSetting.Value.Host, _mailSetting.Value.Port, SecureSocketOptions.StartTls);
-            await smtp.AuthenticateAsync(_mailSetting.Value.Email, _mailSetting.Value.Password);
+            await smtp.ConnectAsync(_configuration["MailSettings:Host"], int.Parse(_configuration["MailSettings:Port"]), SecureSocketOptions.StartTls);
+            await smtp.AuthenticateAsync(_configuration["MailSettings:Email"], _configuration["MailSettings:Password"]);
             await smtp.SendAsync(email);
             await smtp.DisconnectAsync(true);
 

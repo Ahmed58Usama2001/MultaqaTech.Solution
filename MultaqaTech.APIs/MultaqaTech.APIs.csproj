@@ -26,4 +26,8 @@
     <ProjectReference Include="..\MultaqaTech.Service\MultaqaTech.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Files\BlogPosts\PostsImages\" />
+  </ItemGroup>
+
 </Project>

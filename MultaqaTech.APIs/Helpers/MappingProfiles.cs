@@ -51,6 +51,10 @@ public class MappingProfiles : Profile
 
         #region Zoom meetings
         CreateMap<ZoomMeetingCategoryCreateDto, ZoomMeetingCategory>();
+
+        CreateMap<ZoomMeetingCreateDto, ZoomMeeting>()
+            .ForMember(dest => dest.ZoomPictureUrl, opt => opt.Ignore());
+
         CreateMap<ZoomMeeting , ZoomMeetingToReturnDto>()
             .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
             .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate.ToString("dddd, MMMM dd, yyyy 'at' hh:mm:ss tt")))

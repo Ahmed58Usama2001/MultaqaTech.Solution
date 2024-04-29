@@ -9,7 +9,7 @@ public class ZoomMeeting : BaseEntityWithMediaUrl
     public string TimeZone { get; set; }
     public string Content { get; set; } = string.Empty;
 
-    public string? ZoomPictureUrl
+    public string ZoomPictureUrl
     {
         get { return base.MediaUrl; }
         set { base.MediaUrl = value; }

@@ -5,11 +5,11 @@ public interface IZoomMeetingService
 {
     Task<ZoomMeeting?> CreateZoomMeetingAsync(ZoomMeeting zoomMeeting);
 
-    Task<IReadOnlyList<ZoomMeeting>> ReadZoomMeetingAsync(ZoomMeetingSpeceficationsParams speceficationsParams);
+    Task<IReadOnlyList<ZoomMeeting>> ReadAllZoomMeetingsAsync(ZoomMeetingSpeceficationsParams speceficationsParams);
 
     Task<ZoomMeeting?> ReadByIdAsync(int zoomMeetingId);
 
-    Task<ZoomMeeting?> UpdateZoomMeeting(int zoomMeetingId, ZoomMeeting updatedZoomMeeting);
+    Task<ZoomMeeting?> UpdateZoomMeeting(ZoomMeeting storedZoomMeeting, ZoomMeeting newZoomMeeting);
 
     Task<bool> DeleteZoomMeeting(ZoomMeeting zoomMeeting);
 

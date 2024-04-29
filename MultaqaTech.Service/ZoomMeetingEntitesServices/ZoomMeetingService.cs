@@ -30,7 +30,7 @@ public class ZoomMeetingService(IUnitOfWork unitOfWork) : IZoomMeetingService
         return zoomMeeting;
     }
 
-    public async Task<IReadOnlyList<ZoomMeeting>> ReadZoomMeetingAsync(ZoomMeetingSpeceficationsParams speceficationsParams)
+    public async Task<IReadOnlyList<ZoomMeeting>> ReadAllZoomMeetingsAsync(ZoomMeetingSpeceficationsParams speceficationsParams)
     {
         var spec = new ZoomMeetingWithIncludesSpecifications(speceficationsParams);
 
@@ -38,24 +38,25 @@ public class ZoomMeetingService(IUnitOfWork unitOfWork) : IZoomMeetingService
 
         return zoomMeetings;
     }
-    public async Task<ZoomMeeting?> UpdateZoomMeeting(int zoomMeetingId, ZoomMeeting updatedZoomMeeting)
+
+    public async Task<ZoomMeeting?> UpdateZoomMeeting(ZoomMeeting storedZoomMeeting, ZoomMeeting newZoomMeeting)
     {
-        var zoomMeeting = await _unitOfWork.Repository<ZoomMeeting>().GetByIdAsync(zoomMeetingId);
-
-        if (zoomMeeting == null) return null;
-
-        if (updatedZoomMeeting == null || string.IsNullOrWhiteSpace(updatedZoomMeeting.Title))
+        if (storedZoomMeeting == null || newZoomMeeting == null)
             return null;
 
-        zoomMeeting = updatedZoomMeeting;
+        storedZoomMeeting.Content = newZoomMeeting.Content;
+        storedZoomMeeting.ZoomPictureUrl = newZoomMeeting.ZoomPictureUrl;
+        storedZoomMeeting.TimeZone = newZoomMeeting.TimeZone;
+        storedZoomMeeting.Category = newZoomMeeting.Category;
+        storedZoomMeeting.ZoomMeetingCategoryId = newZoomMeeting.ZoomMeetingCategoryId;
 
         try
         {
-            _unitOfWork.Repository<ZoomMeeting>().Update(zoomMeeting);
+            _unitOfWork.Repository<ZoomMeeting>().Update(storedZoomMeeting);
             var result = await _unitOfWork.CompleteAsync();
             if (result <= 0) return null;
 
-            return zoomMeeting;
+            return storedZoomMeeting;
         }
         catch (Exception ex)
         {
