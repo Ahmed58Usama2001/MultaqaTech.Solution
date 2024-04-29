@@ -1,9 +1,6 @@
-﻿
+﻿namespace MultaqaTech.APIs.Controllers.ZoomMeetingEntitiesControllers;
 
 
-using System.Net.Http.Headers;
-
-namespace MultaqaTech.APIs.Controllers.ZoomMeetingEntitiesControllers;
 [Authorize]
 public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapper mapper, UserManager<AppUser> userManager, IZoomMeetingCategoryService zoomMeetingCategoryService
     , IUnitOfWork unitOfWork, IConfiguration configuration) : BaseApiController
@@ -179,16 +176,16 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
         httpClient.BaseAddress = new Uri("https://zoom.us/oauth/token");
         var request = new HttpRequestMessage(HttpMethod.Post, string.Empty);
 
-        // Define the client ID and secret here
-        string clientId = "SIhr9cOARx2sLlGSMjbjGg";
-        string clientSecret = "XrNBJo254T9rbyPCMOpBgkKF3oL3yTQm";
+        string clientId = _configuration["Zoom:clientId"];
+        string clientSecret = _configuration["Zoom:clientSecret"];
+        string accountId = _configuration["Zoom:accountId"];
 
         request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{clientSecret}")));
 
         request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
     {
         { "grant_type", "account_credentials" },
-        { "account_id", "K8I5WYPqQo2eoMYpWoZ-2A" }
+        { "account_id", accountId }
     });
 
         request.Headers.Host = "zoom.us";

@@ -2,6 +2,7 @@
 global using MultaqaTech.APIs.Dtos;
 global using MultaqaTech.Repository;
 global using MultaqaTech.APIs.Errors;
+global using System.Net.Http.Headers;
 global using MultaqaTech.APIs.Helpers;
 global using MultaqaTech.Core.Entities;
 global using MultaqaTech.APIs.Extensions;
