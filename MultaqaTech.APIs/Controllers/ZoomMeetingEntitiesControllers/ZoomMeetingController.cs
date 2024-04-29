@@ -127,7 +127,6 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
     {
         var updatedMeeting = await _zoomMeetingService.ReadByIdAsync(zoomMeetingId);
 
-        updatedMeeting.Title = updatedZoomMeetingDto.Title;
         updatedMeeting.Content = updatedZoomMeetingDto.Content;
         updatedMeeting.ZoomPictureUrl = updatedZoomMeetingDto.PictureUrl;
         updatedMeeting.TimeZone = updatedZoomMeetingDto.TimeZone;
