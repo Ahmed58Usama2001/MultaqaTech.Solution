@@ -1,15 +1,17 @@
-﻿
-namespace MultaqaTech.APIs.Controllers.ZoomMeetingEntitiesControllers;
+﻿namespace MultaqaTech.APIs.Controllers.ZoomMeetingEntitiesControllers;
+
+
 [Authorize]
 public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapper mapper, UserManager<AppUser> userManager, IZoomMeetingCategoryService zoomMeetingCategoryService
-    , IUnitOfWork unitOfWork , IConfiguration configuration) : BaseApiController
-    {
+    , IUnitOfWork unitOfWork, IConfiguration configuration) : BaseApiController
+{
     private readonly IZoomMeetingService _zoomMeetingService = zoomMeetingService;
     private readonly IMapper _mapper = mapper;
     private readonly UserManager<AppUser> _userManager = userManager;
     private readonly IZoomMeetingCategoryService _zoomMeetingCategoryService = zoomMeetingCategoryService;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IConfiguration _configuration = configuration;
+    private readonly HttpClient httpClient = new HttpClient();
 
 
     [ProducesResponseType(typeof(ZoomMeetingToReturnDto), StatusCodes.Status200OK)]
@@ -29,30 +31,30 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
         if (existingCategory is null)
             return NotFound(new { Message = "Category wasn't Not Found", StatusCode = 404 });
 
-        var client = new HttpClient();
-            var jwtToken = GenerateJwtToken();
 
-            var requestBody = new
-            {
-                topic = zoomMeetingDto.Title,
-                type = 2, // 2 for scheduled meetings
-                start_time = zoomMeetingDto.StartDate.ToString("yyyy-MM-dd'T'HH:mm:ss"),
-                duration = zoomMeetingDto.Duration,
-            };
+        var accessToken = await GenerateToken();
+        var requestBody = new
+        {
+            topic = zoomMeetingDto.Title,
+            type = 2, // 2 for scheduled meetings
+            start_time = zoomMeetingDto.StartDate.ToString("yyyy-MM-dd'T'HH:mm:ss"),
+            duration = zoomMeetingDto.Duration,
+        };
 
-            var requestContent = new StringContent(JsonConvert.SerializeObject(requestBody),
-                                                  Encoding.UTF8,
-                                                  "application/json");
+        var requestContent = new StringContent(JsonConvert.SerializeObject(requestBody),
+                                              Encoding.UTF8,
+                                              "application/json");
 
 
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", jwtToken);
-            Meeting meetingData ;
+        httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+        Meeting meetingData;
         try
         {
-            var response = await client.PostAsync(_configuration["ZoomApi:Url"], requestContent);
+            string url = "https://api.zoom.us/v2/users/me/meetings";
+            var response = await httpClient.PostAsync(url, requestContent);
             if (response.IsSuccessStatusCode)
             {
-                 meetingData = (JsonConvert.DeserializeObject<Meeting>(await response?.Content?.ReadAsStringAsync()));
+                meetingData = (JsonConvert.DeserializeObject<Meeting>(await response?.Content?.ReadAsStringAsync()));
 
             }
             else
@@ -64,7 +66,7 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
         catch (Exception ex)
         {
             return StatusCode(500, ex.Message);
-        
+
         }
         var mappedzoomMeeting = new ZoomMeeting
         {
@@ -77,7 +79,7 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
             Duration = zoomMeetingDto.Duration,
             StartDate = zoomMeetingDto.StartDate,
             TimeZone = zoomMeetingDto.TimeZone,
-            MeetingUrl = meetingData?.join_url??string.Empty,
+            MeetingUrl = meetingData?.join_url ?? string.Empty,
             MeetingId = meetingData?.id ?? string.Empty,
 
         };
@@ -125,7 +127,6 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
     {
         var updatedMeeting = await _zoomMeetingService.ReadByIdAsync(zoomMeetingId);
 
-        updatedMeeting.Title = updatedZoomMeetingDto.Title;
         updatedMeeting.Content = updatedZoomMeetingDto.Content;
         updatedMeeting.ZoomPictureUrl = updatedZoomMeetingDto.PictureUrl;
         updatedMeeting.TimeZone = updatedZoomMeetingDto.TimeZone;
@@ -169,39 +170,53 @@ public class ZoomMeetingController(IZoomMeetingService zoomMeetingService, IMapp
         return NoContent();
     }
 
-    private string GenerateJwtToken()
+    private async Task<string> GenerateToken()
     {
-        var zoomApiUrl = _configuration["ZoomApi:Url"]; 
-        var zoomApiKey = _configuration["ZoomApi:ApiKey"]; 
-        var zoomApiSecret = _configuration["ZoomApi:ApiSecret"]; 
+        httpClient.BaseAddress = new Uri("https://zoom.us/oauth/token");
+        var request = new HttpRequestMessage(HttpMethod.Post, string.Empty);
 
-        var issueTime = DateTimeOffset.UtcNow;
-        var expirationTime = issueTime.AddMinutes(30);
+        string clientId = _configuration["Zoom:clientId"];
+        string clientSecret = _configuration["Zoom:clientSecret"];
+        string accountId = _configuration["Zoom:accountId"];
 
-        var payload = new
+        request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{clientId}:{clientSecret}")));
+
+        request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+    {
+        { "grant_type", "account_credentials" },
+        { "account_id", accountId }
+    });
+
+        request.Headers.Host = "zoom.us";
+
+        var response = await httpClient.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
         {
-            iss = zoomApiKey,
-            exp = expirationTime.ToUnixTimeSeconds(),
-        };
+            var content = await response.Content.ReadAsStringAsync();
+            var token = JsonSerializer.Deserialize<ZoomAccessToken>(content);
+            return token.access_token;
+        }
+        else
+        {
 
-        var header = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new { alg = "HS256", typ = "JWT" })));
-        var payloadBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload));
-        var secretBytes = Encoding.UTF8.GetBytes(zoomApiSecret);
-
-        var stringToHash = string.Concat(header, ".", Convert.ToBase64String(payloadBytes));
-        var hashBytes = new HMACSHA256(secretBytes).ComputeHash(Encoding.UTF8.GetBytes(stringToHash));
-
-        var signature = Convert.ToBase64String(hashBytes);
-
-        return string.Concat(header, ".", payloadBytes, ".", signature);
+            Console.WriteLine($"Failed to retrieve access token: {response.ReasonPhrase}");
+            return null;
+        }
     }
 
 
-public class Meeting 
+    public class ZoomAccessToken
+    {
+        public string access_token { get; set; }
+        public string token_type { get; set; }
+        public int expires_in { get; set; }
+    }
+
+    public class Meeting
     {
         public string id { get; set; }
         public string join_url { get; set; }
-        
     }
-}
 
+}
