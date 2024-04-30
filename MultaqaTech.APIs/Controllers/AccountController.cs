@@ -74,7 +74,7 @@ public class AccountController : BaseApiController
         await _userManager.UpdateAsync(user);
 
         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var callbackUrl = Request.Scheme + "://" + Request.Host + Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = UrlEncoder.Default.Encode(code) });
+        var callbackUrl =Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = UrlEncoder.Default.Encode(code) }, "http", _configuration["AngularBaseUrl"]);
 
         var bodyUrl = $"{Directory.GetCurrentDirectory()}\\wwwroot\\TempleteHtml\\2-StepVerificationTemplete.html";
         var body = new StreamReader(bodyUrl);
