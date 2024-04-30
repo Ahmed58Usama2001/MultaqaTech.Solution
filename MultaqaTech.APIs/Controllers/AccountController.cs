@@ -88,7 +88,7 @@ public class AccountController : BaseApiController
         if (emailResult == false)
             return BadRequest(new ApiResponse(400));
 
-        return Ok("Please verify your email address through the verification we have just sent.");
+        return Ok(true);
 
     }
 
@@ -105,8 +105,8 @@ public class AccountController : BaseApiController
         var decodedCode = System.Web.HttpUtility.UrlDecode(code);
         var result = await _userManager.ConfirmEmailAsync(user, decodedCode);
 
-        var status = result.Succeeded ? "Thank you for confirming your Email."
-            : "Your Email is not confirmed, please try again later.";
+        var status = result.Succeeded ? true
+             : false;
 
         return Ok(status);
     }
