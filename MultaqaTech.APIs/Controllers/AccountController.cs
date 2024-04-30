@@ -31,7 +31,7 @@ public class AccountController : BaseApiController
 
     
     [HttpPost("register")]
-    public async Task<ActionResult<UserDto>> Register(RegisterDto model)
+    public async Task<IActionResult> Register(RegisterDto model)
     {
         if (CheckEmailExists(model.Email).Result.Value)
             return BadRequest(new ApiValidationErrorResponse() { Errors = new string[] { "This email already exists!" } });

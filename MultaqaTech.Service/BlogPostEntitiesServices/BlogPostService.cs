@@ -91,6 +91,9 @@ public class BlogPostService(IUnitOfWork unitOfWork) : IBlogPostService
 
     public async Task<bool> DeleteBlogPost(BlogPost blogPost)
     {
+        if (blogPost == null)
+            return false;
+
         try
         {
             _unitOfWork.Repository<BlogPost>().Delete(blogPost);
