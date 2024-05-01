@@ -1,8 +1,11 @@
-﻿namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
+﻿using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
 
-public class CurriculumItemService(IUnitOfWork unitOfWork) : ICurriculumItemService
+namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
+
+public class CurriculumItemService(IUnitOfWork unitOfWork, MultaqaTechContext context) : ICurriculumItemService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
+    private readonly MultaqaTechContext _context = context;
 
     public async Task<CurriculumItem?> CreateCurriculumItemAsync(CurriculumItem curriculumItem)
     {
@@ -32,20 +35,46 @@ public class CurriculumItemService(IUnitOfWork unitOfWork) : ICurriculumItemServ
         }
     }
 
-    public async Task<bool> DeleteCurriculumItem(int CurriculumItemId)
+    public async Task<bool> DeleteCurriculumItem(CurriculumItem curriculumItem)
     {
-        var CurriculumItem = await _unitOfWork.Repository<CurriculumItem>().GetByIdAsync(CurriculumItemId);
+            CurriculumItemSpeceficationsParams speceficationsParams = new CurriculumItemSpeceficationsParams
+            {
+                curriculumSectionId = curriculumItem.CurriculumSectionId
+            };
 
-        if (CurriculumItem == null)
-            return false;
+            int changes = 0;
 
+            List<CurriculumItem> remainingItems=new();
+            List<Lecture> remainingLecs = null;
+            List<Quiz> remainingQuizes = null;
         try
         {
-            _unitOfWork.Repository<CurriculumItem>().Delete(CurriculumItem);
+            switch (curriculumItem.CurriculumItemType)
+            {
+                case CurriculumItemType.Lecture:
+                    _unitOfWork.Repository<Lecture>().Delete((Lecture)curriculumItem);
+                    break;
+
+                case CurriculumItemType.Quiz:
+                    _unitOfWork.Repository<Quiz>().Delete((Quiz)curriculumItem);
+                    break;
+            }
+                    remainingQuizes = (List<Quiz>?)await ReadCurriculumItemsbyTypeAsync(speceficationsParams, CurriculumItemType.Quiz);
+                    remainingLecs = (List<Lecture>?)await ReadCurriculumItemsbyTypeAsync(speceficationsParams, CurriculumItemType.Lecture);
+
+            remainingItems.AddRange(remainingQuizes);
+            remainingItems.AddRange(remainingLecs);
+
+
+            foreach (var item in remainingItems.Where(s => s.Order > curriculumItem.Order))
+            {
+                item.Order--;
+                changes++;
+            }
 
             var result = await _unitOfWork.CompleteAsync();
 
-            if (result <= 0)
+            if (result <= changes)
                 return false;
 
             return true;
@@ -57,83 +86,132 @@ public class CurriculumItemService(IUnitOfWork unitOfWork) : ICurriculumItemServ
         }
     }
 
-    public async Task<CurriculumItem?> ReadByIdAsync(int curriculumItemId)
+    public async Task<CurriculumItem?> ReadByIdAsync(int curriculumItemId, CurriculumItemType type)
     {
-        var curriculumItem = await _unitOfWork.Repository<CurriculumItem>().GetByIdAsync(curriculumItemId);
-
-        object? spec = null;
-
-        switch (curriculumItem?.CurriculumItemType)
+        switch (type)
         {
             case CurriculumItemType.Lecture:
-                spec = new LectureWithIncludesSpecifications(curriculumItemId);
-                break;
+                Lecture? lecture = null;
+                var lecSpec = new LectureWithIncludesSpecifications(curriculumItemId);
+                lecture = await _unitOfWork.Repository<Lecture>().GetByIdWithSpecAsync(lecSpec);
+                return lecture;
 
             case CurriculumItemType.Quiz:
-                spec = new QuizWithIncludesSpecifications(curriculumItemId);
-                break;
+                Quiz? quiz = null;
+                var quizSpec = new QuizWithIncludesSpecifications(curriculumItemId);
+                quiz = await _unitOfWork.Repository<Quiz>().GetByIdWithSpecAsync(quizSpec);
+                return quiz;
         }
 
-        var curriculumItemWithIncludes = await _unitOfWork.Repository<CurriculumItem>().GetByIdWithSpecAsync((ISpecifications<CurriculumItem>)spec);
-
-        return curriculumItemWithIncludes??null;
+        return null;
     }
 
     public async Task<IReadOnlyList<CurriculumItem>> ReadCurriculumItemsAsync(CurriculumItemSpeceficationsParams speceficationsParams)
     {
-        var curriculumItems = await _unitOfWork.Repository<CurriculumItem>().GetAllAsync();
+        var lecSpec = new LectureWithIncludesSpecifications(speceficationsParams);
+        List<Lecture>? lectures = (List<Lecture>?)await _unitOfWork.Repository<Lecture>().GetAllWithSpecAsync(lecSpec);
 
-        List<CurriculumItem>? curriculumItemsWihIncludes=null;
-        CurriculumItem curriculumItemWithIncludes;
+        var quizSpec = new QuizWithIncludesSpecifications(speceficationsParams);
+        List<Quiz>? quizes = (List<Quiz>?)await _unitOfWork.Repository<Quiz>().GetAllWithSpecAsync(quizSpec);
 
-        object? spec = null;
-        foreach (var curriculumItem in curriculumItems)
+        List<CurriculumItem> items = new List<CurriculumItem>();
+        items.AddRange(lectures);
+        items.AddRange(quizes);
+
+        return items;
+    }
+
+    public async Task<IReadOnlyList<CurriculumItem>> ReadCurriculumItemsbyTypeAsync(CurriculumItemSpeceficationsParams speceficationsParams, CurriculumItemType type)
+    {
+       
+        switch (type)
         {
-            switch (curriculumItem?.CurriculumItemType)
-            {
-                case CurriculumItemType.Lecture:
-                    spec = new LectureWithIncludesSpecifications(speceficationsParams);
-                    curriculumItemWithIncludes = await _unitOfWork.Repository<Lecture>().GetByIdWithSpecAsync((ISpecifications<Lecture>)spec);
-                    curriculumItemsWihIncludes?.Add(curriculumItemWithIncludes);
-                    break;
+            case CurriculumItemType.Lecture:
+                List<Lecture>? lectures = null;
+                var lecSpec = new LectureWithIncludesSpecifications(speceficationsParams);
+                lectures = (List<Lecture>?)await _unitOfWork.Repository<Lecture>().GetAllWithSpecAsync(lecSpec);
+                return lectures;
 
-                case CurriculumItemType.Quiz:
-                    spec = new QuizWithIncludesSpecifications(speceficationsParams);
-                    curriculumItemWithIncludes = await _unitOfWork.Repository<Quiz>().GetByIdWithSpecAsync((ISpecifications<Quiz>)spec);
-                    curriculumItemsWihIncludes?.Add(curriculumItemWithIncludes);
-                    break;
+            case CurriculumItemType.Quiz:
+                List<Quiz>? quizes = null;
+                var quizSpec = new QuizWithIncludesSpecifications(speceficationsParams);
+                quizes = (List<Quiz>?)await _unitOfWork.Repository<Quiz>().GetAllWithSpecAsync(quizSpec);
+                return quizes;
+        }
+
+        return null;
+    }
+
+    public async Task<bool> ReorderItems(int sectionId, List<int> newOrder)
+    {
+        var speceficationsParams = new CurriculumItemSpeceficationsParams
+        {
+            curriculumSectionId = sectionId
+        };
+
+        var lecSpec = new LectureWithIncludesSpecifications(speceficationsParams);
+        List<Lecture>? lectures = (List<Lecture>?)await _unitOfWork.Repository<Lecture>().GetAllWithSpecAsync(lecSpec);
+
+        var quizSpec = new QuizWithIncludesSpecifications(speceficationsParams);
+        List<Quiz>? quizes = (List<Quiz>?)await _unitOfWork.Repository<Quiz>().GetAllWithSpecAsync(quizSpec);
+
+        List<CurriculumItem> items = new List<CurriculumItem>();
+        items.AddRange(lectures);
+        items.AddRange(quizes);
+        for (int i = 0; i < newOrder.Count; i++)
+        {
+            var itemOrder = newOrder[i];
+            CurriculumItem? item = items.FirstOrDefault(s => s.Order == itemOrder);
+            if (item != null)
+            {
+                item.Order = i + 1; // Update order property
+
+                // Update order in respective table using context
+                if (item is Lecture)
+                {
+                    _context.Lectures.Attach(item as Lecture); // Attach Lecture entity
+                    _context.Entry(item).Property(l => l.Order).IsModified = true; // Mark Order property as modified
+                }
+                else if (item is Quiz)
+                {
+                    _context.Quizes.Attach(item as Quiz); // Attach Quiz entity
+                    _context.Entry(item).Property(q => q.Order).IsModified = true; // Mark Order property as modified
+                }            
             }
         }
 
-        return curriculumItemsWihIncludes ?? null;
+            var result = await _unitOfWork.CompleteAsync();
+        if (result <= newOrder.Count) return false;
+
+        return true;
     }
 
-    public async Task<CurriculumItem?> UpdateCurriculumItem(int curriculumItemId, CurriculumItem updatedCurriculumItem)
-    {
-        var curriculumItem = await _unitOfWork.Repository<CurriculumItem>().GetByIdAsync(curriculumItemId);
 
-        if (curriculumItem == null || updatedCurriculumItem == null || string.IsNullOrWhiteSpace(updatedCurriculumItem.Title))
+    public async Task<CurriculumItem?> UpdateCurriculumItem(CurriculumItem storedItem, CurriculumItem newItem)
+    {
+        if (storedItem == null || newItem == null)
             return null;
 
-        curriculumItem = updatedCurriculumItem;
+        storedItem.Title = newItem.Title;
+        storedItem.Description= newItem.Description;
 
         try
         {
-            switch (curriculumItem?.CurriculumItemType)
+            switch (storedItem?.CurriculumItemType)
             {
                 case CurriculumItemType.Lecture:
-                    _unitOfWork.Repository<Lecture>().Update((Lecture)curriculumItem);
+                    _unitOfWork.Repository<Lecture>().Update((Lecture)storedItem);
                     break;
 
                 case CurriculumItemType.Quiz:
-                    _unitOfWork.Repository<Quiz>().Update((Quiz)curriculumItem);
+                    _unitOfWork.Repository<Quiz>().Update((Quiz)storedItem);
                     break;
             }
 
             var result = await _unitOfWork.CompleteAsync();
             if (result <= 0) return null;
 
-            return curriculumItem;
+            return storedItem;
         }
         catch (Exception ex)
         {

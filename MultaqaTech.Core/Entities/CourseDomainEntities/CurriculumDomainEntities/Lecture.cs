@@ -8,11 +8,11 @@ public class Lecture : CurriculumItem
         set { base.MediaUrl = value; }
     }
 
-    public CurriculumItemType CurriculumItemType { get; set; } = CurriculumItemType.Lecture;
+    public override CurriculumItemType CurriculumItemType { get; set; } = CurriculumItemType.Lecture;
 
     [JsonIgnore]
     public List<Note>? Notes { get; set; } = new();
-
+    [JsonIgnore]
     public List<Question>? Questions { get; set; } = new();
 
 }

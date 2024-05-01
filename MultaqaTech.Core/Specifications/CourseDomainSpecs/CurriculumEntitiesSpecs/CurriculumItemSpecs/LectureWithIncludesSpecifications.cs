@@ -8,8 +8,6 @@ public class LectureWithIncludesSpecifications : BaseSpecifications<Lecture>
 
     {
         AddIncludes();
-
-        AddOrderBy(p => p.Order);
     }
 
     public LectureWithIncludesSpecifications(int id)

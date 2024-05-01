@@ -1,4 +1,7 @@
-﻿namespace MultaqaTech.APIs.Helpers;
+﻿using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.LectureDtos;
+using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.QuizDtos;
+
+namespace MultaqaTech.APIs.Helpers;
 
 public class MappingProfiles : Profile
 {
@@ -30,14 +33,12 @@ public class MappingProfiles : Profile
         CreateMap<CourseDto, Course>()
            .ForMember(dest => dest.PrerequisitesIds, opt => opt.MapFrom(src => src.PrerequisitesIds))
            .ForMember(dest => dest.TagsIds, opt => opt.MapFrom(src => src.TagsIds));
-
         CreateMap<Course, CourseToReturnDto>()
            .ForMember(dest => dest.Subject, opt => opt.MapFrom(src => src.Subject.Name))
            //.ForMember(dest => dest.Instructor, opt => opt.MapFrom(src => src.Instructor.FirstName + src.Instructor.LastName))
            .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags != null ? src.Tags.Select(s => s.Name).ToList() : null))
            .ForMember(dest => dest.Prerequisites, opt => opt.MapFrom(src => src.Prerequisites != null ? src.Prerequisites.Select(c => c.Name).ToList() : null))
            .ForMember(d => d.ThumbnailUrl, O => O.MapFrom<GenericMediaUrlResolver<Course, CourseToReturnDto>>());
-
 
         CreateMap<CourseReviewDto, CourseReview>();
         CreateMap<CourseReview, CourseReviewToReturnDto>()
@@ -47,7 +48,25 @@ public class MappingProfiles : Profile
         CreateMap<CurriculumSectionUpdateDto, CurriculumSection>();
         CreateMap<CurriculumSection, CurriculumSectionReturnDto>();
 
+        CreateMap<QuizCreateDto, Quiz>()
+        .ForMember(dest => dest.QuizQuestionPictureUrl, opt => opt.Ignore());
+        CreateMap<QuizUpdateDto, Quiz>()
+         .ForMember(dest => dest.QuizQuestionPictureUrl, opt => opt.Ignore());
+        CreateMap<Quiz, QuizReturnDto>()
+        .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<GenericMediaUrlResolver<Quiz, QuizReturnDto>>());
+
+        CreateMap<LectureCreateDto, Lecture>()
+        .ForMember(dest => dest.VideoUrl, opt => opt.Ignore());
+        CreateMap<LectureUpdateDto, Lecture>()
+        .ForMember(dest => dest.VideoUrl, opt => opt.Ignore());
+        CreateMap<Lecture, LectureReturnDto>()
+        .ForMember(dest => dest.VideoUrl, opt => opt.MapFrom<GenericMediaUrlResolver<Lecture, LectureReturnDto>>());
+
+        CreateMap<CurriculumItem, ItemReturnDto>()
+          .ForMember(dest => dest.ItemType, opt => opt.MapFrom(src => src.CurriculumItemType.ToString()));
         #endregion
+
+
 
         #region Zoom meetings
         CreateMap<ZoomMeetingCategoryCreateDto, ZoomMeetingCategory>();

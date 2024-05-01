@@ -8,8 +8,6 @@ public class QuizWithIncludesSpecifications : BaseSpecifications<Quiz>
 
     {
         AddIncludes();
-
-        AddOrderBy(p => p.Order);
     }
 
     public QuizWithIncludesSpecifications(int id)
