@@ -6,5 +6,4 @@ public class Student : BaseEntity
     public AppUser AppUser { get; set; }
 
     public List<StudentCourse>? StudentCourses { get; set; } = new();
-
 }

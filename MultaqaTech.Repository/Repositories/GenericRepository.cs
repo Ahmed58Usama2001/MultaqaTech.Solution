@@ -1,4 +1,4 @@
-﻿namespace MultaqaTech.Repository;
+﻿namespace MultaqaTech.Repository.Repositories;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 {
@@ -57,5 +57,4 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
     public void Delete(T entity)
     => _dbContext.Remove(entity);
-
 }

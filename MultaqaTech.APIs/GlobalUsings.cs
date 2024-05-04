@@ -15,9 +15,11 @@ global using MultaqaTech.Core.Services.Contract;
 global using MultaqaTech.Core.Entities.Identity;
 global using MultaqaTech.APIs.Dtos.BlogPostDtos;
 global using MultaqaTech.APIs.Dtos.SettingsDtos;
+global using MultaqaTech.Repository.Repositories;
 global using MultaqaTech.Service.AuthModuleService;
 global using MultaqaTech.Service.ZoomMeetingEntites;
 global using MultaqaTech.Core.Repositories.Contract;
+global using MultaqaTech.Core.Entities.BasketEntities;
 global using MultaqaTech.Service.CourseDomainServices;
 global using MultaqaTech.Core.Entities.Identity.Gmail;
 global using MultaqaTech.Repository.Data.Configurations;
@@ -46,7 +48,6 @@ global using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEnti
 global using MultaqaTech.Core.Services.Contract.CourseDomainContracts.CurriculumDomainContracts;
 global using MultaqaTech.Core.Specifications.CourseDomainSpecs.CurriculumEntitiesSpecs.CurriculumSectionSpecs;
 
-
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Identity;
@@ -56,10 +57,8 @@ global using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 global using System.Net;
 global using System.Text;
-global using System.Net.Mail;
 global using System.Text.Json;
 global using System.Security.Claims;
-global using System.Security.Cryptography;
 global using System.ComponentModel.DataAnnotations;
 global using JsonSerializer = System.Text.Json.JsonSerializer;
 
