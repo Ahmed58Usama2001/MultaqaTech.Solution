@@ -17,7 +17,7 @@ public class CurriculumSectionsController(
     [ProducesResponseType(typeof(CurriculumSectionReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPost]
-    public async Task<ActionResult<CurriculumSectionReturnDto>> CreateBlogPostAsync(CurriculumSectionCreateDto curriculumSectionDto)
+    public async Task<ActionResult<CurriculumSectionReturnDto>> CreateSectionAsync(CurriculumSectionCreateDto curriculumSectionDto)
     {
         if (curriculumSectionDto is null) return BadRequest(new ApiResponse(400));
 

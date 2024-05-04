@@ -1,5 +1,4 @@
-﻿using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.LectureDtos;
-using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.QuizDtos;
+﻿using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.QuizQuestionDtos;
 
 namespace MultaqaTech.APIs.Helpers;
 
@@ -64,6 +63,13 @@ public class MappingProfiles : Profile
 
         CreateMap<CurriculumItem, ItemReturnDto>()
           .ForMember(dest => dest.ItemType, opt => opt.MapFrom(src => src.CurriculumItemType.ToString()));
+
+        CreateMap<QuizQuestionCreateDto, QuizQuestion>();
+        CreateMap<QuizQuestionUpdateDto, QuizQuestion>();
+        CreateMap<QuizQuestion, QuizQuestionReturnDto>();
+
+        CreateMap<QuizQuestionChoiceCreateDto, QuizQuestionChoice>();
+        CreateMap<QuizQuestionChoice, QuizQuestionChoiceReturnDto>();
         #endregion
 
 
