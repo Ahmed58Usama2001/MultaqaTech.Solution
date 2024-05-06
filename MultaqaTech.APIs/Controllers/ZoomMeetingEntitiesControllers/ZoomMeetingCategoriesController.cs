@@ -24,7 +24,7 @@ namespace MultaqaTech.APIs.Controllers.ZoomMeetingEntitiesControllers
         [ProducesResponseType(typeof(ZoomMeetingCategory), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ZoomMeetingCategory>>> GetAllBlogPostCategories()
+        public async Task<ActionResult<IReadOnlyList<ZoomMeetingCategory>>> GetAllZoomMeetingCategories()
         {
             var categories = await _zoomMeetingCategoryService.ReadAllAsync();
 

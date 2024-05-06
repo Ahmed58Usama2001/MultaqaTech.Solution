@@ -3,6 +3,7 @@ global using MultaqaTech.Core.Specifications;
 global using MultaqaTech.Core.Entities.Enums;
 global using MultaqaTech.Core.Entities.Identity.Gmail;
 global using MultaqaTech.Core.Entities.SettingsEntities;
+global using MultaqaTech.Core.Entities.EventDomainEntities;
 global using MultaqaTech.Core.Entities.ZoomDomainEntites;
 global using MultaqaTech.Core.Entities.Identity.Facebook;
 global using System.ComponentModel.DataAnnotations.Schema;

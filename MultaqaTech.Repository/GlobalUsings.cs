@@ -5,6 +5,7 @@ global using MultaqaTech.Core.Repositories.Contract;
 global using MultaqaTech.Repository.Data.Configurations;
 global using MultaqaTech.Core.Entities.SettingsEntities;
 global using MultaqaTech.Core.Entities.ZoomDomainEntites;
+global using MultaqaTech.Core.Entities.EventDomainEntities;
 global using MultaqaTech.Core.Entities.CourseDomainEntities;
 global using MultaqaTech.Core.Entities.BlogPostDomainEntities;
 global using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
