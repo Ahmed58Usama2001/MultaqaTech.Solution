@@ -29,7 +29,7 @@ public class AccountController : BaseApiController
         _configuration = configuration;
     }
 
-    
+
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDto model)
     {
@@ -64,19 +64,19 @@ public class AccountController : BaseApiController
         }
 
         Student? student = new();
-        student.AppUser=user;
-        student.AppUserId=user.Id;
+        student.AppUser = user;
+        student.AppUserId = user.Id;
         await _unitOfWork.Repository<Student>().AddAsync(student);
 
-        user.Student= student;
-        user.StudentId= student.Id;
+        user.Student = student;
+        user.StudentId = student.Id;
 
         await _userManager.UpdateAsync(user);
 
         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         var callbackUrl = Request.Scheme + "://" + Request.Host + Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = UrlEncoder.Default.Encode(code) });
 
-       //this will be used right before deployment
+        //this will be used right before deployment
         //var callbackUrl =Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = UrlEncoder.Default.Encode(code) }, "http", _configuration["AngularBaseUrl"]);
 
         var bodyUrl = $"{Directory.GetCurrentDirectory()}\\wwwroot\\TempleteHtml\\2-StepVerificationTemplete.html";
@@ -108,8 +108,7 @@ public class AccountController : BaseApiController
         var decodedCode = System.Web.HttpUtility.UrlDecode(code);
         var result = await _userManager.ConfirmEmailAsync(user, decodedCode);
 
-        var status = result.Succeeded ? true
-             : false;
+        var status = result.Succeeded;
 
         return Ok(status);
     }
@@ -141,7 +140,7 @@ public class AccountController : BaseApiController
                 Email = user.Email ?? string.Empty,
                 IsInstructor = user?.IsInstructor ?? false,
                 Token = await _authService.CreateTokenAsync(user, _userManager)
-            }); ;
+            });
         }
 
         return Unauthorized(new ApiResponse(401));
@@ -158,10 +157,10 @@ public class AccountController : BaseApiController
 
         return Ok(new UserDto()
         {
-            UserName = user?.UserName??string.Empty,
+            UserName = user?.UserName ?? string.Empty,
             Email = user?.Email ?? string.Empty,
-            IsInstructor=user?.IsInstructor??false,
-            Token = await _authService.CreateTokenAsync(user??new AppUser(), _userManager)
+            IsInstructor = user?.IsInstructor ?? false,
+            Token = await _authService.CreateTokenAsync(user ?? new AppUser(), _userManager)
         });
     }
 
@@ -192,7 +191,7 @@ public class AccountController : BaseApiController
         }
         catch (Exception ex)
         {
-            Log.Error(ex,ex.Message);
+            Log.Error(ex, ex.Message);
             return BadRequest(new ApiResponse(400));
         }
     }
@@ -274,7 +273,7 @@ public class AccountController : BaseApiController
                 mailText = mailText.Replace("[username]", user.UserName).Replace("[LinkHere]", resetPasswordLink);
 
                 var result = await _mailService.SendEmailAsync(model.Email, "Reset Password", mailText);
-                if (result == false)
+                if (!result)
                     return BadRequest(new ApiResponse(400, "No Internet Connection"));
 
 

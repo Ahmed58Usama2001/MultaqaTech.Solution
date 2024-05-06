@@ -4,12 +4,12 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly MultaqaTechContext _multaqaTechContext;
 
-    private Hashtable _repositories;
+    private readonly Hashtable _repositories;
 
-    public UnitOfWork(MultaqaTechContext multaqaTechContext) //Ask CLR To create object from DB Context Implecitly
+    public UnitOfWork(MultaqaTechContext multaqaTechContext) //Ask CLR To create object from DB Context Implicitly
     {
         _multaqaTechContext = multaqaTechContext;
-        _repositories = new Hashtable();
+        _repositories = [];
     }
 
     public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity  //This Method to create repository per request

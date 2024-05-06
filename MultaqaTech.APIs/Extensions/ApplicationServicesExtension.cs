@@ -47,6 +47,7 @@ public static class ApplicationServicesExtension
         services.AddScoped<IQuizQuestionChoiceService , QuizQuestionChoiceService>();
         services.AddScoped<ICurriculumItemService , CurriculumItemService>();
         services.AddScoped<ICurriculumSectionService , CurriculumSectionService>();
+        services.AddScoped<IBasketRepository, BasketRepository>();
 
         return services;
     }
