@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.APIs.Extensions;
+﻿using MultaqaTech.Service.EventEntitesServices;
+
+namespace MultaqaTech.APIs.Extensions;
 
 public static class ApplicationServicesExtension
 {
@@ -33,6 +35,8 @@ public static class ApplicationServicesExtension
         services.AddScoped<IBlogPostCategoryService, BlogPostCategoryService>();
         services.AddScoped<IBlogPostService, BlogPostService>();
         services.AddScoped<IBlogPostCommentService, BlogPostCommentService>();
+
+        services.AddScoped<IEventCategoryService, EventCategoryService>();
 
         services.AddScoped<IZoomMeetingCategoryService , ZoomMeetingCategoryService>();
         services.AddScoped<IZoomMeetingService , ZoomMeetingService>();

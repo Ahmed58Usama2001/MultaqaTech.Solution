@@ -73,6 +73,13 @@ public class MappingProfiles : Profile
         #endregion
 
 
+        #region Event
+        CreateMap<EventCategoryCreateDto, EventCategory>();
+
+        #endregion
+
+
+
 
         #region Zoom meetings
         CreateMap<ZoomMeetingCategoryCreateDto, ZoomMeetingCategory>();
