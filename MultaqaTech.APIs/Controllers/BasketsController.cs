@@ -4,25 +4,26 @@ public class BasketsController(IBasketRepository basketRepository) : BaseApiCont
 {
     private readonly IBasketRepository _basketRepository = basketRepository;
 
+    [ProducesResponseType(typeof(StudentBasket),StatusCodes.Status200OK)]
     [HttpGet("{basketId}")]
-    public async Task<ActionResult<StudentBasket>> GetCustomerBasketById(string basketId)
+    public async Task<ActionResult<StudentBasket>> GetStudentBasketById(string basketId)
     {
         StudentBasket? studentBasket = await _basketRepository.GetBasket(basketId);
-        if (studentBasket is not null)
-            return Ok(studentBasket);
-        else
-            return new StudentBasket(basketId);
+
+        return studentBasket is null ? new StudentBasket(basketId) : Ok(studentBasket);
     }
 
+    [ProducesResponseType(typeof(StudentBasket),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse),StatusCodes.Status404NotFound)]
     [HttpPost]
-    public async Task<ActionResult<StudentBasket>> UpdateCustomerBasket(StudentBasket studentBasket)
+    public async Task<ActionResult<StudentBasket>> UpdateStudentBasket(StudentBasket studentBasket)
     {
         StudentBasket? basket = await _basketRepository.UpdateBasket(studentBasket);
-        return basket == null ? BadRequest(new ApiResponse(400)) : Ok(basket);
+        return basket == null ? BadRequest(new ApiResponse(404)) : Ok(basket);
     }
 
     [HttpDelete("{basketId}")]
-    public async Task<ActionResult> DeleteCustomerBasket(string basketId)
+    public async Task<ActionResult> DeleteStudentBasket(string basketId)
     {
         bool isSuccess = await _basketRepository.DeleteBasket(basketId);
 
