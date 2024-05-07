@@ -37,6 +37,11 @@ namespace MultaqaTech.Repository.Data.Configurations.EventEntitesConfigurations
                      .IsRequired()
                      .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasMany(bp => bp.Comments)
+               .WithOne(c => c.Event)
+               .HasForeignKey(c => c.EventId)
+               .OnDelete(DeleteBehavior.Cascade);
+
             builder.Property(e => e.Price).HasColumnType("decimal(18,2)");
 
         }

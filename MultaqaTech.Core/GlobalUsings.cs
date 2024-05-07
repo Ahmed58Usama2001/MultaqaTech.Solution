@@ -11,6 +11,8 @@ global using MultaqaTech.Core.Entities.CourseDomainEntities;
 global using MultaqaTech.Core.Specifications.BlogPost_Specs;
 global using MultaqaTech.Core.Entities.BlogPostDomainEntities;
 global using MultaqaTech.Core.Specifications.ZoomMeetingEntitiesSpecs;
+global using MultaqaTech.Core.Specifications.EventEntitiesSpecs.EventSpecs;
+global using MultaqaTech.Core.Specifications.EventEntitiesSpecs.EventCommentSpecs;
 global using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
 global using MultaqaTech.Core.Specifications.CourseDomainSpecs.CurriculumEntitiesSpecs.CurriculumSectionSpecs;
 

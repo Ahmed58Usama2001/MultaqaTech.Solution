@@ -1,5 +1,4 @@
-﻿
-namespace MultaqaTech.Core.Specifications.EventEntitiesSpecs
+﻿namespace MultaqaTech.Core.Specifications.EventEntitiesSpecs.EventSpecs
 {
     public class EventWithFilterationForCountSpecifications : BaseSpecifications<Event>
     {
@@ -13,8 +12,8 @@ namespace MultaqaTech.Core.Specifications.EventEntitiesSpecs
             ))
 
 
-        { 
-        
+        {
+
 
         }
     }

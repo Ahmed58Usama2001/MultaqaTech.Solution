@@ -17,5 +17,6 @@ namespace MultaqaTech.Core.Entities.EventDomainEntities
         public TimeSpan From { get; set; }
         public TimeSpan To { get; set; }
         public decimal Price { get; set; }
+        public List<EventComment>? Comments { get; set; } = new();
     }
 }

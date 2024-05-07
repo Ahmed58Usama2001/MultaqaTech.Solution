@@ -1,6 +1,4 @@
 ﻿
-using MultaqaTech.Core.Specifications.EventEntitiesSpecs;
-
 namespace MultaqaTech.Core.Services.Contract.EventContracts
 {
     public interface IEventService

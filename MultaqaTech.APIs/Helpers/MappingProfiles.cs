@@ -76,6 +76,11 @@ public class MappingProfiles : Profile
         #region Event
         CreateMap<EventCategoryCreateDto, EventCategory>();
 
+
+        CreateMap<EventComment, EventCommentToReturnDto>()
+            .ForMember(dest => dest.Event, opt => opt.MapFrom(src => src.Event.Title))
+            .ForMember(dest => dest.DatePosted, opt => opt.MapFrom(src => src.DatePosted.ToString("dddd, MMMM dd, yyyy 'at' hh:mm:ss tt")));
+
         #endregion
 
 

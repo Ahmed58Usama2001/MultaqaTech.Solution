@@ -1,5 +1,6 @@
 ﻿
 using MultaqaTech.Core.Specifications.EventEntitiesSpecs;
+using MultaqaTech.Core.Specifications.EventEntitiesSpecs.EventSpecs;
 
 namespace MultaqaTech.Service.EventEntitesServices
 {

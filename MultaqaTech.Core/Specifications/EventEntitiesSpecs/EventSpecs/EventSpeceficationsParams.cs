@@ -1,5 +1,4 @@
-﻿
-namespace MultaqaTech.Core.Specifications.EventEntitiesSpecs
+﻿namespace MultaqaTech.Core.Specifications.EventEntitiesSpecs.EventSpecs
 {
     public class EventSpeceficationsParams
     {
