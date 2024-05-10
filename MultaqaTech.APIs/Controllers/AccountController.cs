@@ -88,7 +88,7 @@ public class AccountController : BaseApiController
             HtmlEncoder.Default.Encode(callbackUrl));
 
         var emailResult = await _mailService.SendEmailAsync(model.Email, "Confirm Email", mailText);
-        if (emailResult == false)
+        if (!emailResult)
             return BadRequest(new ApiResponse(400));
 
         return Ok(true);

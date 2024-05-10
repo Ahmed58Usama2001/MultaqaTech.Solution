@@ -1,31 +1,44 @@
 ﻿namespace MultaqaTech.APIs.Controllers;
 
+[Authorize]
 public class BasketsController(IBasketRepository basketRepository) : BaseApiController
 {
     private readonly IBasketRepository _basketRepository = basketRepository;
 
-    [ProducesResponseType(typeof(StudentBasket),StatusCodes.Status200OK)]
-    [HttpGet("{basketId}")]
-    public async Task<ActionResult<StudentBasket>> GetStudentBasketById(string basketId)
-    {
-        StudentBasket? studentBasket = await _basketRepository.GetBasket(basketId);
-
-        return studentBasket is null ? new StudentBasket(basketId) : Ok(studentBasket);
-    }
-
-    [ProducesResponseType(typeof(StudentBasket),StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse),StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPost]
     public async Task<ActionResult<StudentBasket>> UpdateStudentBasket(StudentBasket studentBasket)
     {
-        StudentBasket? basket = await _basketRepository.UpdateBasket(studentBasket);
-        return basket == null ? BadRequest(new ApiResponse(404)) : Ok(basket);
+        string? email = User.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(email))
+            return BadRequest(new ApiResponse(401));
+
+        StudentBasket? basket = await _basketRepository.UpdateBasket(studentBasket, email);
+        return basket == null ? BadRequest(new ApiResponse(400)) : Ok(basket);
     }
 
-    [HttpDelete("{basketId}")]
-    public async Task<ActionResult> DeleteStudentBasket(string basketId)
+    [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
+    [HttpGet]
+    public async Task<ActionResult<StudentBasket>> GetStudentBasket()
     {
-        bool isSuccess = await _basketRepository.DeleteBasket(basketId);
+        string? email = User.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(email))
+            return BadRequest(new ApiResponse(401));
+
+        StudentBasket? studentBasket = await _basketRepository.GetBasket(email);
+
+        return studentBasket is null ? new StudentBasket() : Ok(studentBasket);
+    }
+
+    [HttpDelete]
+    public async Task<ActionResult> DeleteStudentBasket()
+    {
+        string? email = User.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(email))
+            return BadRequest(new ApiResponse(401));
+
+        bool isSuccess = await _basketRepository.DeleteBasket(email);
 
         return isSuccess ? NoContent() : NotFound(new ApiResponse(404));
     }

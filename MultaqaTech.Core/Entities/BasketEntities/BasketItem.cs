@@ -2,8 +2,11 @@
 
 public class BasketItem : BaseEntityWithMediaUrl
 {
-    public string CourseId { get; set; } = string.Empty;
-    public string Course { get; set; } = string.Empty;
+    [JsonIgnore]
+    public new int Id { get; set; }
+
+    public int CourseId { get; set; }
+    public string CourseTitle { get; set; } = string.Empty;
 
     public decimal Price { get; set; }
 }
