@@ -81,7 +81,12 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         if (courses is null)
             return NotFound(new ApiResponse(404));
 
-        return Ok(_mapper.Map<IEnumerable<Course>, IEnumerable<CourseToReturnDto>>(courses));
+        var count = await _courseService.GetCountAsync(courseSpeceficationsParams);
+
+        var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
+
+        return Ok(new Pagination<BlogPostToReturnDto>(courseSpeceficationsParams.PageIndex, courseSpeceficationsParams.PageSize,
+            count, (IReadOnlyList<BlogPostToReturnDto>)data));
     }
 
     [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
@@ -94,7 +99,12 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         if (courses is null)
             return NotFound(new ApiResponse(404));
 
-        return Ok(_mapper.Map<IEnumerable<Course>, IEnumerable<CourseToReturnDto>>(courses));
+        var count = await _courseService.GetCountAsync(courseSpeceficationsParams);
+
+        var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
+
+        return Ok(new Pagination<BlogPostToReturnDto>(courseSpeceficationsParams.PageIndex, courseSpeceficationsParams.PageSize,
+            count, (IReadOnlyList<BlogPostToReturnDto>)data));
     }
 
     [ProducesResponseType(typeof(CourseToReturnDto), StatusCodes.Status200OK)]
