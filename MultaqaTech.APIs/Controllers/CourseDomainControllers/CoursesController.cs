@@ -2,12 +2,13 @@
 
 [Authorize]
 public partial class CoursesController(ICourseService courseService, IMapper mapper, UserManager<AppUser> userManager,
-    IUnitOfWork unitOfWork) : BaseApiController
+    IUnitOfWork unitOfWork, MultaqaTechContext context) : BaseApiController
 {
     private readonly ICourseService _courseService = courseService;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMapper _mapper = mapper;
     private readonly UserManager<AppUser> _userManager = userManager;
+    private readonly MultaqaTechContext _context = context;
 
     [ProducesResponseType(typeof(CourseToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -48,6 +49,12 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         if (courses is null)
             return NotFound(new ApiResponse(404));
 
+        foreach (var course in courses)
+        {
+            context.Entry(course).Reference(c => c.Instractor).Load();
+            context.Entry(course.Instractor).Reference(i => i.AppUser).Load();
+        }
+
         var count = await _courseService.GetCountAsync(courseSpeceficationsParams);
 
         var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
@@ -81,6 +88,12 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         if (courses is null)
             return NotFound(new ApiResponse(404));
 
+        foreach (var course in courses)
+        {
+            context.Entry(course).Reference(c => c.Instractor).Load();
+            context.Entry(course.Instractor).Reference(i => i.AppUser).Load();
+        }
+
         var count = await _courseService.GetCountAsync(courseSpeceficationsParams);
 
         var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
@@ -99,12 +112,36 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         if (courses is null)
             return NotFound(new ApiResponse(404));
 
+        foreach (var course in courses)
+        {
+            context.Entry(course).Reference(c => c.Instractor).Load();
+            context.Entry(course.Instractor).Reference(i => i.AppUser).Load();
+        }
+
         var count = await _courseService.GetCountAsync(courseSpeceficationsParams);
 
         var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
 
         return Ok(new Pagination<BlogPostToReturnDto>(courseSpeceficationsParams.PageIndex, courseSpeceficationsParams.PageSize,
             count, (IReadOnlyList<BlogPostToReturnDto>)data));
+    }
+
+    [ProducesResponseType(typeof(InstructorReturnDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [HttpGet("GetInstructors")]
+    public async Task<ActionResult<IReadOnlyList<InstructorReturnDto>>> GetAllInstructors()
+    {
+        var instructors = await _unitOfWork.Repository<Instructor>().GetAllAsync();
+
+        if (instructors == null)
+            return NotFound(new ApiResponse(404));
+
+        foreach (var instructor in instructors)
+        {
+            _context.Entry(instructor).Reference(i => i.AppUser).Load();  
+        }
+
+        return Ok(_mapper.Map<IReadOnlyList<Instructor>, IReadOnlyList<InstructorReturnDto>>(instructors));
     }
 
     [ProducesResponseType(typeof(CourseToReturnDto), StatusCodes.Status200OK)]

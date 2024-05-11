@@ -10,6 +10,10 @@ public class MappingProfiles : Profile
 
         CreateMap<SubjectCreateDto, Subject>().ReverseMap();
 
+        CreateMap<Instructor, InstructorReturnDto>()
+            .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.AppUser.InstructorId))
+            .ForMember(dest => dest.InstructorName, opt => opt.MapFrom(src => src.AppUser.FirstName + " " + src.AppUser.LastName));
+
         #region Blog Post
 
         CreateMap<BlogPostCategoryCreateDto, BlogPostCategory>();
@@ -90,8 +94,6 @@ public class MappingProfiles : Profile
             .ForMember(dest => dest.DatePosted, opt => opt.MapFrom(src => src.DatePosted.ToString("dddd, MMMM dd, yyyy 'at' hh:mm:ss tt")));
 
         #endregion
-
-
 
 
         #region Zoom meetings
