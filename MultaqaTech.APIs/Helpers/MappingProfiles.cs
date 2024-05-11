@@ -64,6 +64,11 @@ public class MappingProfiles : Profile
         CreateMap<Lecture, LectureReturnDto>()
         .ForMember(dest => dest.VideoUrl, opt => opt.MapFrom<GenericMediaUrlResolver<Lecture, LectureReturnDto>>());
 
+        CreateMap<NoteCreateDto, Note>();
+        CreateMap<NoteUpdateDto, Note>();
+        CreateMap<Note, NoteReturnDto>()
+         .ForMember(dest => dest.PublishingDate, opt => opt.MapFrom(src => src.PublishingDate.ToString("dddd, MMMM dd, yyyy 'at' hh:mm:ss tt")));
+
         CreateMap<CurriculumItem, ItemReturnDto>()
           .ForMember(dest => dest.ItemType, opt => opt.MapFrom(src => src.CurriculumItemType.ToString()));
 

@@ -64,22 +64,21 @@ public class NoteService(IUnitOfWork unitOfWork) : INoteService
         return notes;
     }
 
-    public async Task<Note?> UpdateNote(int noteId, Note updatedNote)
-    {
-        var note = await _unitOfWork.Repository<Note>().GetByIdAsync(noteId);
 
-        if (note == null || updatedNote == null || string.IsNullOrWhiteSpace(updatedNote.Content))
+    public async Task<Note?> UpdateNote(Note storedNote, Note newNote)
+    {
+        if (newNote == null || storedNote == null)
             return null;
 
-        note = updatedNote;
+        storedNote.Content = newNote.Content;
 
         try
         {
-            _unitOfWork.Repository<Note>().Update(note);
+            _unitOfWork.Repository<Note>().Update(storedNote);
             var result = await _unitOfWork.CompleteAsync();
             if (result <= 0) return null;
 
-            return note;
+            return storedNote;
         }
         catch (Exception ex)
         {

@@ -38,6 +38,7 @@ global using MultaqaTech.Core.Services.Contract.EventContracts;
 global using MultaqaTech.Core.Services.Contract.BlogPostContracts;
 global using MultaqaTech.Core.Services.Contract.AuthDomainContracts;
 global using MultaqaTech.Core.Services.Contract.ZoomMeetingContracts;
+global using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.NoteDtos;
 global using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.QuizDtos;
 global using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.ItemDtos;
 global using MultaqaTech.Core.Specifications.ZoomMeetingEntitiesSpecs;

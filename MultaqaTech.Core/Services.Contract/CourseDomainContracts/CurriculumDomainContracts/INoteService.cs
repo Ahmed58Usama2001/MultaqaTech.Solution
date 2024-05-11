@@ -8,9 +8,10 @@ public interface INoteService
 
     Task<Note?> ReadByIdAsync(int noteId);
 
-    Task<Note?> UpdateNote(int noteId, Note updatedNote);
+    public Task<Note?> UpdateNote(Note storedNote, Note newNote);
 
-    Task<bool> DeleteNote(int noteId);
 
-    //Task<IReadOnlyList<CurriculumItem>> ReadCurriculumItemsByIds(List<int> curriculumItemIds);
+    public Task<bool> DeleteNote(int noteId);
+
+    //Task<IReadOnlyList<Note>> ReadNotesByIds(List<int> curriculumItemIds);
 }

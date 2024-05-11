@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Core.Entities.CourseDomainEntities;
-
-namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
+﻿namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
 
 public class CurriculumSectionService(IUnitOfWork unitOfWork) : ICurriculumSectionService
 {

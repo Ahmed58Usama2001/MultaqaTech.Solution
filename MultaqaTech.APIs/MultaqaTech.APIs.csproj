@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\CourseDtos\CurriculumDtos\NoteDtos\" />
     <Folder Include="wwwroot\Files\BlogPosts\PostsImages\" />
   </ItemGroup>
 
