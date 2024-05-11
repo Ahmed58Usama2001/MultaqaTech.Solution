@@ -16,9 +16,9 @@ internal class CourseConfigurations : IEntityTypeConfiguration<Course>
 
         builder.Ignore(l => l.MediaUrl);
 
-        builder.HasOne(e => e.Instractor)
+        builder.HasOne(e => e.Instructor)
                .WithMany(i => i.Courses)
-               .HasForeignKey(e => e.InstractorId)
+               .HasForeignKey(e => e.InstructorId)
                .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(e => e.Subject)

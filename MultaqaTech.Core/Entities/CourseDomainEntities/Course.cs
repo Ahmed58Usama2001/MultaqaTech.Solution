@@ -2,8 +2,8 @@
 
 public class Course : BaseEntityWithMediaUrl
 {
-    public int InstractorId { get; set; }
-    public Instructor Instractor { get; set; } = new ();
+    public int InstructorId { get; set; }
+    public Instructor Instructor { get; set; } = new ();
 
     public int SubjectId { get; set; }
     public Subject Subject { get; set; } = new();

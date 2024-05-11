@@ -51,8 +51,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         foreach (var course in courses)
         {
-            context.Entry(course).Reference(c => c.Instractor).Load();
-            context.Entry(course.Instractor).Reference(i => i.AppUser).Load();
+            context.Entry(course).Reference(c => c.Instructor).Load();
+            context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
         var count = await _courseService.GetCountAsync(courseSpeceficationsParams);
@@ -73,6 +73,9 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         if (course is null)
             return NotFound(new ApiResponse(404));
 
+        context.Entry(course).Reference(c => c.Instructor).Load();
+        context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
+
         return Ok(_mapper.Map<CourseToReturnDto>(course));
     }
 
@@ -90,8 +93,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         foreach (var course in courses)
         {
-            context.Entry(course).Reference(c => c.Instractor).Load();
-            context.Entry(course.Instractor).Reference(i => i.AppUser).Load();
+            context.Entry(course).Reference(c => c.Instructor).Load();
+            context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
         var count = await _courseService.GetCountAsync(courseSpeceficationsParams);
@@ -114,8 +117,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         foreach (var course in courses)
         {
-            context.Entry(course).Reference(c => c.Instractor).Load();
-            context.Entry(course.Instractor).Reference(i => i.AppUser).Load();
+            context.Entry(course).Reference(c => c.Instructor).Load();
+            context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
         var count = await _courseService.GetCountAsync(courseSpeceficationsParams);

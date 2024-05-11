@@ -11,8 +11,8 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
 
         course.UploadDate = DateTime.Now;
         course.LastUpdatedDate = DateTime.Now;
-        course.InstractorId = instructor.Id;
-        course.Instractor = instructor;
+        course.InstructorId = instructor.Id;
+        course.Instructor = instructor;
         course.Subject = await _subjectService.ReadByIdAsync(course.SubjectId) ?? new();
         course.Tags = await MapSubjectsAsync(course.TagsIds ?? new());
         course.Prerequisites = await MapSubjectsAsync(course.PrerequisitesIds ?? new());

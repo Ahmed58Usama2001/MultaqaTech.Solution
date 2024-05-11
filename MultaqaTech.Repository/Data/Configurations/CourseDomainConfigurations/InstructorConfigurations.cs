@@ -7,8 +7,8 @@ internal class InstructorConfigurations : IEntityTypeConfiguration<Instructor>
         builder.ToTable("Instructors");
 
         builder.HasMany(i => i.Courses)
-               .WithOne(c => c.Instractor)
-               .HasForeignKey(c => c.InstractorId)
+               .WithOne(c => c.Instructor)
+               .HasForeignKey(c => c.InstructorId)
                .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(s => s.AppUser) // Student or Instructor

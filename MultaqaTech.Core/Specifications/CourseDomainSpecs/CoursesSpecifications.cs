@@ -6,7 +6,7 @@ public class CoursesSpecifications : BaseSpecifications<Course>
         : base(e =>
            (
                  (string.IsNullOrEmpty(speceficationsParams.Language) || e.Language == speceficationsParams.Language) &&
-                 (!speceficationsParams.InstractorId.HasValue) || e.InstractorId == speceficationsParams.InstractorId) &&
+                 (!speceficationsParams.InstractorId.HasValue) || e.InstructorId == speceficationsParams.InstractorId) &&
                  (!speceficationsParams.StudentId.HasValue) || e.EnrolledStudentsIds.Contains((int)speceficationsParams.StudentId) &&
                  (speceficationsParams.SubjectId == null || e.SubjectId == speceficationsParams.SubjectId) &&
                  (speceficationsParams.MinPrice == null || e.Price >= speceficationsParams.MinPrice) &&
