@@ -1,9 +1,11 @@
 ﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers;
 
 [Authorize]
-public partial class CoursesController(ICourseService courseService, IMapper mapper, UserManager<AppUser> userManager) : BaseApiController
+public partial class CoursesController(ICourseService courseService, IMapper mapper, UserManager<AppUser> userManager,
+    IUnitOfWork unitOfWork) : BaseApiController
 {
     private readonly ICourseService _courseService = courseService;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMapper _mapper = mapper;
     private readonly UserManager<AppUser> _userManager = userManager;
 
@@ -21,11 +23,9 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         AppUser? storedUser = await _userManager.FindByEmailAsync(instructorEmail);
         if (storedUser is null) return NotFound(new ApiResponse(401));
 
-        Instructor? instructor = new()
-        {
-            AppUser=storedUser,
-            AppUserId=storedUser.Id
-        };
+        Instructor? instructor =await _unitOfWork.Repository<Instructor>().FindAsync(I=>I.AppUserId==storedUser.Id);
+        if (instructor is null)
+           return NotFound(new ApiResponse(401));
 
         (bool isTitleUnique, _) = await _courseService.CheckTitleUniqueness(courseDto.Title);
         if (!isTitleUnique) return BadRequest(new ApiResponse(400, "Course Title Should Be Unique"));
@@ -34,8 +34,6 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         if (createdCourse is null) return BadRequest(new ApiResponse(400));
 
-        storedUser.IsInstructor=true;
-        await _userManager.UpdateAsync(storedUser);
 
         return Ok(_mapper.Map<CourseToReturnDto>(createdCourse));
     }

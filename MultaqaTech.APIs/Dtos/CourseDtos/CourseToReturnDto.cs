@@ -8,7 +8,10 @@ public class CourseToReturnDto
     public int NumberOfLectures { get; set; }
 
     public string? Language { get; set; }
-    public string? Instructor { get; set; }
+
+    public string? InstructorName { get; set; }
+    public string? InstructorPicture { get; set; }
+
     public string? ThumbnailUrl { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Subject { get; set; } = string.Empty;

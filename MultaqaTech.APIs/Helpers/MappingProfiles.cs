@@ -37,7 +37,10 @@ public class MappingProfiles : Profile
            //.ForMember(dest => dest.Instructor, opt => opt.MapFrom(src => src.Instructor.FirstName + src.Instructor.LastName))
            .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags != null ? src.Tags.Select(s => s.Name).ToList() : null))
            .ForMember(dest => dest.Prerequisites, opt => opt.MapFrom(src => src.Prerequisites != null ? src.Prerequisites.Select(c => c.Name).ToList() : null))
-           .ForMember(d => d.ThumbnailUrl, O => O.MapFrom<GenericMediaUrlResolver<Course, CourseToReturnDto>>());
+           .ForMember(d => d.ThumbnailUrl, O => O.MapFrom<GenericMediaUrlResolver<Course, CourseToReturnDto>>())
+           .ForMember(dest => dest.InstructorName, opt => opt.MapFrom(src => src.Instractor.AppUser.FirstName + " " + src.Instractor.AppUser.LastName))
+           .ForMember(dest => dest.InstructorPicture, opt => opt.MapFrom(src => src.Instractor.AppUser.ProfilePictureUrl));
+
 
         CreateMap<CourseReviewDto, CourseReview>();
         CreateMap<CourseReview, CourseReviewToReturnDto>()

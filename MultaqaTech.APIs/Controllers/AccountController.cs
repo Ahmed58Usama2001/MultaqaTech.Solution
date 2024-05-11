@@ -63,15 +63,22 @@ public class AccountController : BaseApiController
             return BadRequest(new ApiResponse(400, errors));
         }
 
-        Student? student = new();
-        student.AppUser = user;
-        student.AppUserId = user.Id;
+        Student? student = new()
+        {
+            AppUser = user,
+            AppUserId = user.Id
+        };
         await _unitOfWork.Repository<Student>().AddAsync(student);
 
         user.Student = student;
         user.StudentId = student.Id;
 
-        await _userManager.UpdateAsync(user);
+        result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            string errors = string.Join(", ", result.Errors.Select(error => error.Description));
+            return BadRequest(new ApiResponse(400, errors));
+        }
 
         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
         var callbackUrl = Request.Scheme + "://" + Request.Host + Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = UrlEncoder.Default.Encode(code) });
@@ -113,6 +120,44 @@ public class AccountController : BaseApiController
         return Ok(status);
     }
 
+    [HttpPost("BecomeInstructor")]
+    public async Task<IActionResult> BecomeInstructor(BecomeInstructorDto model)
+    {
+        if (model is null) return BadRequest(new ApiResponse(400));
+
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (userEmail is null) return NotFound(new ApiResponse(401));
+
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        if (storedUser is null) return NotFound(new ApiResponse(401));
+
+        if (model.ProfilePicture is null && storedUser.ProfilePictureUrl is null)
+            return BadRequest(new ApiResponse(400,"Profile Picture is required"));
+
+        Instructor? instructor = new()
+        {
+            AppUser = storedUser,
+            AppUserId = storedUser.Id,
+            Bio=model.Bio,
+            JobTitle=model.JobTitle,
+        };
+
+        await _unitOfWork.Repository<Instructor>().AddAsync(instructor);
+
+        var instructorResult = await _unitOfWork.CompleteAsync();
+        if (instructorResult <= 0) return BadRequest(false);
+
+        storedUser.Instructor = instructor;
+        storedUser.InstructorId = instructor.Id;
+        storedUser.ProfilePictureUrl = storedUser.ProfilePictureUrl?? DocumentSetting.UploadFile(model?.ProfilePicture, "Users\\ProfilePictures");
+        storedUser.IsInstructor = true;
+
+        var userResult = await _userManager.UpdateAsync(storedUser);
+        var status = userResult.Succeeded;
+
+        return Ok(status);
+    }
+
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> Login(LoginDto model)
     {
@@ -139,6 +184,7 @@ public class AccountController : BaseApiController
                 UserName = user.UserName ?? string.Empty,
                 Email = user.Email ?? string.Empty,
                 IsInstructor = user?.IsInstructor ?? false,
+                ProfilePictureUrl=user?.ProfilePictureUrl ?? string.Empty,
                 Token = await _authService.CreateTokenAsync(user, _userManager)
             });
         }
@@ -160,6 +206,7 @@ public class AccountController : BaseApiController
             UserName = user?.UserName ?? string.Empty,
             Email = user?.Email ?? string.Empty,
             IsInstructor = user?.IsInstructor ?? false,
+            ProfilePictureUrl = user?.ProfilePictureUrl ?? string.Empty,
             Token = await _authService.CreateTokenAsync(user ?? new AppUser(), _userManager)
         });
     }
@@ -208,8 +255,9 @@ public class AccountController : BaseApiController
                 UserDto userDto = new UserDto()
                 {
                     UserName = result.UserName ?? string.Empty,
-                    ProfilePictureUrl = result.ProfilePictureUrl,
-                    Email = result.Email ?? string.Empty,
+                    IsInstructor = result?.IsInstructor ?? false,
+                    ProfilePictureUrl = result?.ProfilePictureUrl,
+                    Email = result?.Email ?? string.Empty,
                     Token = await _authService.CreateTokenAsync(result, _userManager)
                 };
 
@@ -236,8 +284,9 @@ public class AccountController : BaseApiController
                 UserDto userDto = new UserDto()
                 {
                     UserName = result.UserName ?? string.Empty,
-                    ProfilePictureUrl = result.ProfilePictureUrl,
-                    Email = result.Email ?? string.Empty,
+                    IsInstructor = result?.IsInstructor ?? false,
+                    ProfilePictureUrl = result?.ProfilePictureUrl,
+                    Email = result?.Email ?? string.Empty,
                     Token = await _authService.CreateTokenAsync(result, _userManager)
                 };
 
