@@ -201,4 +201,13 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         else
             return (true, -1);
     }
+
+    public async Task<int> GetCountAsync(CourseSpeceficationsParams speceficationsParams)
+    {
+        var countSpec = new CourseWithFilterationForCountSpecifications(speceficationsParams);
+
+        var count = await _unitOfWork.Repository<Course>().GetCountAsync(countSpec);
+
+        return count;
+    }
 }
