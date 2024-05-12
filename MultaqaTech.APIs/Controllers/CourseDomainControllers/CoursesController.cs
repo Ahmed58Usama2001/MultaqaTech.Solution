@@ -59,8 +59,7 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
 
-        return Ok(new Pagination<BlogPostToReturnDto>(courseSpeceficationsParams.PageIndex, courseSpeceficationsParams.PageSize,
-            count, (IReadOnlyList<BlogPostToReturnDto>)data));
+        return Ok(new Pagination<CourseToReturnDto>(courseSpeceficationsParams.PageIndex, courseSpeceficationsParams.PageSize,count, data));
     }
 
     [ProducesResponseType(typeof(CourseToReturnDto), StatusCodes.Status200OK)]
@@ -101,8 +100,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
 
-        return Ok(new Pagination<BlogPostToReturnDto>(courseSpeceficationsParams.PageIndex, courseSpeceficationsParams.PageSize,
-            count, (IReadOnlyList<BlogPostToReturnDto>)data));
+        return Ok(new Pagination<CourseToReturnDto>(courseSpeceficationsParams.PageIndex, courseSpeceficationsParams.PageSize, count, data));
+
     }
 
     [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
@@ -125,8 +124,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
 
-        return Ok(new Pagination<BlogPostToReturnDto>(courseSpeceficationsParams.PageIndex, courseSpeceficationsParams.PageSize,
-            count, (IReadOnlyList<BlogPostToReturnDto>)data));
+        return Ok(new Pagination<CourseToReturnDto>(courseSpeceficationsParams.PageIndex, courseSpeceficationsParams.PageSize, count, data));
+
     }
 
     [ProducesResponseType(typeof(InstructorReturnDto), StatusCodes.Status200OK)]

@@ -87,13 +87,19 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
 
     public async Task<IEnumerable<Course>?> ReadCoursesWithSpecifications(CourseSpeceficationsParams courseSpeceficationsParams)
     {
+        var spec = new CoursesSpecifications(courseSpeceficationsParams);
+
         try
         {
-            return await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(new CoursesSpecifications(courseSpeceficationsParams));
+            var courses = await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(spec);
+
+            if (courses is null) return null;
+
+            return courses;
         }
         catch (Exception ex)
         {
-            Log.Error(ex.Message);
+            Log.Error(ex.ToString());
             return null;
         }
     }
