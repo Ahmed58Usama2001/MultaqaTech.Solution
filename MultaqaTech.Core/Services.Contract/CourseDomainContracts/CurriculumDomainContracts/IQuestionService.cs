@@ -8,9 +8,10 @@ public interface IQuestionService
 
     Task<Question?> ReadByIdAsync(int questionId);
 
-    Task<Question?> UpdateQuestion(int questionId, Question updatedQuestion);
+    public Task<Question?> UpdateQuestion(Question storedQuestion, Question newQuestion);
 
-    Task<bool> DeleteQuestion(int questionId);
 
-    //Task<IReadOnlyList<CurriculumItem>> ReadCurriculumItemsByIds(List<int> curriculumItemIds);
+    Task<bool> DeleteQuestion(Question question);
+
+    Task<int> GetCountAsync(QuestionSpeceficationsParams speceficationsParams);
 }

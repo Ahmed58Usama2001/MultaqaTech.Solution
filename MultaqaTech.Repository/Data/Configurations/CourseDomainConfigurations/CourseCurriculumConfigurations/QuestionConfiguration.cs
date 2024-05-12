@@ -10,7 +10,12 @@ internal class QuestionConfiguration : IEntityTypeConfiguration<Question>
 
         builder.HasIndex(e => e.AskerId);
 
-        builder.Property(e => e.Content)
+        builder.Property(e => e.Details)
+            .IsRequired()
+           .HasMaxLength(shortMaxLength);
+
+        builder.Property(e => e.Details)
+            .IsRequired()
             .HasMaxLength(longMaxLength);
 
         builder.Property(e => e.LectureId)

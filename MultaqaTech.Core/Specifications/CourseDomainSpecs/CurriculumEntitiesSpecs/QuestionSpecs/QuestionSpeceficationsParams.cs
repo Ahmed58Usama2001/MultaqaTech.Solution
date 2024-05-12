@@ -3,13 +3,19 @@
 public class QuestionSpeceficationsParams
 {
     public int? lectureId { get; set; }
-    public int? askerId { get; set; }
 
     public string? sort { get; set; }
 
+    private string? search;
 
-    private const int maxPageSize = 10;
-    private int pageSize = 5;
+    public string? Search
+    {
+        get { return search; }
+        set { search = value?.ToLower(); }
+    }
+
+    private const int maxPageSize = 5;
+    private int pageSize = 3;
 
     public int PageSize
     {

@@ -6,8 +6,11 @@ public class NoteWithIncludesSpecifications : BaseSpecifications<Note>
         : base(e =>
            (
                  (speceficationsParams.writerStudentId == null || e.WriterStudentId == speceficationsParams.writerStudentId) &&
-                 (speceficationsParams.lectureId == null || e.LectureId == speceficationsParams.lectureId)
-           ))
+                 (speceficationsParams.lectureId == null || e.LectureId == speceficationsParams.lectureId) &&
+            (string.IsNullOrEmpty(speceficationsParams.Search)
+              || e.Content.ToLower().Contains(speceficationsParams.Search)
+
+           )))
 
     {
         //AddIncludes();

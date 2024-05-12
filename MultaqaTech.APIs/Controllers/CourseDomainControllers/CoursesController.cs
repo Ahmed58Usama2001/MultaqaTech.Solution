@@ -51,8 +51,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         foreach (var course in courses)
         {
-            context.Entry(course).Reference(c => c.Instructor).Load();
-            context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
+            _context.Entry(course).Reference(c => c.Instructor).Load();
+            _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
         var count = await _courseService.GetCountAsync(courseSpeceficationsParams);
@@ -73,8 +73,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         if (course is null)
             return NotFound(new ApiResponse(404));
 
-        context.Entry(course).Reference(c => c.Instructor).Load();
-        context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
+        _context.Entry(course).Reference(c => c.Instructor).Load();
+        _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
 
         return Ok(_mapper.Map<CourseToReturnDto>(course));
     }
@@ -93,8 +93,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         foreach (var course in courses)
         {
-            context.Entry(course).Reference(c => c.Instructor).Load();
-            context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
+            _context.Entry(course).Reference(c => c.Instructor).Load();
+            _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
         var count = await _courseService.GetCountAsync(courseSpeceficationsParams);
@@ -117,8 +117,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         foreach (var course in courses)
         {
-            context.Entry(course).Reference(c => c.Instructor).Load();
-            context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
+            _context.Entry(course).Reference(c => c.Instructor).Load();
+            _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
         var count = await _courseService.GetCountAsync(courseSpeceficationsParams);
@@ -153,6 +153,10 @@ public partial class CoursesController(ICourseService courseService, IMapper map
     [HttpPut("{courseId}")]
     public async Task<ActionResult<CourseToReturnDto>> UpdateCourse(int courseId, CourseDto course)
     {
+        Course? storedCourse = await _courseService.ReadByIdAsync(courseId);
+        if (!await CheckIfRequestFromCreatorUser(storedCourse.InstructorId))
+            return BadRequest(new ApiResponse(401));
+
         (bool isTitleUnique, int courseIdWithSameTitle) = await _courseService.CheckTitleUniqueness(course.Title);
         if (!isTitleUnique && courseId != courseIdWithSameTitle) return BadRequest(new ApiResponse(400, "Course Title Should Be Unique"));
 
@@ -168,11 +172,33 @@ public partial class CoursesController(ICourseService courseService, IMapper map
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteCourse(int id)
     {
+        Course? storedCourse = await _courseService.ReadByIdAsync(id);
+        if (!await CheckIfRequestFromCreatorUser(storedCourse.InstructorId))
+            return BadRequest(new ApiResponse(401));
+
         bool result = await _courseService.DeleteCourse(id);
 
         if (!result)
             return NotFound(new ApiResponse(400));
 
         return NoContent();
+    }
+
+    private async Task<bool> CheckIfRequestFromCreatorUser(int instructorId)
+    {
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (userEmail is null) return false;
+
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        if (storedUser is null) return false;
+
+        Instructor? instructor = await _unitOfWork.Repository<Instructor>().FindAsync(S => S.AppUserId == storedUser.Id);
+        if (instructor is null)
+            return false;
+
+        if (instructor.Id != instructorId)
+            return false;
+
+        return true;
     }
 }

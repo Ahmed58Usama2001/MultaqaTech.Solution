@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
+﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+
+namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
 
 public class QuestionService(IUnitOfWork unitOfWork) : IQuestionService
 {
@@ -21,10 +23,8 @@ public class QuestionService(IUnitOfWork unitOfWork) : IQuestionService
         }
     }
 
-    public async Task<bool> DeleteQuestion(int questionId)
+    public async Task<bool> DeleteQuestion(Question question)
     {
-        var question = await _unitOfWork.Repository<Question>().GetByIdAsync(questionId);
-
         if (question == null)
             return false;
 
@@ -46,6 +46,15 @@ public class QuestionService(IUnitOfWork unitOfWork) : IQuestionService
         }
     }
 
+    public async Task<int> GetCountAsync(QuestionSpeceficationsParams speceficationsParams)
+    {
+        var countSpec = new QuestionWithFilterationForCountSpecifications(speceficationsParams);
+
+        var count = await _unitOfWork.Repository<Question>().GetCountAsync(countSpec);
+
+        return count;
+    }
+
     public async Task<Question?> ReadByIdAsync(int questionId)
     {
         var spec = new QuestionWithIncludesSpecifications(questionId);
@@ -64,22 +73,22 @@ public class QuestionService(IUnitOfWork unitOfWork) : IQuestionService
         return questions;
     }
 
-    public async Task<Question?> UpdateQuestion(int questionId, Question updatedQuestion)
+    public async Task<Question?> UpdateQuestion(Question storedQuestion, Question newQuestion)
     {
-        var question = await _unitOfWork.Repository<Question>().GetByIdAsync(questionId);
-
-        if (question == null || updatedQuestion == null || string.IsNullOrWhiteSpace(updatedQuestion.Content))
+        if (newQuestion == null || storedQuestion == null)
             return null;
 
-        question = updatedQuestion;
+        storedQuestion.Title = newQuestion.Title;
+        storedQuestion.Details = newQuestion.Details;
+        storedQuestion.QuestionPictureUrl = newQuestion.QuestionPictureUrl;
 
         try
         {
-            _unitOfWork.Repository<Question>().Update(question);
+            _unitOfWork.Repository<Question>().Update(storedQuestion);
             var result = await _unitOfWork.CompleteAsync();
             if (result <= 0) return null;
 
-            return question;
+            return storedQuestion;
         }
         catch (Exception ex)
         {

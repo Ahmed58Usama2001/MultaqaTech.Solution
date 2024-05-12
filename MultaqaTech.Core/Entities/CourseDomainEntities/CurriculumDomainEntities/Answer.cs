@@ -6,7 +6,7 @@ public class Answer : BaseEntity
 
     public int AnswererId { get; set; }
 
-    public DateTime PublishingDate { get; set; }
+    public DateTime PublishingDate { get; set; } = DateTime.Now;
 
     public int QuestionId { get; set; }
     public Question Question { get; set; }

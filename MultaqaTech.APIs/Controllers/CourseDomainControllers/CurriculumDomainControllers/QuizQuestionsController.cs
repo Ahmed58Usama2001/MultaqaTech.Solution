@@ -2,18 +2,14 @@
 
 public class QuizQuestionsController(
     IMapper mapper,
-    UserManager<AppUser> userManager,
     IQuizQuestionService quizQuestionService,
     IQuizQuestionChoiceService quizQuestionChoiceService,
-    ICurriculumItemService quizService,
-    IUnitOfWork unitOfWork) : BaseApiController
+    ICurriculumItemService quizService) : BaseApiController
 {
     private readonly IMapper _mapper = mapper;
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IQuizQuestionService _quizQuestionService = quizQuestionService;
     private readonly IQuizQuestionChoiceService _quizQuestionChoiceService = quizQuestionChoiceService;
     private readonly ICurriculumItemService _quizService = quizService;
-    private readonly UserManager<AppUser> _userManager = userManager;
 
     [ProducesResponseType(typeof(QuizQuestionReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]

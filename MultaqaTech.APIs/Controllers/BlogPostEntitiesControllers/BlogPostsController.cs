@@ -1,7 +1,4 @@
-﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
+﻿namespace MultaqaTech.APIs.Controllers.BlogPostEntitiesControllers;
 
 [Authorize]
 public class BlogPostsController(IBlogPostService blogPostService, IMapper mapper, UserManager<AppUser> userManager, IBlogPostCategoryService blogPostCategoryService

@@ -2,7 +2,10 @@
 
 public class Question : BaseEntityWithMediaUrl
 {
-    public string Content { get; set; }
+    public string Title { get; set; }
+
+
+    public string Details { get; set; }
 
     public string? QuestionPictureUrl
     {
@@ -10,7 +13,7 @@ public class Question : BaseEntityWithMediaUrl
         set { base.MediaUrl = value; }
     }
 
-    public DateTime PublishingDate { get; set; }
+    public DateTime PublishingDate { get; set; }=DateTime.Now;
 
     public int AskerId { get; set; }
 

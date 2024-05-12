@@ -1,5 +1,4 @@
-﻿using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.QuizQuestionDtos;
-
+﻿
 namespace MultaqaTech.APIs.Helpers;
 
 public class MappingProfiles : Profile
@@ -22,12 +21,10 @@ public class MappingProfiles : Profile
 
         CreateMap<BlogPost, BlogPostToReturnDto>()
             .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
-            .ForMember(dest => dest.PublishingDate, opt => opt.MapFrom(src => src.PublishingDate.ToString("dddd, MMMM dd, yyyy 'at' hh:mm:ss tt")))
             .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<GenericMediaUrlResolver<BlogPost, BlogPostToReturnDto>>());
 
         CreateMap<BlogPostComment, BlogPostCommentToReturnDto>()
-            .ForMember(dest => dest.BlogPost, opt => opt.MapFrom(src => src.BlogPost.Title))
-            .ForMember(dest => dest.DatePosted, opt => opt.MapFrom(src => src.DatePosted.ToString("dddd, MMMM dd, yyyy 'at' hh:mm:ss tt")));
+            .ForMember(dest => dest.BlogPost, opt => opt.MapFrom(src => src.BlogPost.Title));
         #endregion
 
 
@@ -67,10 +64,17 @@ public class MappingProfiles : Profile
         CreateMap<Lecture, LectureReturnDto>()
         .ForMember(dest => dest.VideoUrl, opt => opt.MapFrom<GenericMediaUrlResolver<Lecture, LectureReturnDto>>());
 
+        CreateMap<QuestionCreateDto, Question>()
+        .ForMember(dest => dest.QuestionPictureUrl, opt => opt.Ignore());
+        CreateMap<QuestionUpdateDto, Question>()
+        .ForMember(dest => dest.QuestionPictureUrl, opt => opt.Ignore());
+        CreateMap<Question, QuestionReturnDto>()
+        .ForMember(dest => dest.QuestionPictureUrl, opt => opt.MapFrom<GenericMediaUrlResolver<Question, QuestionReturnDto>>());
+
+
         CreateMap<NoteCreateDto, Note>();
         CreateMap<NoteUpdateDto, Note>();
-        CreateMap<Note, NoteReturnDto>()
-         .ForMember(dest => dest.PublishingDate, opt => opt.MapFrom(src => src.PublishingDate.ToString("dddd, MMMM dd, yyyy 'at' hh:mm:ss tt")));
+        CreateMap<Note, NoteReturnDto>();
 
         CreateMap<CurriculumItem, ItemReturnDto>()
           .ForMember(dest => dest.ItemType, opt => opt.MapFrom(src => src.CurriculumItemType.ToString()));

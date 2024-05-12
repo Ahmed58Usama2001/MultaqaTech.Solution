@@ -3,5 +3,5 @@
 public class NoteReturnDto:NoteCreateDto
 {
     public int Id { get; set; }
-    public string PublishingDate { get; set; }
+    public DateTime PublishingDate { get; set; }
 }

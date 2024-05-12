@@ -1,4 +1,7 @@
-﻿namespace MultaqaTech.APIs.Controllers.CurriculumItemDomainControllers.CurriculumDomainControllers;
+﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
+using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
+
+namespace MultaqaTech.APIs.Controllers.CurriculumItemDomainControllers.CurriculumDomainControllers;
 
 [Authorize]
 public class NotesController(
@@ -51,7 +54,7 @@ public class NotesController(
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet]
     [Route("{LectureId}/notes")]
-    public async Task<ActionResult<IReadOnlyList<NoteReturnDto>>> GetNotesByCurriculumItemId(int LectureId)
+    public async Task<ActionResult<IReadOnlyList<NoteReturnDto>>> GetSignedInStudentNotesByLectureId(int LectureId)
     {
         string? userEmail = User.FindFirstValue(ClaimTypes.Email);
         if (userEmail is null) return NotFound(new ApiResponse(401));
@@ -71,7 +74,11 @@ public class NotesController(
         if (notes == null)
             return NotFound(new ApiResponse(404));
 
-        return Ok(_mapper.Map<IReadOnlyList<Note>, IReadOnlyList<NoteReturnDto>>(notes));
+        var count = await _noteService.GetCountAsync(speceficationsParams);
+
+        var data = _mapper.Map<IReadOnlyList<Note>, IReadOnlyList<NoteReturnDto>>(notes);
+
+        return Ok(new Pagination<NoteReturnDto>(speceficationsParams.PageIndex, speceficationsParams.PageSize, count, data));
     }
 
     [ProducesResponseType(typeof(NoteReturnDto), StatusCodes.Status200OK)]
@@ -84,8 +91,17 @@ public class NotesController(
         if (storedNote == null)
             return NotFound(new ApiResponse(404));
 
+        if (!await CheckIfRequestFromCreatorUser(storedNote.WriterStudentId))
+            return BadRequest(new ApiResponse(401));
+
+        CurriculumItem? existingLecture = await _curriculumItemService.ReadByIdAsync(storedNote.LectureId, CurriculumItemType.Lecture);
+        if (existingLecture is null)
+            return NotFound(new ApiResponse(404, "Lecture wasn't Not Found"));
+
         Note newNote = _mapper.Map<NoteUpdateDto, Note>(updatedNoteDto);
         newNote.Id = storedNote.Id;
+        newNote.Lecture = (Lecture)existingLecture;
+        newNote.LectureId = existingLecture.Id;
 
         storedNote = await _noteService.UpdateNote(storedNote, newNote);
 
@@ -100,12 +116,36 @@ public class NotesController(
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteNote(int id)
     {
+        Note? storedNote = await _noteService.ReadByIdAsync(id);
+
+
+        if (!await CheckIfRequestFromCreatorUser(storedNote.WriterStudentId))
+            return BadRequest(new ApiResponse(401));
+        
         var result = await _noteService.DeleteNote(id);
 
         if (result)
             return Ok(true);
 
         return BadRequest(new ApiResponse(400));
+    }
+
+    private async Task<bool> CheckIfRequestFromCreatorUser(int noteWriterId)
+    {
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (userEmail is null) return false;
+
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        if (storedUser is null) return false;
+
+        Student? student = await _unitOfWork.Repository<Student>().FindAsync(S => S.AppUserId == storedUser.Id);
+        if (student is null)
+            return false;
+
+        if (student.Id != noteWriterId)
+            return false;
+
+        return true;
     }
 
 }

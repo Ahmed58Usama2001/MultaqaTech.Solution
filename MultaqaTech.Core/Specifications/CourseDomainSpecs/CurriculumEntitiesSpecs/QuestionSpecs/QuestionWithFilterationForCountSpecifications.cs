@@ -5,9 +5,12 @@ public class QuestionWithFilterationForCountSpecifications : BaseSpecifications<
     public QuestionWithFilterationForCountSpecifications(QuestionSpeceficationsParams speceficationsParams) :
          base(e =>
            (
-                 (speceficationsParams.askerId == null || e.AskerId == speceficationsParams.askerId) &&                
-                 (speceficationsParams.lectureId == null || e.LectureId == speceficationsParams.lectureId)                 
-           ))
+                 (speceficationsParams.lectureId == null || e.LectureId == speceficationsParams.lectureId) &&
+            (string.IsNullOrEmpty(speceficationsParams.Search)
+              || e.Title.ToLower().Contains(speceficationsParams.Search)
+              || e.Details.ToLower().Contains(speceficationsParams.Search)
+
+           )))
     {
 
     }

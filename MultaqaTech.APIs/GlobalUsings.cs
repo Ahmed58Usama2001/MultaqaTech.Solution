@@ -48,6 +48,7 @@ global using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.LectureDtos;
 global using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.SectionDtos;
 global using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.QuizQuestionDtos;
 global using MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
+global using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.Q_ADtos.QuestionDtos;
 global using MultaqaTech.Core.Specifications.EventEntitiesSpecs.EventCommentSpecs;
 global using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.QuizQuestionChoiceDtos;
 global using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;

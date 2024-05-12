@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MultaqaTech.Repository.Data.Configurations;
 
@@ -11,9 +12,11 @@ using MultaqaTech.Repository.Data.Configurations;
 namespace MultaqaTech.Repository.Migrations
 {
     [DbContext(typeof(MultaqaTechContext))]
-    partial class MultaqaTechContextModelSnapshot : ModelSnapshot
+    [Migration("20240512111817_ModifyQAndA")]
+    partial class ModifyQAndA
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

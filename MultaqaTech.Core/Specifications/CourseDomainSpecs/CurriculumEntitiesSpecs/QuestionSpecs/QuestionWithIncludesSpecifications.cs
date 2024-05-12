@@ -5,12 +5,15 @@ public class QuestionWithIncludesSpecifications : BaseSpecifications<Question>
     public QuestionWithIncludesSpecifications(QuestionSpeceficationsParams speceficationsParams)
         : base(e =>
            (
-                 (speceficationsParams.askerId == null || e.AskerId == speceficationsParams.askerId) &&
-                 (speceficationsParams.lectureId == null || e.LectureId == speceficationsParams.lectureId)
-           ))
+                 (speceficationsParams.lectureId == null || e.LectureId == speceficationsParams.lectureId) &&
+            (string.IsNullOrEmpty(speceficationsParams.Search)
+              || e.Title.ToLower().Contains(speceficationsParams.Search)
+              || e.Details.ToLower().Contains(speceficationsParams.Search)
+
+           )))
 
     {
-        AddIncludes();
+        //AddIncludes();
 
         if (!string.IsNullOrEmpty(speceficationsParams.sort))
         {
@@ -38,12 +41,11 @@ public class QuestionWithIncludesSpecifications : BaseSpecifications<Question>
     public QuestionWithIncludesSpecifications(int id)
         : base(p => p.Id == id)
     {
-        AddIncludes();
+      //  AddIncludes();
     }
 
     private void AddIncludes()
     {
-        Includes.Add(p => p.Answers);
     }
 
 }

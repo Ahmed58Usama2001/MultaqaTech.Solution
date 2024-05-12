@@ -13,5 +13,5 @@ public interface INoteService
 
     public Task<bool> DeleteNote(int noteId);
 
-    //Task<IReadOnlyList<Note>> ReadNotesByIds(List<int> curriculumItemIds);
+    Task<int> GetCountAsync(NoteSpeceficationsParams speceficationsParams);
 }

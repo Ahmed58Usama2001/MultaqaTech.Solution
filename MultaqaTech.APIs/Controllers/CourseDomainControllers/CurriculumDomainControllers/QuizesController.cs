@@ -8,12 +8,13 @@ public class QuizesController(
     UserManager<AppUser> userManager,
     ICurriculumItemService itemService,
     ICurriculumSectionService sectionService,
-    IUnitOfWork unitOfWork) : BaseApiController
+    IUnitOfWork unitOfWork, MultaqaTechContext context) : BaseApiController
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurriculumItemService _itemService = itemService;
     private readonly ICurriculumSectionService _sectionService = sectionService;
+    private readonly MultaqaTechContext _context = context;
     private readonly UserManager<AppUser> _userManager = userManager;
 
     [ProducesResponseType(typeof(QuizReturnDto), StatusCodes.Status200OK)]
@@ -27,6 +28,11 @@ public class QuizesController(
         CurriculumSection? existingSection = await _sectionService.ReadByIdAsync(quizDto.CurriculumSectionId);
         if (existingSection is null)
             return NotFound(new { Message = "Section wasn't Not Found", StatusCode = 404 });
+
+        _context.Entry(existingSection).Reference(i => i.Course).Load();
+
+        if (!await CheckIfRequestFromCreatorUser(existingSection.Course.InstructorId))
+            return BadRequest(new ApiResponse(401));
 
         var mappedItem = _mapper.Map<QuizCreateDto, Quiz>(quizDto);
         mappedItem.CurriculumSection = existingSection;
@@ -72,6 +78,11 @@ public class QuizesController(
         if (existingSection is null)
             return NotFound(new { Message = "Section wasn't Not Found", StatusCode = 404 });
 
+        _context.Entry(existingSection).Reference(i => i.Course).Load();
+
+        if (!await CheckIfRequestFromCreatorUser(existingSection.Course.InstructorId))
+            return BadRequest(new ApiResponse(401));
+
         if (!string.IsNullOrEmpty(storedQuiz?.QuizQuestionPictureUrl))
             DocumentSetting.DeleteFile(storedQuiz.QuizQuestionPictureUrl);
 
@@ -97,9 +108,15 @@ public class QuizesController(
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteSection(int id)
     {
-        var quiz = await _unitOfWork.Repository<Quiz>().GetByIdAsync(id);
+        var quiz = await _itemService.ReadByIdAsync(id, CurriculumItemType.Quiz);
         if (quiz == null)
             return NotFound(new ApiResponse(404));
+
+        _context.Entry(quiz).Reference(i => i.CurriculumSection).Load();
+        _context.Entry(quiz.CurriculumSection).Reference(i => i.Course).Load();
+
+        if (!await CheckIfRequestFromCreatorUser(quiz.CurriculumSection.Course.InstructorId))
+            return BadRequest(new ApiResponse(401));
 
         var result = await _itemService.DeleteCurriculumItem(quiz);
 
@@ -126,5 +143,23 @@ public class QuizesController(
         int maxOrder = existingItems.Any() ? existingItems.Max(s => s.Order) : 0;
 
         return maxOrder + 1;
+    }
+
+    private async Task<bool> CheckIfRequestFromCreatorUser(int instructorId)
+    {
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (userEmail is null) return false;
+
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        if (storedUser is null) return false;
+
+        Instructor? instructor = await _unitOfWork.Repository<Instructor>().FindAsync(S => S.AppUserId == storedUser.Id);
+        if (instructor is null)
+            return false;
+
+        if (instructor.Id != instructorId)
+            return false;
+
+        return true;
     }
 }
