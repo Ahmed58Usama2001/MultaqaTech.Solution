@@ -1,9 +1,4 @@
-﻿
-using MultaqaTech.Core.Entities.CourseDomainEntities;
-using Newtonsoft.Json.Linq;
-using static System.Collections.Specialized.BitVector32;
-
-namespace MultaqaTech.APIs.Controllers;
+﻿namespace MultaqaTech.APIs.Controllers;
 
 public class AccountController : BaseApiController
 {

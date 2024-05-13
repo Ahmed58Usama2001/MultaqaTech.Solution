@@ -1,5 +1,6 @@
 ﻿namespace MultaqaTech.APIs.Controllers;
 
+[Authorize]
 public class SubjectsController(ISubjectService subjectService, IMapper mapper) : BaseApiController
 {
     private readonly ISubjectService _subjectService = subjectService;
