@@ -35,16 +35,15 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         if (createdCourse is null) return BadRequest(new ApiResponse(400));
 
-
         return Ok(_mapper.Map<CourseToReturnDto>(createdCourse));
     }
 
     [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetAllCoursesFiltered([FromQuery] CourseSpeceficationsParams courseSpeceficationsParams)
+    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetAllCoursesFiltered([FromQuery] CourseSpeceficationsParams courseSpecificationsParams)
     {
-        IEnumerable<Course>? courses = await _courseService.ReadCoursesWithSpecifications(courseSpeceficationsParams);
+        IEnumerable<Course>? courses = await _courseService.ReadCoursesWithSpecifications(courseSpecificationsParams);
 
         if (courses is null)
             return NotFound(new ApiResponse(404));
@@ -55,11 +54,11 @@ public partial class CoursesController(ICourseService courseService, IMapper map
             _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
-        var count = await _courseService.GetCountAsync(courseSpeceficationsParams);
+        var count = await _courseService.GetCountAsync(courseSpecificationsParams);
 
         var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
 
-        return Ok(new Pagination<CourseToReturnDto>(courseSpeceficationsParams.PageIndex, courseSpeceficationsParams.PageSize,count, data));
+        return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize,count, data));
     }
 
     [ProducesResponseType(typeof(CourseToReturnDto), StatusCodes.Status200OK)]
@@ -81,11 +80,11 @@ public partial class CoursesController(ICourseService courseService, IMapper map
     [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("GetCoursesForInstructorByInstructorId/{instructorId}")]
-    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForInstructorByInstructorId(int instructorId, [FromQuery] CourseSpeceficationsParams courseSpeceficationsParams)
+    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForInstructorByInstructorId(int instructorId, [FromQuery] CourseSpeceficationsParams courseSpecificationsParams)
     {
-        courseSpeceficationsParams.InstractorId = instructorId;
+        courseSpecificationsParams.InstractorId = instructorId;
 
-        IEnumerable<Course>? courses = await _courseService.ReadCoursesForInstructor(courseSpeceficationsParams);
+        IEnumerable<Course>? courses = await _courseService.ReadCoursesForInstructor(courseSpecificationsParams);
 
         if (courses is null)
             return NotFound(new ApiResponse(404));
@@ -96,20 +95,19 @@ public partial class CoursesController(ICourseService courseService, IMapper map
             _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
-        var count = await _courseService.GetCountAsync(courseSpeceficationsParams);
+        var count = await _courseService.GetCountAsync(courseSpecificationsParams);
 
         var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
 
-        return Ok(new Pagination<CourseToReturnDto>(courseSpeceficationsParams.PageIndex, courseSpeceficationsParams.PageSize, count, data));
-
+        return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
     }
 
     [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("GetCoursesForStudentByStudentId/{studentId}")]
-    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForStudentByStudentId(string studentId, [FromQuery] CourseSpeceficationsParams courseSpeceficationsParams)
+    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForStudentByStudentId(string studentId, [FromQuery] CourseSpeceficationsParams courseSpecificationsParams)
     {
-        IEnumerable<Course>? courses = await _courseService.ReadCoursesForStudent(studentId, courseSpeceficationsParams);
+        IEnumerable<Course>? courses = await _courseService.ReadCoursesForStudent(studentId, courseSpecificationsParams);
 
         if (courses is null)
             return NotFound(new ApiResponse(404));
@@ -120,12 +118,11 @@ public partial class CoursesController(ICourseService courseService, IMapper map
             _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
-        var count = await _courseService.GetCountAsync(courseSpeceficationsParams);
+        var count = await _courseService.GetCountAsync(courseSpecificationsParams);
 
         var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
 
-        return Ok(new Pagination<CourseToReturnDto>(courseSpeceficationsParams.PageIndex, courseSpeceficationsParams.PageSize, count, data));
-
+        return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
     }
 
     [ProducesResponseType(typeof(InstructorReturnDto), StatusCodes.Status200OK)]
@@ -140,7 +137,7 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         foreach (var instructor in instructors)
         {
-            _context.Entry(instructor).Reference(i => i.AppUser).Load();  
+            _context.Entry(instructor).Reference(i => i.AppUser).Load();
         }
 
         return Ok(_mapper.Map<IReadOnlyList<Instructor>, IReadOnlyList<InstructorReturnDto>>(instructors));

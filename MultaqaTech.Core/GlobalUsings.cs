@@ -1,7 +1,7 @@
 ﻿global using MultaqaTech.Core.Entities;
 global using MultaqaTech.Core.Specifications;
 global using MultaqaTech.Core.Entities.Enums;
-global using MultaqaTech.Core.Entities.BasketEntities;
+global using MultaqaTech.Core.Entities.OrderEntities;
 global using MultaqaTech.Core.Entities.Identity.Gmail;
 global using MultaqaTech.Core.Entities.SettingsEntities;
 global using MultaqaTech.Core.Entities.EventDomainEntities;

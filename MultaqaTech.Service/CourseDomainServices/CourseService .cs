@@ -7,15 +7,13 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
 
     private async Task BeforeCreate(Course course, Instructor? instructor)
     {
-      
-
         course.UploadDate = DateTime.Now;
         course.LastUpdatedDate = DateTime.Now;
         course.InstructorId = instructor.Id;
         course.Instructor = instructor;
         course.Subject = await _subjectService.ReadByIdAsync(course.SubjectId) ?? new();
-        course.Tags = await MapSubjectsAsync(course.TagsIds ?? new());
-        course.Prerequisites = await MapSubjectsAsync(course.PrerequisitesIds ?? new());
+        course.Tags = await MapSubjectsAsync(course.TagsIds ?? []);
+        course.Prerequisites = await MapSubjectsAsync(course.PrerequisitesIds ?? []);
         //
         //
 
@@ -38,7 +36,7 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex.ToString(),ex);
             return null;
         }
     }
@@ -53,7 +51,7 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex.ToString(),ex);
             return Enumerable.Empty<Course>();
         }
     }
@@ -67,7 +65,7 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex.ToString(),ex);
             return null;
         }
     }
@@ -80,7 +78,7 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex.ToString(),ex);
             return null;
         }
     }
@@ -99,7 +97,7 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex.ToString(),ex);
             return null;
         }
     }
@@ -157,7 +155,7 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex.ToString(),ex);
             return null;
         }
     }
@@ -180,14 +178,14 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex.ToString(),ex);
             return false;
         }
     }
 
     private async Task<List<Subject>> MapSubjectsAsync(List<int> subjectIds)
     {
-        if (!subjectIds.Any()) return [];
+        if (subjectIds.Count == 0) return [];
 
         List<Subject> subjects = [];
 

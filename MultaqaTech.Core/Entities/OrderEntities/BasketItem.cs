@@ -1,4 +1,4 @@
-﻿namespace MultaqaTech.Core.Entities.BasketEntities;
+﻿namespace MultaqaTech.Core.Entities.OrderEntities;
 
 public class BasketItem : BaseEntityWithMediaUrl
 {

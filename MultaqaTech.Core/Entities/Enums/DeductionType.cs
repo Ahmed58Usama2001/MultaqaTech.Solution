@@ -3,5 +3,5 @@
 public enum DeductionType
 {
     Amount,
-    Percenatge
+    Percentage
 }

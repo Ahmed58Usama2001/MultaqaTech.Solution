@@ -1,9 +1,7 @@
 ﻿namespace MultaqaTech.Core.Entities.CourseDomainEntities;
 
-public class StudentCourse
+public class StudentCourse : BaseEntity
 {
-    public int Id { get; set; }
-
     public int StudentId { get; set; }
     public Student Student { get; set; }
 

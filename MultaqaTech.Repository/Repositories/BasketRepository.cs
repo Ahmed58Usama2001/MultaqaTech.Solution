@@ -25,7 +25,7 @@ public class BasketRepository(IConnectionMultiplexer redis) : IBasketRepository
         BasketItem? basketItemToBeRemoved = basketFromDb.BasketItems.Find(e => e.CourseId == courseId);
 
         if (basketItemToBeRemoved is null) return null;
-        
+
         basketFromDb.BasketItems.Remove(basketItemToBeRemoved);
 
         await UpdateBasket(basketFromDb, email);

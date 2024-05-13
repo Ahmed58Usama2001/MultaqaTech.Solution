@@ -3,7 +3,7 @@ global using MultaqaTech.Core.Specifications;
 global using MultaqaTech.Core.Entities.Identity;
 global using MultaqaTech.Repository.Repositories;
 global using MultaqaTech.Core.Repositories.Contract;
-global using MultaqaTech.Core.Entities.BasketEntities;
+global using MultaqaTech.Core.Entities.OrderEntities;
 global using MultaqaTech.Repository.Data.Configurations;
 global using MultaqaTech.Core.Entities.SettingsEntities;
 global using MultaqaTech.Core.Entities.ZoomDomainEntites;

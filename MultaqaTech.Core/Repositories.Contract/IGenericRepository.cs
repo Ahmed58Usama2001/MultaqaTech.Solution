@@ -17,6 +17,7 @@ public interface IGenericRepository<T> where T : BaseEntity
     Task<int> GetCountAsync(ISpecifications<T> specs);
 
     Task AddAsync(T entity);
+    Task BulkAddAsync(List<T> entities);
 
     void Update(T entity);
 
