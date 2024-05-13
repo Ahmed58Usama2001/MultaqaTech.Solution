@@ -34,13 +34,13 @@ public class BasketsController(IBasketRepository basketRepository) : BaseApiCont
     [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPost("RemoveItemFromBasket")]
-    public async Task<ActionResult<StudentBasket>> RemoveCourseFromBasket(BasketItem basketItem)
+    public async Task<ActionResult<StudentBasket>> RemoveCourseFromBasket(int courseId)
     {
         string? email = User.FindFirstValue(ClaimTypes.Email);
         if (string.IsNullOrEmpty(email))
             return BadRequest(new ApiResponse(401));
 
-        StudentBasket? basket = await _basketRepository.RemoveCourseFromBasket(email, basketItem);
+        StudentBasket? basket = await _basketRepository.RemoveCourseFromBasket(email, courseId);
         return basket == null ? BadRequest(new ApiResponse(400)) : Ok(basket);
     }
 

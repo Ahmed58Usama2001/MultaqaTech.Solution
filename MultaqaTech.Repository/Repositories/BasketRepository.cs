@@ -17,12 +17,12 @@ public class BasketRepository(IConnectionMultiplexer redis) : IBasketRepository
         return basketAsJson.IsNull ? null : JsonSerializer.Deserialize<StudentBasket>(basketAsJson);
     }
 
-    public async Task<StudentBasket?> RemoveCourseFromBasket(string email, BasketItem basketItem)
+    public async Task<StudentBasket?> RemoveCourseFromBasket(string email, int courseId)
     {
         StudentBasket? basketFromDb = await GetBasket(email);
 
         if (basketFromDb == null || basketFromDb.BasketItems is null || basketFromDb.BasketItems.Count == 0) return null;
-        BasketItem? basketItemToBeRemoved = basketFromDb.BasketItems.Find(e => e.CourseId == basketItem.CourseId);
+        BasketItem? basketItemToBeRemoved = basketFromDb.BasketItems.Find(e => e.CourseId == courseId);
 
         if (basketItemToBeRemoved is null) return null;
         
