@@ -56,6 +56,7 @@ public class MultaqaTechContext : IdentityDbContext<AppUser>
     public DbSet<Student> Students { get; set; }
     public DbSet<Instructor> Instructors { get; set; }
     public DbSet<StudentCourse> StudentCourses { get; set; }
+    public DbSet<StudentCourseProgress> StudentsProgress { get; set; }
     #endregion
 
     #region Zoom Meetings

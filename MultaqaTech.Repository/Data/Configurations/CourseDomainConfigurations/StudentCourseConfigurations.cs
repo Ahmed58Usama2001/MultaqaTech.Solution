@@ -6,8 +6,6 @@ internal class StudentCoursesConfigurations : IEntityTypeConfiguration<StudentCo
     {
         builder.ToTable("StudentCourses");
 
-        builder.HasKey(e => new { e.StudentId, e.CourseId });
-
         builder.HasOne(sc => sc.Student)
             .WithMany(s => s.StudentCourses)
             .HasForeignKey(sc => sc.StudentId)
