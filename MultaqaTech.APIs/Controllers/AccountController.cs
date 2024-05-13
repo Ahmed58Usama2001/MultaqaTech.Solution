@@ -1,5 +1,6 @@
 ﻿
 using MultaqaTech.Core.Entities.CourseDomainEntities;
+using Newtonsoft.Json.Linq;
 using static System.Collections.Specialized.BitVector32;
 
 namespace MultaqaTech.APIs.Controllers;
@@ -186,14 +187,15 @@ public class AccountController : BaseApiController
                 UserName = user.UserName ?? string.Empty,
                 Email = user.Email ?? string.Empty,
                 IsInstructor = user?.IsInstructor ?? false,
-                ProfilePictureUrl=user?.ProfilePictureUrl ?? string.Empty,
+                InstructorId= user?.InstructorId ?? 0,
+                StudentId= user?.StudentId ?? 0,
+                ProfilePictureUrl= !string.IsNullOrEmpty(user.ProfilePictureUrl)? $"{_configuration["ApiBaseUrl"]}/{user?.ProfilePictureUrl}":string.Empty,
                 Token = await _authService.CreateTokenAsync(user, _userManager)
             });
         }
 
         return Unauthorized(new ApiResponse(401));
     }
-
 
     [Authorize]
     [HttpGet("GetCurrentUser")]
@@ -205,11 +207,13 @@ public class AccountController : BaseApiController
 
         return Ok(new UserDto()
         {
-            UserName = user?.UserName ?? string.Empty,
-            Email = user?.Email ?? string.Empty,
+            UserName = user.UserName ?? string.Empty,
+            Email = user.Email ?? string.Empty,
             IsInstructor = user?.IsInstructor ?? false,
-            ProfilePictureUrl = user?.ProfilePictureUrl ?? string.Empty,
-            Token = await _authService.CreateTokenAsync(user ?? new AppUser(), _userManager)
+            InstructorId = user?.InstructorId ?? 0,
+            StudentId = user?.StudentId ?? 0,
+            ProfilePictureUrl = !string.IsNullOrEmpty(user.ProfilePictureUrl) ? $"{_configuration["ApiBaseUrl"]}/{user?.ProfilePictureUrl}" : string.Empty,
+            Token = await _authService.CreateTokenAsync(user, _userManager)
         });
     }
 
@@ -258,7 +262,9 @@ public class AccountController : BaseApiController
                 {
                     UserName = result.UserName ?? string.Empty,
                     IsInstructor = result?.IsInstructor ?? false,
-                    ProfilePictureUrl = result?.ProfilePictureUrl,
+                    InstructorId = result?.InstructorId ?? 0,
+                    StudentId = result?.StudentId ?? 0,
+                    ProfilePictureUrl = !string.IsNullOrEmpty(result.ProfilePictureUrl) ? $"{_configuration["ApiBaseUrl"]}/{result?.ProfilePictureUrl}" : string.Empty,
                     Email = result?.Email ?? string.Empty,
                     Token = await _authService.CreateTokenAsync(result, _userManager)
                 };
@@ -287,7 +293,9 @@ public class AccountController : BaseApiController
                 {
                     UserName = result.UserName ?? string.Empty,
                     IsInstructor = result?.IsInstructor ?? false,
-                    ProfilePictureUrl = result?.ProfilePictureUrl,
+                    InstructorId = result?.InstructorId ?? 0,
+                    StudentId = result?.StudentId ?? 0,
+                    ProfilePictureUrl = !string.IsNullOrEmpty(result.ProfilePictureUrl) ? $"{_configuration["ApiBaseUrl"]}/{result?.ProfilePictureUrl}" : string.Empty,
                     Email = result?.Email ?? string.Empty,
                     Token = await _authService.CreateTokenAsync(result, _userManager)
                 };
