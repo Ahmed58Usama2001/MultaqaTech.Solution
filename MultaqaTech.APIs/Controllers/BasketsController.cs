@@ -19,6 +19,33 @@ public class BasketsController(IBasketRepository basketRepository) : BaseApiCont
     }
 
     [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [HttpPost("UpdateBasketWithBasketItem")]
+    public async Task<ActionResult<StudentBasket>> UpdateStudentBasketWithBasketItem(BasketItem basketItem)
+    {
+        string? email = User.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(email))
+            return BadRequest(new ApiResponse(401));
+
+        StudentBasket? basket = await _basketRepository.AddCourseToBasket(email, basketItem);
+        return basket == null ? BadRequest(new ApiResponse(400)) : Ok(basket);
+    }
+
+    [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [HttpPost("RemoveItemFromBasket")]
+    public async Task<ActionResult<StudentBasket>> RemoveCourseFromBasket(BasketItem basketItem)
+    {
+        string? email = User.FindFirstValue(ClaimTypes.Email);
+        if (string.IsNullOrEmpty(email))
+            return BadRequest(new ApiResponse(401));
+
+        StudentBasket? basket = await _basketRepository.RemoveCourseFromBasket(email, basketItem);
+        return basket == null ? BadRequest(new ApiResponse(400)) : Ok(basket);
+    }
+
+
+    [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
     [HttpGet]
     public async Task<ActionResult<StudentBasket>> GetStudentBasket()
     {
