@@ -2,6 +2,8 @@
 
 public class StudentBasket()
 {
-    public int StudentId { get; set; } 
+    [JsonIgnore]
+    public int StudentId { get; set; }
+
     public List<BasketItem>? BasketItems { get; set; }
 }

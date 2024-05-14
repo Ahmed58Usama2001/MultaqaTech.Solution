@@ -1,5 +1,4 @@
-﻿
-namespace MultaqaTech.APIs.Helpers;
+﻿namespace MultaqaTech.APIs.Helpers;
 
 public class MappingProfiles : Profile
 {
@@ -40,7 +39,6 @@ public class MappingProfiles : Profile
            .ForMember(d => d.ThumbnailUrl, O => O.MapFrom<GenericMediaUrlResolver<Course, CourseToReturnDto>>())
            .ForMember(dest => dest.InstructorName, opt => opt.MapFrom(src => src.Instructor.AppUser.FirstName + " " + src.Instructor.AppUser.LastName))
            .ForMember(dest => dest.InstructorPicture, opt => opt.MapFrom(src => src.Instructor.AppUser.ProfilePictureUrl));
-
 
         CreateMap<CourseReviewDto, CourseReview>();
         CreateMap<CourseReview, CourseReviewToReturnDto>()
@@ -87,7 +85,6 @@ public class MappingProfiles : Profile
         CreateMap<QuizQuestionChoice, QuizQuestionChoiceReturnDto>();
         #endregion
 
-
         #region Event
         CreateMap<EventCategoryCreateDto, EventCategory>();
 
@@ -97,7 +94,6 @@ public class MappingProfiles : Profile
             .ForMember(dest => dest.DatePosted, opt => opt.MapFrom(src => src.DatePosted.ToString("dddd, MMMM dd, yyyy 'at' hh:mm:ss tt")));
 
         #endregion
-
 
         #region Zoom meetings
         CreateMap<ZoomMeetingCategoryCreateDto, ZoomMeetingCategory>();
@@ -111,5 +107,8 @@ public class MappingProfiles : Profile
             .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<GenericMediaUrlResolver<ZoomMeeting, ZoomMeetingToReturnDto>>());
 
         #endregion
+
+        CreateMap<BasketItem, BasketItem>()
+           .ForMember(dest => dest.MediaUrl, opt => opt.MapFrom<GenericMediaUrlResolver<BasketItem, BasketItem>>());
     }
 }

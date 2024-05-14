@@ -1,9 +1,10 @@
 ﻿namespace MultaqaTech.APIs.Controllers;
 
 [Authorize]
-public class BasketsController(IBasketRepository basketRepository) : BaseApiController
+public class BasketsController(IBasketRepository basketRepository, IMapper mapper) : BaseApiController
 {
     private readonly IBasketRepository _basketRepository = basketRepository;
+    private readonly IMapper _mapper = mapper;
 
     [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -15,8 +16,11 @@ public class BasketsController(IBasketRepository basketRepository) : BaseApiCont
             return BadRequest(new ApiResponse(401));
 
         StudentBasket? basket = await _basketRepository.UpdateBasket(studentBasket, email);
-        return basket == null ? BadRequest(new ApiResponse(400)) : Ok(basket);
+        ManageBasketItemMediaUrl(basket);
+
+        return basket is null ? BadRequest(new ApiResponse(400)) : Ok(basket);
     }
+
 
     [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -28,6 +32,8 @@ public class BasketsController(IBasketRepository basketRepository) : BaseApiCont
             return BadRequest(new ApiResponse(401));
 
         StudentBasket? basket = await _basketRepository.AddCourseToBasket(email, basketItem);
+        ManageBasketItemMediaUrl(basket);
+
         return basket == null ? BadRequest(new ApiResponse(400)) : Ok(basket);
     }
 
@@ -41,6 +47,8 @@ public class BasketsController(IBasketRepository basketRepository) : BaseApiCont
             return BadRequest(new ApiResponse(401));
 
         StudentBasket? basket = await _basketRepository.RemoveCourseFromBasket(email, courseId);
+        ManageBasketItemMediaUrl(basket);
+
         return basket == null ? BadRequest(new ApiResponse(400)) : Ok(basket);
     }
 
@@ -53,9 +61,10 @@ public class BasketsController(IBasketRepository basketRepository) : BaseApiCont
         if (string.IsNullOrEmpty(email))
             return BadRequest(new ApiResponse(401));
 
-        StudentBasket? studentBasket = await _basketRepository.GetBasket(email);
+        StudentBasket? basket = await _basketRepository.GetBasket(email);
+        ManageBasketItemMediaUrl(basket);
 
-        return studentBasket is null ? new StudentBasket() : Ok(studentBasket);
+        return basket is null ? new StudentBasket() : Ok(basket);
     }
 
     [HttpDelete]
@@ -68,5 +77,15 @@ public class BasketsController(IBasketRepository basketRepository) : BaseApiCont
         bool isSuccess = await _basketRepository.DeleteBasket(email);
 
         return isSuccess ? NoContent() : NotFound(new ApiResponse(404));
+    }
+
+    private void ManageBasketItemMediaUrl(StudentBasket? basket)
+    {
+        if (basket is null || basket.BasketItems is null) return;
+
+        for (int i = 0; i < basket.BasketItems.Count; i++)
+        {
+            basket.BasketItems[i] = _mapper.Map<BasketItem>(basket.BasketItems[i]);
+        }
     }
 }
