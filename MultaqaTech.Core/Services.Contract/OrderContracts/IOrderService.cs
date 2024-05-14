@@ -2,5 +2,5 @@
 
 public interface IOrderService
 {
-    Task<bool> CreateOrderAsync(Order order);
+    Task<Order> CreateOrderAsync(Order order);
 }

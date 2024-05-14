@@ -1,6 +1,5 @@
 ﻿namespace MultaqaTech.APIs.Controllers;
 
-
 [Route("errors/{code}")]
 [ApiController]
 [ApiExplorerSettings(IgnoreApi = true)]

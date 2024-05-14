@@ -11,6 +11,7 @@ global using MultaqaTech.Core.Entities.EventDomainEntities;
 global using MultaqaTech.Core.Entities.CourseDomainEntities;
 global using MultaqaTech.Core.Entities.BlogPostDomainEntities;
 global using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
+global using Order = MultaqaTech.Core.Entities.OrderEntities.Order;
 
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Infrastructure;

@@ -109,6 +109,9 @@ public class MappingProfiles : Profile
         #endregion
 
         CreateMap<BasketItem, BasketItem>()
-           .ForMember(dest => dest.MediaUrl, opt => opt.MapFrom<GenericMediaUrlResolver<BasketItem, BasketItem>>());
+            .ForMember(dest => dest.MediaUrl, opt => opt.MapFrom<GenericMediaUrlResolver<BasketItem, BasketItem>>());
+
+        CreateMap<OrderDto, Order>();
+        CreateMap<Order, OrderToReturnDto>();
     }
 }

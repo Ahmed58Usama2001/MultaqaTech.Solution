@@ -21,7 +21,6 @@ public class BasketsController(IBasketRepository basketRepository, IMapper mappe
         return basket is null ? BadRequest(new ApiResponse(400)) : Ok(basket);
     }
 
-
     [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPost("UpdateBasketWithBasketItem")]
@@ -51,7 +50,6 @@ public class BasketsController(IBasketRepository basketRepository, IMapper mappe
 
         return basket == null ? BadRequest(new ApiResponse(400)) : Ok(basket);
     }
-
 
     [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
     [HttpGet]

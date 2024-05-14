@@ -66,5 +66,4 @@ public class SubjectsController(ISubjectService subjectService, IMapper mapper) 
 
         return NoContent();
     }
-
 }
