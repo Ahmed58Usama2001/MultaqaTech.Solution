@@ -42,9 +42,12 @@ public class BasketRepository(IConnectionMultiplexer redis, IUnitOfWork unitOfWo
     {
         StudentBasket? basketFromDb = await GetBasket(email);
 
-        List<BasketItem>? basketItem = await PrepareBasketItems(courseId);
-
         if (basketFromDb == null) return null;
+        var basketItemFromDb = basketFromDb.BasketItems?.Find(e => e.CourseId == courseId);
+        if (basketItemFromDb is not null)
+            throw new Exception("Course with same id alreadt exists in your basket");
+
+        var basketItem = await PrepareBasketItems(courseId);
 
         basketFromDb.BasketItems?.AddRange(basketItem);
 
