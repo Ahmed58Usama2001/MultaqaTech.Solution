@@ -19,12 +19,10 @@ public class ExceptionMiddleWare
         try
         {
             await next.Invoke(httpContext);
-
         }
         catch (Exception ex)
         {
             logger.LogError(ex, ex.Message);
-
 
             httpContext.Response.ContentType = "application/json";
             httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -39,6 +37,5 @@ public class ExceptionMiddleWare
 
             await httpContext.Response.WriteAsync(json);
         }
-
     }
 }

@@ -9,31 +9,43 @@ public class BasketsController(IBasketRepository basketRepository, IMapper mappe
     [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPost]
-    public async Task<ActionResult<StudentBasket>> UpdateStudentBasket(StudentBasket studentBasket)
+    public async Task<ActionResult<StudentBasket>> UpdateStudentBasket(params int[] courseIds)
     {
-        string? email = User.FindFirstValue(ClaimTypes.Email);
-        if (string.IsNullOrEmpty(email))
-            return BadRequest(new ApiResponse(401));
+        try
+        {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrEmpty(email)) return BadRequest(new ApiResponse(401));
 
-        StudentBasket? basket = await _basketRepository.UpdateBasket(studentBasket, email);
-        ManageBasketItemMediaUrl(basket);
+            StudentBasket? basket = await _basketRepository.UpdateBasket(email, courseIds);
+            ManageBasketItemMediaUrl(basket);
 
-        return basket is null ? BadRequest(new ApiResponse(400)) : Ok(basket);
+            return basket is null ? BadRequest(new ApiResponse(400)) : Ok(basket);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse(400, ex.Message));
+        }
     }
 
     [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPost("UpdateBasketWithBasketItem")]
-    public async Task<ActionResult<StudentBasket>> UpdateStudentBasketWithBasketItem(BasketItem basketItem)
+    public async Task<ActionResult<StudentBasket>> UpdateStudentBasketWithBasketItem(int courseId)
     {
-        string? email = User.FindFirstValue(ClaimTypes.Email);
-        if (string.IsNullOrEmpty(email))
-            return BadRequest(new ApiResponse(401));
+        try
+        {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrEmpty(email)) return BadRequest(new ApiResponse(401));
 
-        StudentBasket? basket = await _basketRepository.AddCourseToBasket(email, basketItem);
-        ManageBasketItemMediaUrl(basket);
+            StudentBasket? basket = await _basketRepository.AddCourseToBasket(email, courseId);
+            ManageBasketItemMediaUrl(basket);
 
-        return basket == null ? BadRequest(new ApiResponse(400)) : Ok(basket);
+            return basket == null ? BadRequest(new ApiResponse(400)) : Ok(basket);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiResponse(400, ex.Message));
+        }
     }
 
     [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
@@ -42,8 +54,7 @@ public class BasketsController(IBasketRepository basketRepository, IMapper mappe
     public async Task<ActionResult<StudentBasket>> RemoveCourseFromBasket(int courseId)
     {
         string? email = User.FindFirstValue(ClaimTypes.Email);
-        if (string.IsNullOrEmpty(email))
-            return BadRequest(new ApiResponse(401));
+        if (string.IsNullOrEmpty(email)) return BadRequest(new ApiResponse(401));
 
         StudentBasket? basket = await _basketRepository.RemoveCourseFromBasket(email, courseId);
         ManageBasketItemMediaUrl(basket);
@@ -56,8 +67,7 @@ public class BasketsController(IBasketRepository basketRepository, IMapper mappe
     public async Task<ActionResult<StudentBasket>> GetStudentBasket()
     {
         string? email = User.FindFirstValue(ClaimTypes.Email);
-        if (string.IsNullOrEmpty(email))
-            return BadRequest(new ApiResponse(401));
+        if (string.IsNullOrEmpty(email)) return BadRequest(new ApiResponse(401));
 
         StudentBasket? basket = await _basketRepository.GetBasket(email);
         ManageBasketItemMediaUrl(basket);

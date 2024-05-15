@@ -2,11 +2,11 @@
 
 public class CoursesSpecifications : BaseSpecifications<Course>
 {
-    public CoursesSpecifications(CourseSpeceficationsParams speceficationsParams)
+    public CoursesSpecifications(CourseSpecificationsParams speceficationsParams)
         : base(e =>
            (
                  (string.IsNullOrEmpty(speceficationsParams.Language) || e.Language == speceficationsParams.Language) &&
-                 (!speceficationsParams.InstractorId.HasValue || e.InstructorId == speceficationsParams.InstractorId) &&
+                 (!speceficationsParams.InstructorId.HasValue || e.InstructorId == speceficationsParams.InstructorId) &&
                  (!speceficationsParams.StudentId.HasValue || e.EnrolledStudentsIds.Contains((int)speceficationsParams.StudentId)) &&
                  (!speceficationsParams.SubjectId.HasValue || e.SubjectId == speceficationsParams.SubjectId) &&
                  (!speceficationsParams.MinPrice.HasValue || e.Price >= speceficationsParams.MinPrice) &&
@@ -77,6 +77,11 @@ public class CoursesSpecifications : BaseSpecifications<Course>
             AddOrderByDesc(p => p.Rating);
 
         ApplyPagination((speceficationsParams.PageIndex - 1) * speceficationsParams.PageSize, speceficationsParams.PageSize);
+    }
+
+    public CoursesSpecifications(Expression<Func<Course, bool>> criteriaExpression) : base(criteriaExpression)
+    {
+        AddIncludes();
     }
 
     public CoursesSpecifications(int id) : base(e => e.Id.Equals(id))

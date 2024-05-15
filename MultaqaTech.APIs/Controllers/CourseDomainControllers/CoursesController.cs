@@ -41,7 +41,7 @@ public partial class CoursesController(ICourseService courseService, IMapper map
     [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetAllCoursesFiltered([FromQuery] CourseSpeceficationsParams courseSpecificationsParams)
+    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetAllCoursesFiltered([FromQuery] CourseSpecificationsParams courseSpecificationsParams)
     {
         IEnumerable<Course>? courses = await _courseService.ReadCoursesWithSpecifications(courseSpecificationsParams);
 
@@ -80,9 +80,9 @@ public partial class CoursesController(ICourseService courseService, IMapper map
     [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("GetCoursesForInstructorByInstructorId/{instructorId}")]
-    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForInstructorByInstructorId(int instructorId, [FromQuery] CourseSpeceficationsParams courseSpecificationsParams)
+    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForInstructorByInstructorId(int instructorId, [FromQuery] CourseSpecificationsParams courseSpecificationsParams)
     {
-        courseSpecificationsParams.InstractorId = instructorId;
+        courseSpecificationsParams.InstructorId = instructorId;
 
         IEnumerable<Course>? courses = await _courseService.ReadCoursesForInstructor(courseSpecificationsParams);
 
@@ -105,7 +105,7 @@ public partial class CoursesController(ICourseService courseService, IMapper map
     [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("GetCoursesForStudentByStudentId/{studentId}")]
-    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForStudentByStudentId(string studentId, [FromQuery] CourseSpeceficationsParams courseSpecificationsParams)
+    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForStudentByStudentId(string studentId, [FromQuery] CourseSpecificationsParams courseSpecificationsParams)
     {
         IEnumerable<Course>? courses = await _courseService.ReadCoursesForStudent(studentId, courseSpecificationsParams);
 

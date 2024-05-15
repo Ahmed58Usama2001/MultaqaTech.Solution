@@ -45,9 +45,7 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
     {
         try
         {
-            IEnumerable<Course>? courses = await _unitOfWork.Repository<Course>().GetAllAsync();
-
-            return courses;
+            return await _unitOfWork.Repository<Course>().GetAllAsync();
         }
         catch (Exception ex)
         {
@@ -70,7 +68,7 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
     }
 
-    public async Task<IEnumerable<Course>?> ReadCoursesForInstructor(CourseSpeceficationsParams courseSpeceficationsParams)
+    public async Task<IEnumerable<Course>?> ReadCoursesForInstructor(CourseSpecificationsParams courseSpeceficationsParams)
     {
         try
         {
@@ -83,7 +81,7 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
     }
 
-    public async Task<IEnumerable<Course>?> ReadCoursesWithSpecifications(CourseSpeceficationsParams courseSpeceficationsParams)
+    public async Task<IEnumerable<Course>?> ReadCoursesWithSpecifications(CourseSpecificationsParams courseSpeceficationsParams)
     {
         var spec = new CoursesSpecifications(courseSpeceficationsParams);
 
@@ -102,7 +100,7 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
     }
 
-    public async Task<IEnumerable<Course>?> ReadCoursesForStudent(string studentId, CourseSpeceficationsParams courseSpeceficationsParams)
+    public async Task<IEnumerable<Course>?> ReadCoursesForStudent(string studentId, CourseSpecificationsParams courseSpeceficationsParams)
     {
         try
         {
@@ -206,7 +204,7 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
             return (true, -1);
     }
 
-    public async Task<int> GetCountAsync(CourseSpeceficationsParams speceficationsParams)
+    public async Task<int> GetCountAsync(CourseSpecificationsParams speceficationsParams)
     {
         var countSpec = new CourseWithFilterationForCountSpecifications(speceficationsParams);
 
@@ -214,4 +212,7 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
 
         return count;
     }
+
+    public async Task<IReadOnlyList<Course>?> ReadByPredicateWithIncludes(Expression<Func<Course, bool>> criteriaExpression)
+        => await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(new CoursesSpecifications(criteriaExpression));
 }
