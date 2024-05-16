@@ -1,14 +1,15 @@
-﻿using MultaqaTech.Core.Entities.CourseDomainEntities;
-
-namespace MultaqaTech.APIs.Controllers.CourseDomainControllers.CurriculumDomainControllers;
+﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers.CurriculumDomainControllers;
 
 
 public class CurriculumItemsController(
         IMapper mapper,
-    ICurriculumItemService itemService) : BaseApiController
+    ICurriculumItemService itemService, UserManager<AppUser> userManager, IUnitOfWork unitOfWork) : BaseApiController
 {
     private readonly ICurriculumItemService _itemService = itemService;
     private readonly IMapper _mapper = mapper;
+    private readonly UserManager<AppUser> _userManager = userManager;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
+
 
     [HttpPut]
     [Route("{sectionId}/items/reorder")]
@@ -42,4 +43,6 @@ public class CurriculumItemsController(
 
         return Ok(_mapper.Map<IReadOnlyList<CurriculumItem>, IReadOnlyList<ItemReturnDto>>(items).OrderBy(i=>i.Order));
     }
+
+    
 }

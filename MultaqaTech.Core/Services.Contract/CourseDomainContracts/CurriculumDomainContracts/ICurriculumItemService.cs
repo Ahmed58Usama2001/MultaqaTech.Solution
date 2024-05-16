@@ -11,6 +11,8 @@ public interface ICurriculumItemService
 
     Task<CurriculumItem?> UpdateCurriculumItem(CurriculumItem storedItem, CurriculumItem newItem);
 
+    Task<bool> UpdateCurriculumItemCompletionStateInStudentProgress(int CurriculumItemId, int studentCourseId,CurriculumItemType type);
+
 
     Task<bool> DeleteCurriculumItem(CurriculumItem CurriculumItem);
 
