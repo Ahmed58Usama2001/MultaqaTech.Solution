@@ -430,6 +430,9 @@ namespace MultaqaTech.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CurriculumItemType")
+                        .HasColumnType("int");
+
                     b.Property<int>("CurriculumSectionId")
                         .HasColumnType("int");
 
@@ -535,6 +538,9 @@ namespace MultaqaTech.Repository.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CurriculumItemType")
+                        .HasColumnType("int");
 
                     b.Property<int>("CurriculumSectionId")
                         .HasColumnType("int");
@@ -898,6 +904,46 @@ namespace MultaqaTech.Repository.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("MultaqaTech.Core.Entities.OrderEntities.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Basket")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Coupon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsCouponApplied")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PaymentType")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PriceAfterDiscount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalPriceBeforeDiscount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("MultaqaTech.Core.Entities.SettingsEntities.Subject", b =>
