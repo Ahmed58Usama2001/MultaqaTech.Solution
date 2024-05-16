@@ -8,7 +8,6 @@
             &&
             (string.IsNullOrEmpty(speceficationsParams.Search)
               || p.Title.ToLower().Contains(speceficationsParams.Search)
-               && p.Country.ToLower().Contains(speceficationsParams.Search)
             ))
 
         {
@@ -21,19 +20,19 @@
                 {
 
                     case "StartingDateAsc":
-                        AddOrderBy(p => p.StartDate);
+                        AddOrderBy(p => p.DateFrom);
                         break;
                     case "StartingDateDesc":
-                        AddOrderBy(p => p.StartDate);
+                        AddOrderBy(p => p.DateFrom);
                         break;
 
                     default:
-                        AddOrderByDesc(p => p.StartDate);
+                        AddOrderByDesc(p => p.DateFrom);
                         break;
                 }
             }
             else
-                AddOrderByDesc(p => p.StartDate);
+                AddOrderByDesc(p => p.DateFrom);
 
             ApplyPagination((speceficationsParams.PageIndex - 1) * speceficationsParams.PageSize, speceficationsParams.PageSize);
 
@@ -48,6 +47,8 @@
         private void AddIncludes()
         {
             Includes.Add(p => p.Category);
+            Includes.Add(p => p.Comments);
+            Includes.Add(p => p.Speakers);
 
         }
 

@@ -8,7 +8,6 @@
             &&
             (string.IsNullOrEmpty(speceficationsParams.Search)
               || p.Title.ToLower().Contains(speceficationsParams.Search)
-               && p.Country.ToLower().Contains(speceficationsParams.Search)
             ))
 
 

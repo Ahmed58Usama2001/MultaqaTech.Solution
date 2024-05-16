@@ -38,6 +38,7 @@ public static class ApplicationServicesExtension
 
         services.AddScoped<IEventCategoryService, EventCategoryService>();
         services.AddScoped<IEventCommentService, EventCommentService>();
+        services.AddScoped<IEventSpeakerService, EventSpeakerService>();
         services.AddScoped<IEventService, EventService>();
 
         services.AddScoped<IZoomMeetingCategoryService , ZoomMeetingCategoryService>();

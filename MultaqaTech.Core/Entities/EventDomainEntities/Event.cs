@@ -4,9 +4,10 @@ namespace MultaqaTech.Core.Entities.EventDomainEntities
     public class Event : BaseEntityWithMediaUrl
     {
         public string Title { get; set; } = string.Empty;
-        public string Content { get; set; } = string.Empty;
-        public string Country {  get; set; }
-        public DateTime StartDate { get; set; }
+        public string AboutTheEvent { get; set; } = string.Empty;
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+
         public string EventPictureUrl
         {
             get { return base.MediaUrl; }
@@ -14,9 +15,13 @@ namespace MultaqaTech.Core.Entities.EventDomainEntities
         }
         public int EventCategoryId { get; set; }
         public EventCategory Category { get; set; }
-        public TimeSpan From { get; set; }
-        public TimeSpan To { get; set; }
-        public decimal Price { get; set; }
+        public TimeSpan TimeFrom { get; set; }
+        public TimeSpan TimeTo { get; set; }
+        public string Address { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Website { get; set; }
+        public string Price { get; set; }
         public List<EventComment>? Comments { get; set; } = new();
+        public List<EventSpeaker>? Speakers { get; set; } = new();
     }
 }

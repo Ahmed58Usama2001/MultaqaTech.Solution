@@ -14,7 +14,7 @@ namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
         [ProducesResponseType(typeof(EventCommentToReturnDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [HttpPost]
-        public async Task<ActionResult<EventCommentToReturnDto>> CreateBlogPostAsync(EventCommentCreateDto eventCommentDto)
+        public async Task<ActionResult<EventCommentToReturnDto>> CreateEventAsync(EventCommentCreateDto eventCommentDto)
         {
             if (eventCommentDto is null) return BadRequest(new ApiResponse(400));
 
@@ -37,7 +37,7 @@ namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
                 DatePosted = DateTime.Now,
             };
 
-            var createdEventComment = await eventCommentService.CreateEventAsync(mappedeventComment);
+            var createdEventComment = await eventCommentService.CreateEventCommentAsync(mappedeventComment);
 
             if (createdEventComment is null) return BadRequest(new ApiResponse(400));
 

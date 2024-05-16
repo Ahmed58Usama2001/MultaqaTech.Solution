@@ -11,20 +11,32 @@ namespace MultaqaTech.Repository.Data.Configurations.EventEntitesConfigurations
                .IsRequired()
                .HasMaxLength(255);
 
-            builder.Property(e => e.Content)
+            builder.Property(e => e.AboutTheEvent)
             .IsRequired();
 
-            builder.Property(e => e.Country)
+            builder.Property(e => e.DateFrom)
             .IsRequired();
 
-            builder.Property(e => e.StartDate)
+            builder.Property(e => e.DateTo)
             .IsRequired();
 
-            builder.Property(e => e.From)
+            builder.Property(e => e.TimeFrom)
             .IsRequired();
 
-            builder.Property(e => e.To)
+            builder.Property(e => e.TimeTo)
             .IsRequired();
+
+            builder.Property(e => e.Price)
+                .IsRequired();
+
+            builder.Property(e => e.Address)
+               .IsRequired();
+
+            builder.Property(e => e.PhoneNumber)
+               .IsRequired();
+
+            builder.Property(e => e.Website)
+               .IsRequired();
 
             builder.Property(e => e.EventCategoryId)
              .IsRequired();
@@ -42,7 +54,13 @@ namespace MultaqaTech.Repository.Data.Configurations.EventEntitesConfigurations
                .HasForeignKey(c => c.EventId)
                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Property(e => e.Price).HasColumnType("decimal(18,2)");
+            builder.HasMany(bp => bp.Speakers)
+              .WithOne(c => c.Event)
+              .HasForeignKey(c => c.EventId)
+              .OnDelete(DeleteBehavior.Cascade);
+
+
+
 
         }
     }
