@@ -1,4 +1,9 @@
-﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers.CurriculumDomainControllers;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using MultaqaTech.Core.Entities.CourseDomainEntities;
+using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
+using MultaqaTech.Core.Entities.Identity.Facebook;
+
+namespace MultaqaTech.APIs.Controllers.CourseDomainControllers.CurriculumDomainControllers;
 
 
 public class QuizesController(
@@ -58,6 +63,19 @@ public class QuizesController(
         if (quiz == null)
             return NotFound(new ApiResponse(404));
 
+        _context.Entry(quiz).Reference(i => i.CurriculumSection).Load();
+        _context.Entry(quiz.CurriculumSection).Reference(i => i.Course).Load();
+        _context.Entry(quiz.CurriculumSection.Course).Reference(i => i.EnrolledStudentsIds).Load();
+
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        Student? student = await _unitOfWork.Repository<Student>().FindAsync(S => S.AppUserId == storedUser.Id);
+        if (student is null)
+            return BadRequest(new ApiResponse(401));
+
+        if (!quiz.CurriculumSection.Course.EnrolledStudentsIds.Contains(student.Id))
+            return BadRequest(new ApiResponse(401));
+
 
         return Ok(_mapper.Map<QuizReturnDto>(quiz));
     }
@@ -102,6 +120,37 @@ public class QuizesController(
     }
 
     [ProducesResponseType(typeof(QuizReturnDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [HttpPut("CompleteQuiz/{id}")]
+    public async Task<IActionResult> CompleteQuiz(int id)
+    {
+        Quiz? quiz = (Quiz?)await _itemService.ReadByIdAsync(id, CurriculumItemType.Quiz);
+        if (quiz == null)
+            return NotFound(new ApiResponse(404));
+
+        _context.Entry(quiz).Reference(i => i.CurriculumSection).Load();
+        _context.Entry(quiz.CurriculumSection).Reference(i => i.Course).Load();
+        _context.Entry(quiz.CurriculumSection.Course).Reference(i => i.EnrolledStudentsIds).Load();
+
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        Student? student = await _unitOfWork.Repository<Student>().FindAsync(S => S.AppUserId == storedUser.Id);
+        if (student is null)
+            return BadRequest(new ApiResponse(401));
+        if (!quiz.CurriculumSection.Course.EnrolledStudentsIds.Contains(student.Id))
+            return BadRequest(new ApiResponse(401));
+
+        StudentCourse studentCourse = await _unitOfWork.Repository<StudentCourse>().FindAsync(SC => SC.StudentId == student.Id &&
+        SC.CourseId == quiz.CurriculumSection.CourseId);
+
+        var updated = await _itemService.UpdateCurriculumItemCompletionStateInStudentProgress(id, studentCourse.Id, CurriculumItemType.Quiz);
+        if (!updated)
+            return BadRequest(new ApiResponse(400));
+
+        return Ok();
+    }
+
+    [ProducesResponseType(typeof(QuizReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteSection(int id)
@@ -119,7 +168,7 @@ public class QuizesController(
         var result = await _itemService.DeleteCurriculumItem(quiz);
 
         if (result)
-            return Ok(true);
+            return Ok();
 
         return BadRequest(new ApiResponse(400));
     }
