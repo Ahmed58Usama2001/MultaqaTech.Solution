@@ -25,8 +25,6 @@ internal class LectureConfiguration : IEntityTypeConfiguration<Lecture>
 
         builder.Ignore(l => l.MediaUrl);
 
-        builder.Ignore(l => l.CurriculumItemType);
-
         builder.HasOne(bp => bp.CurriculumSection)
                  .WithMany(c => c.Lectures)
                  .HasForeignKey(bp => bp.CurriculumSectionId)

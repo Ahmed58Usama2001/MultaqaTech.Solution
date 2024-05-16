@@ -1,4 +1,7 @@
-﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers.CurriculumDomainControllers;
+﻿using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
+using MultaqaTech.Core.Entities.CourseDomainEntities;
+
+namespace MultaqaTech.APIs.Controllers.CourseDomainControllers.CurriculumDomainControllers;
 
 public class LecturesController(
     IMapper mapper,
@@ -52,12 +55,31 @@ public class LecturesController(
     [ProducesResponseType(typeof(LectureReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("{id}")]
-    public async Task<ActionResult<LectureReturnDto>> GetSection(int id)
+    public async Task<ActionResult<LectureReturnDto>> GetLecture(int id)
     {
         Lecture? lecture = (Lecture?)await _itemService.ReadByIdAsync(id,CurriculumItemType.Lecture);
-
         if (lecture == null)
             return NotFound(new ApiResponse(404));
+
+        _context.Entry(lecture).Reference(i => i.CurriculumSection).Load();
+        _context.Entry(lecture.CurriculumSection).Reference(i => i.Course).Load();
+        _context.Entry(lecture.CurriculumSection.Course).Reference(i => i.EnrolledStudentsIds).Load();
+
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        Student? student = await _unitOfWork.Repository<Student>().FindAsync(S => S.AppUserId == storedUser.Id);
+        if (student is null)
+            return BadRequest(new ApiResponse(401));
+
+        if (!lecture.CurriculumSection.Course.EnrolledStudentsIds.Contains(student.Id))
+            return BadRequest(new ApiResponse(401));
+
+        StudentCourse studentCourse = await _unitOfWork.Repository<StudentCourse>().FindAsync(SC => SC.StudentId == student.Id &&
+        SC.CourseId == lecture.CurriculumSection.CourseId);
+
+        var updated = await _itemService.UpdateCurriculumItemCompletionStateInStudentProgress(id, studentCourse.Id, CurriculumItemType.Lecture);
+        if (!updated)
+            return BadRequest(new ApiResponse(400));
 
 
         return Ok(_mapper.Map<LectureReturnDto>(lecture));
@@ -162,5 +184,7 @@ public class LecturesController(
 
         return true;
     }
+
+   
 }
 

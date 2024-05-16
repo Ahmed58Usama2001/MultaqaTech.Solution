@@ -63,4 +63,7 @@ public class MultaqaTechContext : IdentityDbContext<AppUser>
     public DbSet<ZoomMeetingCategory> ZoomMeetingCategories { get; set; }
     public DbSet<ZoomMeeting> ZoomMeetings { get; set; }
     #endregion
+    public DbSet<Order> Orders { get; set; }
+
+
 }

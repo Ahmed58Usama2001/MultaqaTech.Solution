@@ -31,8 +31,10 @@ global using Order = MultaqaTech.Core.Entities.OrderEntities.Order;
 
 global using Microsoft.Extensions.Options;
 global using Microsoft.AspNetCore.Identity;
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.Extensions.Configuration;
+
 
 global using System.Text;
 global using System.Security.Claims;
