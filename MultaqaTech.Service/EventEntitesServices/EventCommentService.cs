@@ -4,7 +4,7 @@ namespace MultaqaTech.Service.EventEntitesServices
     public class EventCommentService(IUnitOfWork unitOfWork) : IEventCommentService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        public async Task<EventComment?> CreateEventAsync(EventComment eventComment)
+        public async Task<EventComment?> CreateEventCommentAsync(EventComment eventComment)
         {
             try
             {

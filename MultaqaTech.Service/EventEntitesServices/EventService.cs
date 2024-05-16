@@ -1,5 +1,4 @@
 ﻿
-using MultaqaTech.Core.Specifications.EventEntitiesSpecs;
 using MultaqaTech.Core.Specifications.EventEntitiesSpecs.EventSpecs;
 
 namespace MultaqaTech.Service.EventEntitesServices
@@ -76,12 +75,15 @@ namespace MultaqaTech.Service.EventEntitesServices
             if (storedEvent == null || newEvent == null)
                 return null;
             storedEvent.Title = newEvent.Title;
-            storedEvent.Content = newEvent.Content;
+            storedEvent.AboutTheEvent = newEvent.AboutTheEvent;
             storedEvent.Price = newEvent.Price;
-            storedEvent.StartDate = newEvent.StartDate;
-            storedEvent.From = newEvent.From;
-            storedEvent.To = newEvent.To;
-            storedEvent.Country = newEvent.Country;
+            storedEvent.DateFrom = newEvent.DateFrom;
+            storedEvent.DateTo = newEvent.DateTo;
+         //   storedEvent.TimeTo = newEvent.TimeTo;
+            storedEvent.PhoneNumber = newEvent.PhoneNumber;
+            storedEvent.Address = newEvent.Address;
+            storedEvent.Website = newEvent.Website;
+            storedEvent.EventPictureUrl = newEvent.EventPictureUrl;
             storedEvent.Category = newEvent.Category;
             storedEvent.EventCategoryId = newEvent.EventCategoryId;
 

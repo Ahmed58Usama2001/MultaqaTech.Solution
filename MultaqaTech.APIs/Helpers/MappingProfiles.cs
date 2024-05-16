@@ -88,6 +88,22 @@ public class MappingProfiles : Profile
         #region Event
         CreateMap<EventCategoryCreateDto, EventCategory>();
 
+        CreateMap<EventSpeakerCreateDto, EventSpeaker>()
+            .ForMember(dest => dest.SpeakerPictureUrl, opt => opt.Ignore());
+
+        CreateMap<EventSpeaker , EventSpeakerToReturnDto>()
+             .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<GenericMediaUrlResolver<EventSpeaker, EventSpeakerToReturnDto>>());
+
+        CreateMap<EventCreateDto , Event>()
+            .ForMember(dest => dest.EventPictureUrl, opt => opt.Ignore());
+
+        CreateMap<Event, EventToReturnDto>()
+            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
+            .ForMember(dest => dest.DateFrom, opt => opt.MapFrom(src => src.DateFrom.ToString("dddd, MMMM dd, yyyy")))
+            .ForMember(dest => dest.DateTo, opt => opt.MapFrom(src => src.DateTo.ToString("dddd, MMMM dd, yyyy")));
+           // .ForMember(dest => dest.TimeFrom, opt => opt.MapFrom(src => src.DateTo.ToString("h:mm tt")))
+          //  .ForMember(dest => dest.TimeTo, opt => opt.MapFrom(src => src.DateTo.ToString("h:mm tt")));
+
 
         CreateMap<EventComment, EventCommentToReturnDto>()
             .ForMember(dest => dest.Event, opt => opt.MapFrom(src => src.Event.Title))

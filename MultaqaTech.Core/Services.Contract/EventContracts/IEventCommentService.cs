@@ -3,7 +3,7 @@ namespace MultaqaTech.Core.Services.Contract.EventContracts
 {
     public interface IEventCommentService
     {
-        Task<EventComment?> CreateEventAsync(EventComment eventComment);
+        Task<EventComment?> CreateEventCommentAsync(EventComment eventComment);
 
         Task<IReadOnlyList<EventComment>> ReadAllEventCommentsAsync(EventCommentSpeceficationsParams speceficationsParams);
 
