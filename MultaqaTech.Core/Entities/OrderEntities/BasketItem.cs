@@ -1,4 +1,4 @@
-﻿namespace MultaqaTech.Core.Entities.BasketEntities;
+﻿namespace MultaqaTech.Core.Entities.OrderEntities;
 
 public class BasketItem : BaseEntityWithMediaUrl
 {
@@ -7,6 +7,11 @@ public class BasketItem : BaseEntityWithMediaUrl
 
     public int CourseId { get; set; }
     public string CourseTitle { get; set; } = string.Empty;
+    public string CourseThumbnailUrl
+    {
+        get { return base.MediaUrl; }
+        set { base.MediaUrl = value; }
+    }
 
     public decimal Price { get; set; }
 }

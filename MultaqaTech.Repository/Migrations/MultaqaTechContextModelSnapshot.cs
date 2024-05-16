@@ -430,6 +430,9 @@ namespace MultaqaTech.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CurriculumItemType")
+                        .HasColumnType("int");
+
                     b.Property<int>("CurriculumSectionId")
                         .HasColumnType("int");
 
@@ -501,7 +504,7 @@ namespace MultaqaTech.Repository.Migrations
                     b.Property<int>("AskerId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Content")
+                    b.Property<string>("Details")
                         .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
@@ -513,6 +516,10 @@ namespace MultaqaTech.Repository.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("QuestionPictureUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -531,6 +538,9 @@ namespace MultaqaTech.Repository.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CurriculumItemType")
+                        .HasColumnType("int");
 
                     b.Property<int>("CurriculumSectionId")
                         .HasColumnType("int");
@@ -610,6 +620,37 @@ namespace MultaqaTech.Repository.Migrations
                     b.ToTable("QuizQuestionChoices", (string)null);
                 });
 
+            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.StudentCourseProgress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LectureId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuizId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentCourseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LectureId");
+
+                    b.HasIndex("QuizId");
+
+                    b.HasIndex("StudentCourseId");
+
+                    b.ToTable("StudentsProgress");
+                });
+
             modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.Instructor", b =>
                 {
                     b.Property<int>("Id")
@@ -660,15 +701,26 @@ namespace MultaqaTech.Repository.Migrations
 
             modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.StudentCourse", b =>
                 {
-                    b.Property<int>("StudentId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompletionPercentage")
                         .HasColumnType("int");
 
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
-                    b.HasKey("StudentId", "CourseId");
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("CourseId");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("StudentCourses", (string)null);
                 });
@@ -896,6 +948,46 @@ namespace MultaqaTech.Repository.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("MultaqaTech.Core.Entities.OrderEntities.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Basket")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Coupon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsCouponApplied")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PaymentType")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PriceAfterDiscount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalPriceBeforeDiscount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("MultaqaTech.Core.Entities.SettingsEntities.Subject", b =>
@@ -1212,6 +1304,33 @@ namespace MultaqaTech.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("QuizQuestion");
+                });
+
+            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.StudentCourseProgress", b =>
+                {
+                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.Lecture", "Lecture")
+                        .WithMany()
+                        .HasForeignKey("LectureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.Quiz", "Quiz")
+                        .WithMany()
+                        .HasForeignKey("QuizId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.StudentCourse", "StudentCourse")
+                        .WithMany()
+                        .HasForeignKey("StudentCourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lecture");
+
+                    b.Navigation("Quiz");
+
+                    b.Navigation("StudentCourse");
                 });
 
             modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.Instructor", b =>

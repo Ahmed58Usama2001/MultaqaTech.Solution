@@ -1,8 +1,8 @@
 ﻿namespace MultaqaTech.Core.Specifications;
 
-public class CourseSpeceficationsParams
+public class CourseSpecificationsParams
 {
-    public int? InstractorId { get; set; }
+    public int? InstructorId { get; set; }
     public int? StudentId { get; set; }
     public string? Language { get; set; }
 

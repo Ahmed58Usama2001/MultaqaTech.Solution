@@ -35,32 +35,30 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         if (createdCourse is null) return BadRequest(new ApiResponse(400));
 
-
         return Ok(_mapper.Map<CourseToReturnDto>(createdCourse));
     }
 
     [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetAllCoursesFiltered([FromQuery] CourseSpeceficationsParams courseSpeceficationsParams)
+    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetAllCoursesFiltered([FromQuery] CourseSpecificationsParams courseSpecificationsParams)
     {
-        IEnumerable<Course>? courses = await _courseService.ReadCoursesWithSpecifications(courseSpeceficationsParams);
+        IEnumerable<Course>? courses = await _courseService.ReadCoursesWithSpecifications(courseSpecificationsParams);
 
         if (courses is null)
             return NotFound(new ApiResponse(404));
 
         foreach (var course in courses)
         {
-            context.Entry(course).Reference(c => c.Instructor).Load();
-            context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
+            _context.Entry(course).Reference(c => c.Instructor).Load();
+            _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
-        var count = await _courseService.GetCountAsync(courseSpeceficationsParams);
+        var count = await _courseService.GetCountAsync(courseSpecificationsParams);
 
         var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
 
-        return Ok(new Pagination<BlogPostToReturnDto>(courseSpeceficationsParams.PageIndex, courseSpeceficationsParams.PageSize,
-            count, (IReadOnlyList<BlogPostToReturnDto>)data));
+        return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize,count, data));
     }
 
     [ProducesResponseType(typeof(CourseToReturnDto), StatusCodes.Status200OK)]
@@ -73,8 +71,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         if (course is null)
             return NotFound(new ApiResponse(404));
 
-        context.Entry(course).Reference(c => c.Instructor).Load();
-        context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
+        _context.Entry(course).Reference(c => c.Instructor).Load();
+        _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
 
         return Ok(_mapper.Map<CourseToReturnDto>(course));
     }
@@ -82,51 +80,49 @@ public partial class CoursesController(ICourseService courseService, IMapper map
     [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("GetCoursesForInstructorByInstructorId/{instructorId}")]
-    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForInstructorByInstructorId(int instructorId, [FromQuery] CourseSpeceficationsParams courseSpeceficationsParams)
+    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForInstructorByInstructorId(int instructorId, [FromQuery] CourseSpecificationsParams courseSpecificationsParams)
     {
-        courseSpeceficationsParams.InstractorId = instructorId;
+        courseSpecificationsParams.InstructorId = instructorId;
 
-        IEnumerable<Course>? courses = await _courseService.ReadCoursesForInstructor(courseSpeceficationsParams);
+        IEnumerable<Course>? courses = await _courseService.ReadCoursesForInstructor(courseSpecificationsParams);
 
         if (courses is null)
             return NotFound(new ApiResponse(404));
 
         foreach (var course in courses)
         {
-            context.Entry(course).Reference(c => c.Instructor).Load();
-            context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
+            _context.Entry(course).Reference(c => c.Instructor).Load();
+            _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
-        var count = await _courseService.GetCountAsync(courseSpeceficationsParams);
+        var count = await _courseService.GetCountAsync(courseSpecificationsParams);
 
         var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
 
-        return Ok(new Pagination<BlogPostToReturnDto>(courseSpeceficationsParams.PageIndex, courseSpeceficationsParams.PageSize,
-            count, (IReadOnlyList<BlogPostToReturnDto>)data));
+        return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
     }
 
     [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("GetCoursesForStudentByStudentId/{studentId}")]
-    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForStudentByStudentId(string studentId, [FromQuery] CourseSpeceficationsParams courseSpeceficationsParams)
+    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForStudentByStudentId(string studentId, [FromQuery] CourseSpecificationsParams courseSpecificationsParams)
     {
-        IEnumerable<Course>? courses = await _courseService.ReadCoursesForStudent(studentId, courseSpeceficationsParams);
+        IEnumerable<Course>? courses = await _courseService.ReadCoursesForStudent(studentId, courseSpecificationsParams);
 
         if (courses is null)
             return NotFound(new ApiResponse(404));
 
         foreach (var course in courses)
         {
-            context.Entry(course).Reference(c => c.Instructor).Load();
-            context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
+            _context.Entry(course).Reference(c => c.Instructor).Load();
+            _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
-        var count = await _courseService.GetCountAsync(courseSpeceficationsParams);
+        var count = await _courseService.GetCountAsync(courseSpecificationsParams);
 
         var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
 
-        return Ok(new Pagination<BlogPostToReturnDto>(courseSpeceficationsParams.PageIndex, courseSpeceficationsParams.PageSize,
-            count, (IReadOnlyList<BlogPostToReturnDto>)data));
+        return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
     }
 
     [ProducesResponseType(typeof(InstructorReturnDto), StatusCodes.Status200OK)]
@@ -141,7 +137,7 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         foreach (var instructor in instructors)
         {
-            _context.Entry(instructor).Reference(i => i.AppUser).Load();  
+            _context.Entry(instructor).Reference(i => i.AppUser).Load();
         }
 
         return Ok(_mapper.Map<IReadOnlyList<Instructor>, IReadOnlyList<InstructorReturnDto>>(instructors));
@@ -153,6 +149,10 @@ public partial class CoursesController(ICourseService courseService, IMapper map
     [HttpPut("{courseId}")]
     public async Task<ActionResult<CourseToReturnDto>> UpdateCourse(int courseId, CourseDto course)
     {
+        Course? storedCourse = await _courseService.ReadByIdAsync(courseId);
+        if (!await CheckIfRequestFromCreatorUser(storedCourse.InstructorId))
+            return BadRequest(new ApiResponse(401));
+
         (bool isTitleUnique, int courseIdWithSameTitle) = await _courseService.CheckTitleUniqueness(course.Title);
         if (!isTitleUnique && courseId != courseIdWithSameTitle) return BadRequest(new ApiResponse(400, "Course Title Should Be Unique"));
 
@@ -168,11 +168,33 @@ public partial class CoursesController(ICourseService courseService, IMapper map
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteCourse(int id)
     {
+        Course? storedCourse = await _courseService.ReadByIdAsync(id);
+        if (!await CheckIfRequestFromCreatorUser(storedCourse.InstructorId))
+            return BadRequest(new ApiResponse(401));
+
         bool result = await _courseService.DeleteCourse(id);
 
         if (!result)
             return NotFound(new ApiResponse(400));
 
         return NoContent();
+    }
+
+    private async Task<bool> CheckIfRequestFromCreatorUser(int instructorId)
+    {
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (userEmail is null) return false;
+
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        if (storedUser is null) return false;
+
+        Instructor? instructor = await _unitOfWork.Repository<Instructor>().FindAsync(S => S.AppUserId == storedUser.Id);
+        if (instructor is null)
+            return false;
+
+        if (instructor.Id != instructorId)
+            return false;
+
+        return true;
     }
 }

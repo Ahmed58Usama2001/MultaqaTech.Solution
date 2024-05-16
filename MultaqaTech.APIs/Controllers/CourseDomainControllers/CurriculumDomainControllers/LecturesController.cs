@@ -1,17 +1,23 @@
-﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers.CurriculumDomainControllers;
+﻿using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
+using MultaqaTech.Core.Entities.CourseDomainEntities;
+
+namespace MultaqaTech.APIs.Controllers.CourseDomainControllers.CurriculumDomainControllers;
 
 public class LecturesController(
     IMapper mapper,
     UserManager<AppUser> userManager,
     ICurriculumItemService itemService,
     ICurriculumSectionService sectionService,
-    IUnitOfWork unitOfWork) : BaseApiController
+    IUnitOfWork unitOfWork, MultaqaTechContext context) : BaseApiController
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurriculumItemService _itemService = itemService;
     private readonly ICurriculumSectionService _sectionService = sectionService;
+    private readonly MultaqaTechContext _context = context;
     private readonly UserManager<AppUser> _userManager = userManager;
+
+
 
     [ProducesResponseType(typeof(LectureReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -24,6 +30,11 @@ public class LecturesController(
         CurriculumSection? existingSection = await _sectionService.ReadByIdAsync(lectureDto.CurriculumSectionId);
         if (existingSection is null)
             return NotFound(new { Message = "Section wasn't Not Found", StatusCode = 404 });
+
+        _context.Entry(existingSection).Reference(i => i.Course).Load();
+
+        if (!await CheckIfRequestFromCreatorUser(existingSection.Course.InstructorId))
+            return BadRequest(new ApiResponse(401));
 
         var mappedItem = _mapper.Map<LectureCreateDto, Lecture>(lectureDto);
         mappedItem.CurriculumSection = existingSection;
@@ -44,12 +55,31 @@ public class LecturesController(
     [ProducesResponseType(typeof(LectureReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("{id}")]
-    public async Task<ActionResult<LectureReturnDto>> GetSection(int id)
+    public async Task<ActionResult<LectureReturnDto>> GetLecture(int id)
     {
         Lecture? lecture = (Lecture?)await _itemService.ReadByIdAsync(id,CurriculumItemType.Lecture);
-
         if (lecture == null)
             return NotFound(new ApiResponse(404));
+
+        _context.Entry(lecture).Reference(i => i.CurriculumSection).Load();
+        _context.Entry(lecture.CurriculumSection).Reference(i => i.Course).Load();
+        _context.Entry(lecture.CurriculumSection.Course).Reference(i => i.EnrolledStudentsIds).Load();
+
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        Student? student = await _unitOfWork.Repository<Student>().FindAsync(S => S.AppUserId == storedUser.Id);
+        if (student is null)
+            return BadRequest(new ApiResponse(401));
+
+        if (!lecture.CurriculumSection.Course.EnrolledStudentsIds.Contains(student.Id))
+            return BadRequest(new ApiResponse(401));
+
+        StudentCourse studentCourse = await _unitOfWork.Repository<StudentCourse>().FindAsync(SC => SC.StudentId == student.Id &&
+        SC.CourseId == lecture.CurriculumSection.CourseId);
+
+        var updated = await _itemService.UpdateCurriculumItemCompletionStateInStudentProgress(id, studentCourse.Id, CurriculumItemType.Lecture);
+        if (!updated)
+            return BadRequest(new ApiResponse(400));
 
 
         return Ok(_mapper.Map<LectureReturnDto>(lecture));
@@ -68,6 +98,12 @@ public class LecturesController(
         CurriculumSection? existingSection = await _sectionService.ReadByIdAsync(storedLecture.CurriculumSectionId);
         if (existingSection is null)
             return NotFound(new { Message = "Section wasn't Not Found", StatusCode = 404 });
+
+        _context.Entry(existingSection).Reference(i => i.Course).Load();
+
+        if (!await CheckIfRequestFromCreatorUser(existingSection.Course.InstructorId))
+            return BadRequest(new ApiResponse(401));
+
 
         if (!string.IsNullOrEmpty(storedLecture?.VideoUrl))
             DocumentSetting.DeleteFile(storedLecture.VideoUrl);
@@ -93,9 +129,16 @@ public class LecturesController(
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteSection(int id)
     {
-        var lecture = await _unitOfWork.Repository<Lecture>().GetByIdAsync(id);
+        var lecture = await _itemService.ReadByIdAsync(id,CurriculumItemType.Lecture);
         if (lecture == null)
             return NotFound(new ApiResponse(404));
+
+        _context.Entry(lecture).Reference(i => i.CurriculumSection).Load();
+        _context.Entry(lecture.CurriculumSection).Reference(i => i.Course).Load();
+
+
+        if (!await CheckIfRequestFromCreatorUser(lecture.CurriculumSection.Course.InstructorId))
+            return BadRequest(new ApiResponse(401));
 
         var result = await _itemService.DeleteCurriculumItem(lecture);
 
@@ -123,5 +166,25 @@ public class LecturesController(
 
         return maxOrder + 1;
     }
+
+    private async Task<bool> CheckIfRequestFromCreatorUser(int instructorId)
+    {
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (userEmail is null) return false;
+
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        if (storedUser is null) return false;
+
+        Instructor? instructor = await _unitOfWork.Repository<Instructor>().FindAsync(S => S.AppUserId == storedUser.Id);
+        if (instructor is null)
+            return false;
+
+        if (instructor.Id != instructorId)
+            return false;
+
+        return true;
+    }
+
+   
 }
 

@@ -7,15 +7,13 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
 
     private async Task BeforeCreate(Course course, Instructor? instructor)
     {
-      
-
         course.UploadDate = DateTime.Now;
         course.LastUpdatedDate = DateTime.Now;
         course.InstructorId = instructor.Id;
         course.Instructor = instructor;
         course.Subject = await _subjectService.ReadByIdAsync(course.SubjectId) ?? new();
-        course.Tags = await MapSubjectsAsync(course.TagsIds ?? new());
-        course.Prerequisites = await MapSubjectsAsync(course.PrerequisitesIds ?? new());
+        course.Tags = await MapSubjectsAsync(course.TagsIds ?? []);
+        course.Prerequisites = await MapSubjectsAsync(course.PrerequisitesIds ?? []);
         //
         //
 
@@ -38,7 +36,7 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex.ToString(),ex);
             return null;
         }
     }
@@ -47,13 +45,11 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
     {
         try
         {
-            IEnumerable<Course>? courses = await _unitOfWork.Repository<Course>().GetAllAsync();
-
-            return courses;
+            return await _unitOfWork.Repository<Course>().GetAllAsync();
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex.ToString(),ex);
             return Enumerable.Empty<Course>();
         }
     }
@@ -67,12 +63,12 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex.ToString(),ex);
             return null;
         }
     }
 
-    public async Task<IEnumerable<Course>?> ReadCoursesForInstructor(CourseSpeceficationsParams courseSpeceficationsParams)
+    public async Task<IEnumerable<Course>?> ReadCoursesForInstructor(CourseSpecificationsParams courseSpeceficationsParams)
     {
         try
         {
@@ -80,25 +76,31 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex.ToString(),ex);
             return null;
         }
     }
 
-    public async Task<IEnumerable<Course>?> ReadCoursesWithSpecifications(CourseSpeceficationsParams courseSpeceficationsParams)
+    public async Task<IEnumerable<Course>?> ReadCoursesWithSpecifications(CourseSpecificationsParams courseSpeceficationsParams)
     {
+        var spec = new CoursesSpecifications(courseSpeceficationsParams);
+
         try
         {
-            return await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(new CoursesSpecifications(courseSpeceficationsParams));
+            var courses = await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(spec);
+
+            if (courses is null) return null;
+
+            return courses;
         }
         catch (Exception ex)
         {
-            Log.Error(ex.Message);
+            Log.Error(ex.ToString(),ex);
             return null;
         }
     }
 
-    public async Task<IEnumerable<Course>?> ReadCoursesForStudent(string studentId, CourseSpeceficationsParams courseSpeceficationsParams)
+    public async Task<IEnumerable<Course>?> ReadCoursesForStudent(string studentId, CourseSpecificationsParams courseSpeceficationsParams)
     {
         try
         {
@@ -151,7 +153,7 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex.ToString(),ex);
             return null;
         }
     }
@@ -174,14 +176,14 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
         catch (Exception ex)
         {
-            Log.Error(ex.ToString());
+            Log.Error(ex.ToString(),ex);
             return false;
         }
     }
 
     private async Task<List<Subject>> MapSubjectsAsync(List<int> subjectIds)
     {
-        if (!subjectIds.Any()) return [];
+        if (subjectIds.Count == 0) return [];
 
         List<Subject> subjects = [];
 
@@ -202,7 +204,7 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
             return (true, -1);
     }
 
-    public async Task<int> GetCountAsync(CourseSpeceficationsParams speceficationsParams)
+    public async Task<int> GetCountAsync(CourseSpecificationsParams speceficationsParams)
     {
         var countSpec = new CourseWithFilterationForCountSpecifications(speceficationsParams);
 
@@ -210,4 +212,7 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
 
         return count;
     }
+
+    public async Task<IReadOnlyList<Course>?> ReadByPredicateWithIncludes(Expression<Func<Course, bool>> criteriaExpression)
+        => await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(new CoursesSpecifications(criteriaExpression));
 }

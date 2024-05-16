@@ -2,17 +2,17 @@
 
 public class CoursesSpecifications : BaseSpecifications<Course>
 {
-    public CoursesSpecifications(CourseSpeceficationsParams speceficationsParams)
+    public CoursesSpecifications(CourseSpecificationsParams speceficationsParams)
         : base(e =>
            (
                  (string.IsNullOrEmpty(speceficationsParams.Language) || e.Language == speceficationsParams.Language) &&
-                 (!speceficationsParams.InstractorId.HasValue) || e.InstructorId == speceficationsParams.InstractorId) &&
-                 (!speceficationsParams.StudentId.HasValue) || e.EnrolledStudentsIds.Contains((int)speceficationsParams.StudentId) &&
-                 (speceficationsParams.SubjectId == null || e.SubjectId == speceficationsParams.SubjectId) &&
-                 (speceficationsParams.MinPrice == null || e.Price >= speceficationsParams.MinPrice) &&
-                 (speceficationsParams.MaxPrice == null || e.Price <= speceficationsParams.MaxPrice) &&
-                 (speceficationsParams.CourseLevel == null || e.Level == speceficationsParams.CourseLevel)
-           )
+                 (!speceficationsParams.InstructorId.HasValue || e.InstructorId == speceficationsParams.InstructorId) &&
+                 (!speceficationsParams.StudentId.HasValue || e.EnrolledStudentsIds.Contains((int)speceficationsParams.StudentId)) &&
+                 (!speceficationsParams.SubjectId.HasValue || e.SubjectId == speceficationsParams.SubjectId) &&
+                 (!speceficationsParams.MinPrice.HasValue || e.Price >= speceficationsParams.MinPrice) &&
+                 (!speceficationsParams.MinPrice.HasValue|| e.Price <= speceficationsParams.MaxPrice) &&
+                 (!speceficationsParams.CourseLevel.HasValue || e.Level == speceficationsParams.CourseLevel)
+           ))
     {
         AddIncludes();
 
@@ -77,6 +77,11 @@ public class CoursesSpecifications : BaseSpecifications<Course>
             AddOrderByDesc(p => p.Rating);
 
         ApplyPagination((speceficationsParams.PageIndex - 1) * speceficationsParams.PageSize, speceficationsParams.PageSize);
+    }
+
+    public CoursesSpecifications(Expression<Func<Course, bool>> criteriaExpression) : base(criteriaExpression)
+    {
+        AddIncludes();
     }
 
     public CoursesSpecifications(int id) : base(e => e.Id.Equals(id))

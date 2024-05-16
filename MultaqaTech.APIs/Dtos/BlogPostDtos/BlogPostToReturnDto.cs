@@ -16,7 +16,7 @@ public class BlogPostToReturnDto
     public int CategoryId { get; set; }
     public string Category { get; set; }
 
-    public string PublishingDate { get; set; }
+    public DateTime PublishingDate { get; set; }
 
     public int NumberOfViews { get; set; }
 

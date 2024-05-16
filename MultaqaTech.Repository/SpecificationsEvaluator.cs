@@ -9,7 +9,7 @@ internal static class SpecificationsEvaluator<TEntity> where TEntity : BaseEntit
         if(specs.Criteria is not null)
             query = query.Where(specs.Criteria);
 
-        if(specs.OrderBy is not null) 
+        if(specs.OrderBy is not null)
             query = query.OrderBy(specs.OrderBy);
         else if(specs.OrderByDesc is not null)
             query= query.OrderByDescending(specs.OrderByDesc);
@@ -17,8 +17,6 @@ internal static class SpecificationsEvaluator<TEntity> where TEntity : BaseEntit
         if (specs.IsPaginationEnabled)
             query = query.Skip(specs.Skip).Take(specs.Take);
 
-        query = specs.Includes.Aggregate(query, (currentQuery, includeExpression) => currentQuery.Include(includeExpression));
-
-        return query;
+        return specs.Includes.Aggregate(query, (currentQuery, includeExpression) => currentQuery.Include(includeExpression));
     }
 }

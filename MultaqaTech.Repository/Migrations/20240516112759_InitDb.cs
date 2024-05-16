@@ -71,6 +71,40 @@ namespace MultaqaTech.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EventCategories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventCategories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Basket = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Coupon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsCouponApplied = table.Column<bool>(type: "bit", nullable: false),
+                    PaymentType = table.Column<int>(type: "int", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TotalPriceBeforeDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PriceAfterDiscount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Subjects",
                 columns: table => new
                 {
@@ -208,8 +242,8 @@ namespace MultaqaTech.Repository.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    JobTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    JobTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -254,8 +288,7 @@ namespace MultaqaTech.Repository.Migrations
                     PostPictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BlogPostCategoryId = table.Column<int>(type: "int", nullable: false),
                     PublishingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NumberOfViews = table.Column<int>(type: "int", nullable: false),
-                    MediaUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    NumberOfViews = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -264,6 +297,33 @@ namespace MultaqaTech.Repository.Migrations
                         name: "FK_BlogPosts_BlogPostCategories_BlogPostCategoryId",
                         column: x => x.BlogPostCategoryId,
                         principalTable: "BlogPostCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Events",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EventPictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EventCategoryId = table.Column<int>(type: "int", nullable: false),
+                    From = table.Column<TimeSpan>(type: "time", nullable: false),
+                    To = table.Column<TimeSpan>(type: "time", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Events", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Events_EventCategories_EventCategoryId",
+                        column: x => x.EventCategoryId,
+                        principalTable: "EventCategories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -280,11 +340,10 @@ namespace MultaqaTech.Repository.Migrations
                     MeetingUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TimeZone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ZoomPictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ZoomPictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ZoomMeetingCategoryId = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Duration = table.Column<int>(type: "int", nullable: false),
-                    MediaUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Duration = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -303,7 +362,7 @@ namespace MultaqaTech.Repository.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    InstractorId = table.Column<int>(type: "int", nullable: false),
+                    InstructorId = table.Column<int>(type: "int", nullable: false),
                     SubjectId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Language = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -326,8 +385,8 @@ namespace MultaqaTech.Repository.Migrations
                 {
                     table.PrimaryKey("PK_Courses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Courses_Instructors_InstractorId",
-                        column: x => x.InstractorId,
+                        name: "FK_Courses_Instructors_InstructorId",
+                        column: x => x.InstructorId,
                         principalTable: "Instructors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -381,6 +440,28 @@ namespace MultaqaTech.Repository.Migrations
                         name: "FK_BlogPostSubject_Subjects_TagsId",
                         column: x => x.TagsId,
                         principalTable: "Subjects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventComments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CommentContent = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AuthorName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DatePosted = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EventId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventComments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EventComments_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -458,12 +539,15 @@ namespace MultaqaTech.Repository.Migrations
                 name: "StudentCourses",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     StudentId = table.Column<int>(type: "int", nullable: false),
-                    CourseId = table.Column<int>(type: "int", nullable: false)
+                    CourseId = table.Column<int>(type: "int", nullable: false),
+                    CompletionPercentage = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StudentCourses", x => new { x.StudentId, x.CourseId });
+                    table.PrimaryKey("PK_StudentCourses", x => x.Id);
                     table.ForeignKey(
                         name: "FK_StudentCourses_Courses_CourseId",
                         column: x => x.CourseId,
@@ -485,6 +569,7 @@ namespace MultaqaTech.Repository.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     VideoUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CurriculumItemType = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     Order = table.Column<int>(type: "int", nullable: false),
@@ -507,6 +592,7 @@ namespace MultaqaTech.Repository.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     QuizQuestionPictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CurriculumItemType = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
                     Order = table.Column<int>(type: "int", nullable: false),
@@ -549,7 +635,8 @@ namespace MultaqaTech.Repository.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Content = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Details = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
                     QuestionPictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PublishingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AskerId = table.Column<int>(type: "int", nullable: false),
@@ -582,6 +669,40 @@ namespace MultaqaTech.Repository.Migrations
                         column: x => x.QuizId,
                         principalTable: "Quizes",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StudentsProgress",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    StudentCourseId = table.Column<int>(type: "int", nullable: false),
+                    LectureId = table.Column<int>(type: "int", nullable: false),
+                    QuizId = table.Column<int>(type: "int", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StudentsProgress", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StudentsProgress_Lectures_LectureId",
+                        column: x => x.LectureId,
+                        principalTable: "Lectures",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StudentsProgress_Quizes_QuizId",
+                        column: x => x.QuizId,
+                        principalTable: "Quizes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StudentsProgress_StudentCourses_StudentCourseId",
+                        column: x => x.StudentCourseId,
+                        principalTable: "StudentCourses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -693,9 +814,9 @@ namespace MultaqaTech.Repository.Migrations
                 column: "PrerequisitesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Courses_InstractorId",
+                name: "IX_Courses_InstructorId",
                 table: "Courses",
-                column: "InstractorId");
+                column: "InstructorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Courses_SubjectId",
@@ -717,6 +838,16 @@ namespace MultaqaTech.Repository.Migrations
                 name: "IX_CurriculumSections_CourseId",
                 table: "CurriculumSections",
                 column: "CourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventComments_EventId",
+                table: "EventComments",
+                column: "EventId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Events_EventCategoryId",
+                table: "Events",
+                column: "EventCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Instructors_AppUserId",
@@ -776,10 +907,30 @@ namespace MultaqaTech.Repository.Migrations
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_StudentCourses_StudentId",
+                table: "StudentCourses",
+                column: "StudentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Students_AppUserId",
                 table: "Students",
                 column: "AppUserId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StudentsProgress_LectureId",
+                table: "StudentsProgress",
+                column: "LectureId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StudentsProgress_QuizId",
+                table: "StudentsProgress",
+                column: "QuizId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StudentsProgress_StudentCourseId",
+                table: "StudentsProgress",
+                column: "StudentCourseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Subjects_Name",
@@ -827,13 +978,19 @@ namespace MultaqaTech.Repository.Migrations
                 name: "CourseTags");
 
             migrationBuilder.DropTable(
+                name: "EventComments");
+
+            migrationBuilder.DropTable(
                 name: "Notes");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "QuizQuestionChoices");
 
             migrationBuilder.DropTable(
-                name: "StudentCourses");
+                name: "StudentsProgress");
 
             migrationBuilder.DropTable(
                 name: "ZoomMeetings");
@@ -848,10 +1005,13 @@ namespace MultaqaTech.Repository.Migrations
                 name: "BlogPosts");
 
             migrationBuilder.DropTable(
+                name: "Events");
+
+            migrationBuilder.DropTable(
                 name: "QuizQuestions");
 
             migrationBuilder.DropTable(
-                name: "Students");
+                name: "StudentCourses");
 
             migrationBuilder.DropTable(
                 name: "ZoomMeetingCategories");
@@ -863,7 +1023,13 @@ namespace MultaqaTech.Repository.Migrations
                 name: "BlogPostCategories");
 
             migrationBuilder.DropTable(
+                name: "EventCategories");
+
+            migrationBuilder.DropTable(
                 name: "Quizes");
+
+            migrationBuilder.DropTable(
+                name: "Students");
 
             migrationBuilder.DropTable(
                 name: "CurriculumSections");

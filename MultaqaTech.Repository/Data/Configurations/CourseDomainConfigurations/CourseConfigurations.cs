@@ -29,21 +29,22 @@ internal class CourseConfigurations : IEntityTypeConfiguration<Course>
         builder.HasMany(bp => bp.CurriculumSections)
                .WithOne(c => c.Course)
                .HasForeignKey(c => c.CourseId)
-        .OnDelete(DeleteBehavior.Cascade);
+               .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(c => c.Tags)
-         .WithMany(s => s.AssociatedCoursesTags)
-         .UsingEntity(j => j.ToTable("CourseTags"));
+               .WithMany(s => s.AssociatedCoursesTags)
+               .UsingEntity(j => j.ToTable("CourseTags"));
 
         builder.HasMany(c => c.Prerequisites)
-          .WithMany()
-          .UsingEntity(j => j.ToTable("CoursePrerequisites"));
+               .WithMany()
+               .UsingEntity(j => j.ToTable("CoursePrerequisites"));
 
         builder.Property(e => e.Reviews)
                .HasConversion(v => JsonSerializer
                .Serialize(v, (JsonSerializerOptions?)null), v => JsonSerializer
                .Deserialize<List<CourseReview>>(v, (JsonSerializerOptions?)null));
 
-        builder.Property(e => e.Price).HasColumnType("decimal(18,2)");
+        builder.Property(e => e.Price)
+               .HasColumnType("decimal(18,2)");
     }
 }

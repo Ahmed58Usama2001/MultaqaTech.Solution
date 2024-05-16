@@ -7,6 +7,6 @@ public class BlogPostCommentToReturnDto
 
     public string? AuthorName { get; set; }
     public string BlogPost { get; set; } = string.Empty;
-    public string DatePosted { get; set; } = string.Empty;
+    public DateTime DatePosted { get; set; } 
     public string CommentContent { get; set; } = string.Empty;
 }

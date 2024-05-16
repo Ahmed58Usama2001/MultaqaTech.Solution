@@ -6,13 +6,15 @@ public class CurriculumSectionsController(
     UserManager<AppUser> userManager,
     ICurriculumSectionService curriculumSectionService,
     ICourseService courseService,
-    IUnitOfWork unitOfWork) : BaseApiController
+    IUnitOfWork unitOfWork,
+    MultaqaTechContext context) : BaseApiController
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICurriculumSectionService _curriculumSectionService = curriculumSectionService;
     private readonly ICourseService _courseService = courseService;
     private readonly UserManager<AppUser> _userManager = userManager;
+    private readonly MultaqaTechContext _context = context;
 
     [ProducesResponseType(typeof(CurriculumSectionReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -25,6 +27,9 @@ public class CurriculumSectionsController(
         Course? existingCourse = await _courseService.ReadByIdAsync(curriculumSectionDto.CourseId);
         if (existingCourse is null)
             return NotFound(new { Message = "Course wasn't Not Found", StatusCode = 404 });
+
+        if (!await CheckIfRequestFromCreatorUser(existingCourse.InstructorId))
+            return BadRequest(new ApiResponse(401));
 
         var mappedSection = _mapper.Map<CurriculumSectionCreateDto, CurriculumSection>(curriculumSectionDto);
         mappedSection.Course=existingCourse;
@@ -92,9 +97,13 @@ public class CurriculumSectionsController(
     public async Task<ActionResult<CurriculumSectionReturnDto>> UpdateSection(int id, CurriculumSectionUpdateDto updatedSectionDto)
     {
         CurriculumSection? storedSection = await _curriculumSectionService.ReadByIdAsync(id);
-
         if (storedSection == null)
             return NotFound(new ApiResponse(404));
+
+        _context.Entry(storedSection).Reference(i => i.Course).Load();
+
+        if (!await CheckIfRequestFromCreatorUser(storedSection.Course.InstructorId))
+            return BadRequest(new ApiResponse(401));
 
         CurriculumSection newSection = _mapper.Map<CurriculumSectionUpdateDto, CurriculumSection>(updatedSectionDto);
         newSection.Id = storedSection.Id;
@@ -112,9 +121,15 @@ public class CurriculumSectionsController(
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteSection(int id)
     {
-        var section = await _unitOfWork.Repository<CurriculumSection>().GetByIdAsync(id);
+
+        var section = await _curriculumSectionService.ReadByIdAsync(id);
         if (section == null)
             return NotFound(new ApiResponse(404));
+
+        _context.Entry(section).Reference(i => i.Course).Load();
+
+        if (!await CheckIfRequestFromCreatorUser(section.Course.InstructorId))
+            return BadRequest(new ApiResponse(401));
 
         var result = await _curriculumSectionService.DeleteCurriculumSection(section);
 
@@ -136,5 +151,23 @@ public class CurriculumSectionsController(
         int maxOrder = existingSections.Any() ? existingSections.Max(s => s.Order) : 0;
 
         return maxOrder + 1; 
+    }
+
+    private async Task<bool> CheckIfRequestFromCreatorUser(int instructorId)
+    {
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (userEmail is null) return false;
+
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        if (storedUser is null) return false;
+
+        Instructor? instructor = await _unitOfWork.Repository<Instructor>().FindAsync(S => S.AppUserId == storedUser.Id);
+        if (instructor is null)
+            return false;
+
+        if (instructor.Id != instructorId)
+            return false;
+
+        return true;
     }
 }

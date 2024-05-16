@@ -5,11 +5,19 @@ public class NoteSpeceficationsParams
     public int? lectureId { get; set; }
     public int? writerStudentId { get; set; }
 
+    private string? search;
+
+    public string? Search
+    {
+        get { return search; }
+        set { search = value?.ToLower(); }
+    }
+
     public string? sort { get; set; }
 
 
-    private const int maxPageSize = 10;
-    private int pageSize = 5;
+    private const int maxPageSize = 5;
+    private int pageSize = 3;
 
     public int PageSize
     {

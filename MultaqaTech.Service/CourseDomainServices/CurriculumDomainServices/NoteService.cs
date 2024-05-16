@@ -1,4 +1,5 @@
-﻿namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
+﻿
+namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
 
 public class NoteService(IUnitOfWork unitOfWork) : INoteService
 {
@@ -44,6 +45,15 @@ public class NoteService(IUnitOfWork unitOfWork) : INoteService
             Log.Error(ex.ToString());
             return false;
         }
+    }
+
+    public async Task<int> GetCountAsync(NoteSpeceficationsParams speceficationsParams)
+    {
+        var countSpec = new NoteWithFilterationForCountSpecifications(speceficationsParams);
+
+        var count = await _unitOfWork.Repository<Note>().GetCountAsync(countSpec);
+
+        return count;
     }
 
     public async Task<Note?> ReadByIdAsync(int noteId)
