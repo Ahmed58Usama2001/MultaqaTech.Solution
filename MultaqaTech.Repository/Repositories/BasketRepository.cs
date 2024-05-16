@@ -40,9 +40,8 @@ public class BasketRepository(IConnectionMultiplexer redis, IUnitOfWork unitOfWo
 
     public async Task<StudentBasket?> AddCourseToBasket(string email, int courseId)
     {
-        StudentBasket? basketFromDb = await GetBasket(email);
+        StudentBasket? basketFromDb = await GetBasket(email) ?? new();
 
-        if (basketFromDb == null) return null;
         var basketItemFromDb = basketFromDb.BasketItems?.Find(e => e.CourseId == courseId);
         if (basketItemFromDb is not null)
             throw new Exception("Course with same id alreadt exists in your basket");
