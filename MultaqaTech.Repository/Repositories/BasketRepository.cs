@@ -27,9 +27,8 @@ public class BasketRepository(IConnectionMultiplexer redis, IUnitOfWork unitOfWo
         StudentBasket? basketFromDb = await GetBasket(email);
 
         if (basketFromDb == null || basketFromDb.BasketItems is null || basketFromDb.BasketItems.Count == 0) return null;
-        BasketItem? basketItemToBeRemoved = basketFromDb.BasketItems.Find(e => e.CourseId == courseId);
-
-        if (basketItemToBeRemoved is null) return null;
+        BasketItem? basketItemToBeRemoved = basketFromDb.BasketItems.Find(e => e.CourseId == courseId)
+             ?? throw new Exception("Baket Containin No Course with Provided Id!!");
 
         basketFromDb.BasketItems.Remove(basketItemToBeRemoved);
 
@@ -40,15 +39,23 @@ public class BasketRepository(IConnectionMultiplexer redis, IUnitOfWork unitOfWo
 
     public async Task<StudentBasket?> AddCourseToBasket(string email, int courseId)
     {
-        StudentBasket? basketFromDb = await GetBasket(email) ?? new();
+        StudentBasket? basketFromDb = await GetBasket(email);
 
-        var basketItemFromDb = basketFromDb.BasketItems?.Find(e => e.CourseId == courseId);
-        if (basketItemFromDb is not null)
-            throw new Exception("Course with same id alreadt exists in your basket");
+        if (basketFromDb is null || basketFromDb.BasketItems is null)
+        {
+            basketFromDb = new()
+            {
+                BasketItems = []
+            };
+        }
+
+        var basketItemFromDb = basketFromDb.BasketItems.Find(e => e.CourseId == courseId);
+
+        if (basketItemFromDb is not null) throw new Exception("Course with same id already exists in your basket");
 
         var basketItem = await PrepareBasketItems(courseId);
 
-        basketFromDb.BasketItems?.AddRange(basketItem);
+        basketFromDb.BasketItems.AddRange(basketItem);
 
         await SaveBasketToDb(email, basketFromDb);
 
@@ -68,7 +75,7 @@ public class BasketRepository(IConnectionMultiplexer redis, IUnitOfWork unitOfWo
 
         foreach (var courseId in coursesIds)
         {
-            Course? course = await coursesRepo.GetByIdAsync(courseId) ?? throw new Exception("There is no course associated With provided course!");
+            Course? course = await coursesRepo.GetByIdAsync(courseId) ?? throw new Exception("There is no course associated With provided courseId!");
 
             basketItems.Add(new()
             {

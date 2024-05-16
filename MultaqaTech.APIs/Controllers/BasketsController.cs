@@ -28,6 +28,7 @@ public class BasketsController(IBasketRepository basketRepository, IMapper mappe
     }
 
     [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPost("UpdateBasketWithBasketItem")]
     public async Task<ActionResult<StudentBasket>> UpdateStudentBasketWithBasketItem(int courseId)
@@ -44,22 +45,8 @@ public class BasketsController(IBasketRepository basketRepository, IMapper mappe
         }
         catch (Exception ex)
         {
-            return BadRequest(new ApiResponse(400, ex.Message));
+            return BadRequest(new ApiResponse(404, ex.Message));
         }
-    }
-
-    [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-    [HttpPost("RemoveItemFromBasket")]
-    public async Task<ActionResult<StudentBasket>> RemoveCourseFromBasket(int courseId)
-    {
-        string? email = User.FindFirstValue(ClaimTypes.Email);
-        if (string.IsNullOrEmpty(email)) return BadRequest(new ApiResponse(401));
-
-        StudentBasket? basket = await _basketRepository.RemoveCourseFromBasket(email, courseId);
-        ManageBasketItemMediaUrl(basket);
-
-        return basket == null ? BadRequest(new ApiResponse(400)) : Ok(basket);
     }
 
     [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
@@ -85,6 +72,27 @@ public class BasketsController(IBasketRepository basketRepository, IMapper mappe
         bool isSuccess = await _basketRepository.DeleteBasket(email);
 
         return isSuccess ? NoContent() : NotFound(new ApiResponse(404));
+    }
+
+    [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [HttpDelete("RemoveItemFromBasket")]
+    public async Task<ActionResult<StudentBasket>> RemoveCourseFromBasket(int courseId)
+    {
+        try
+        {
+            string? email = User.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrEmpty(email)) return BadRequest(new ApiResponse(401));
+
+            StudentBasket? basket = await _basketRepository.RemoveCourseFromBasket(email, courseId);
+            ManageBasketItemMediaUrl(basket);
+
+            return basket == null ? BadRequest(new ApiResponse(400)) : Ok(basket);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(new ApiResponse(404, ex.Message));
+        }
     }
 
     private void ManageBasketItemMediaUrl(StudentBasket? basket)
