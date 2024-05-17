@@ -68,6 +68,9 @@ public class AccountController : BaseApiController
         };
         await _unitOfWork.Repository<Student>().AddAsync(student);
 
+        var studentResult = await _unitOfWork.CompleteAsync();
+        if (studentResult <= 0) return BadRequest(false);
+
         user.Student = student;
         user.StudentId = student.Id;
 
