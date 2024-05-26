@@ -308,14 +308,17 @@ namespace MultaqaTech.Repository.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AboutTheEvent = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateFrom = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateTo = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EventPictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EventCategoryId = table.Column<int>(type: "int", nullable: false),
-                    From = table.Column<TimeSpan>(type: "time", nullable: false),
-                    To = table.Column<TimeSpan>(type: "time", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    TimeFrom = table.Column<TimeSpan>(type: "time", nullable: false),
+                    TimeTo = table.Column<TimeSpan>(type: "time", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Website = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -464,6 +467,27 @@ namespace MultaqaTech.Repository.Migrations
                         principalTable: "Events",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventSpeakers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    JobTitle = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    SpeakerPictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EventId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventSpeakers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EventSpeakers_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -850,6 +874,11 @@ namespace MultaqaTech.Repository.Migrations
                 column: "EventCategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EventSpeakers_EventId",
+                table: "EventSpeakers",
+                column: "EventId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Instructors_AppUserId",
                 table: "Instructors",
                 column: "AppUserId",
@@ -979,6 +1008,9 @@ namespace MultaqaTech.Repository.Migrations
 
             migrationBuilder.DropTable(
                 name: "EventComments");
+
+            migrationBuilder.DropTable(
+                name: "EventSpeakers");
 
             migrationBuilder.DropTable(
                 name: "Notes");
