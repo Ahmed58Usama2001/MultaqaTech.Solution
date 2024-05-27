@@ -45,6 +45,8 @@ public class LecturesController(
         int suitableOrder = await GetSuitableOrderForNewItem(existingSection.Id);
         mappedItem.Order = suitableOrder;
 
+        mappedItem.CurriculumItemType = CurriculumItemType.Lecture;
+
         var createdLecture = await _itemService.CreateCurriculumItemAsync(mappedItem);
 
         if (createdLecture is null) return BadRequest(new ApiResponse(400));
@@ -63,7 +65,6 @@ public class LecturesController(
 
         _context.Entry(lecture).Reference(i => i.CurriculumSection).Load();
         _context.Entry(lecture.CurriculumSection).Reference(i => i.Course).Load();
-        _context.Entry(lecture.CurriculumSection.Course).Reference(i => i.EnrolledStudentsIds).Load();
 
         string? userEmail = User.FindFirstValue(ClaimTypes.Email);
         AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
