@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using MultaqaTech.Core.Entities.CourseDomainEntities;
-using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
-using MultaqaTech.Core.Entities.Identity.Facebook;
+﻿using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
 
 namespace MultaqaTech.APIs.Controllers.CourseDomainControllers.CurriculumDomainControllers;
 
@@ -65,7 +62,6 @@ public class QuizesController(
 
         _context.Entry(quiz).Reference(i => i.CurriculumSection).Load();
         _context.Entry(quiz.CurriculumSection).Reference(i => i.Course).Load();
-        _context.Entry(quiz.CurriculumSection.Course).Reference(i => i.EnrolledStudentsIds).Load();
 
         string? userEmail = User.FindFirstValue(ClaimTypes.Email);
         AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
@@ -73,7 +69,7 @@ public class QuizesController(
         if (student is null)
             return BadRequest(new ApiResponse(401));
 
-        if (!quiz.CurriculumSection.Course.EnrolledStudentsIds.Contains(student.Id))
+        if (!await CheckIfRequestFromCreatorUser(quiz.CurriculumSection.Course.InstructorId) && !quiz.CurriculumSection.Course.EnrolledStudentsIds.Contains(student.Id))
             return BadRequest(new ApiResponse(401));
 
 

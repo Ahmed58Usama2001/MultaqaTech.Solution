@@ -72,16 +72,18 @@ public class LecturesController(
         if (student is null)
             return BadRequest(new ApiResponse(401));
 
-        if (!lecture.CurriculumSection.Course.EnrolledStudentsIds.Contains(student.Id))
+        if (!await CheckIfRequestFromCreatorUser(lecture.CurriculumSection.Course.InstructorId)&&!lecture.CurriculumSection.Course.EnrolledStudentsIds.Contains(student.Id))
             return BadRequest(new ApiResponse(401));
 
-        StudentCourse studentCourse = await _unitOfWork.Repository<StudentCourse>().FindAsync(SC => SC.StudentId == student.Id &&
-        SC.CourseId == lecture.CurriculumSection.CourseId);
+        if (!await CheckIfRequestFromCreatorUser(lecture.CurriculumSection.Course.InstructorId))
+        {
+            StudentCourse studentCourse = await _unitOfWork.Repository<StudentCourse>().FindAsync(SC => SC.StudentId == student.Id &&
+              SC.CourseId == lecture.CurriculumSection.CourseId);
 
-        var updated = await _itemService.UpdateCurriculumItemCompletionStateInStudentProgress(id, studentCourse.Id, CurriculumItemType.Lecture);
-        if (!updated)
-            return BadRequest(new ApiResponse(400));
-
+            var updated = await _itemService.UpdateCurriculumItemCompletionStateInStudentProgress(id, studentCourse.Id, CurriculumItemType.Lecture);
+            if (!updated)
+                return BadRequest(new ApiResponse(400));
+        }
 
         return Ok(_mapper.Map<LectureReturnDto>(lecture));
     }
