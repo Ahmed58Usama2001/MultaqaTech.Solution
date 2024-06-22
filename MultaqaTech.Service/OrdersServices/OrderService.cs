@@ -1,5 +1,4 @@
-﻿
-namespace MultaqaTech.OrderService;
+﻿namespace MultaqaTech.Service.OrderService;
 
 public class OrderService(IUnitOfWork unitOfWork, ICourseService courseService, MultaqaTechContext context) : IOrderService
 {
@@ -32,8 +31,6 @@ public class OrderService(IUnitOfWork unitOfWork, ICourseService courseService, 
         await ManageStudentCourses(order);
 
         await ManageCoursesCachedStudentsIds(order);
-
-       
     }
 
     private async Task ManageCoursesCachedStudentsIds(Order order)
@@ -92,9 +89,9 @@ public class OrderService(IUnitOfWork unitOfWork, ICourseService courseService, 
     private async Task CreateStudentCourses(List<StudentCourse> studentCourses)
          => await _unitOfWork.Repository<StudentCourse>().BulkAddAsync(studentCourses);
 
-    private async Task<List<StudentCourseProgress>>? PrepareStudentsProgress(StudentCourse studentCourse)
+    private async Task<List<StudentCourseProgress>?> PrepareStudentsProgress(StudentCourse studentCourse)
     {
-        if (studentCourse is null || studentCourse.CourseId ==0 || studentCourse.StudentId == 0)
+        if (studentCourse is null || studentCourse.CourseId == 0 || studentCourse.StudentId == 0)
             return null;
 
         var course = await _context.Courses
@@ -107,13 +104,13 @@ public class OrderService(IUnitOfWork unitOfWork, ICourseService courseService, 
 
         if (course == null)
             return null;
-        
+
 
         var curriculumItems = new List<CurriculumItem>();
         foreach (var section in course.CurriculumSections)
         {
             curriculumItems.AddRange(section.Lectures);
-            curriculumItems.AddRange(section.Quizes);       
+            curriculumItems.AddRange(section.Quizes);
         }
 
         var studentProgresses = new List<StudentCourseProgress>();
@@ -122,7 +119,7 @@ public class OrderService(IUnitOfWork unitOfWork, ICourseService courseService, 
             studentProgresses.Add(new StudentCourseProgress
             {
                 StudentCourseId = studentCourse.Id,
-                LectureId = curriculumItem.CurriculumItemType.Equals(CurriculumItemType.Lecture) ? curriculumItem.Id:0,
+                LectureId = curriculumItem.CurriculumItemType.Equals(CurriculumItemType.Lecture) ? curriculumItem.Id : 0,
                 QuizId = curriculumItem.CurriculumItemType.Equals(CurriculumItemType.Quiz) ? curriculumItem.Id : 0,
                 IsCompleted = false,
             });
@@ -133,5 +130,4 @@ public class OrderService(IUnitOfWork unitOfWork, ICourseService courseService, 
 
     private async Task CreateStudentProgressesInCourse(List<StudentCourseProgress> studentProgresses)
      => await _unitOfWork.Repository<StudentCourseProgress>().BulkAddAsync(studentProgresses);
-
 }
