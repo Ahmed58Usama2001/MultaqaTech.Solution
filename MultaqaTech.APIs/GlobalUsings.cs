@@ -11,6 +11,7 @@ global using MultaqaTech.Core.Entities.Enums;
 global using MultaqaTech.APIs.Dtos.EventDtos;
 global using MultaqaTech.APIs.Dtos.OrderDtos;
 global using MultaqaTech.Core.Specifications;
+global using MultaqaTech.Service.OrderService;
 global using MultaqaTech.APIs.Dtos.AccountDtos;
 global using MultaqaTech.Core.Services.Contract;
 global using MultaqaTech.Core.Entities.Identity;

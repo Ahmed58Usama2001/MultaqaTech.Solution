@@ -1,6 +1,4 @@
-﻿
-
-namespace MultaqaTech.APIs.Extensions;
+﻿namespace MultaqaTech.APIs.Extensions;
 
 public static class ApplicationServicesExtension
 {
@@ -55,6 +53,7 @@ public static class ApplicationServicesExtension
         services.AddScoped<ICurriculumItemService , CurriculumItemService>();
         services.AddScoped<ICurriculumSectionService , CurriculumSectionService>();
         services.AddScoped<IBasketRepository, BasketRepository>();
+        services.AddScoped<IOrderService, OrderService>();
 
         return services;
     }
