@@ -6,6 +6,8 @@
             base(p =>
               (!speceficationsParams.categoryId.HasValue || p.EventCategoryId == speceficationsParams.categoryId.Value)
             &&
+            (!speceficationsParams.countryId.HasValue || p.EventCountryId == speceficationsParams.countryId.Value)
+            &&
             (string.IsNullOrEmpty(speceficationsParams.Search)
               || p.Title.ToLower().Contains(speceficationsParams.Search)
             ))
@@ -47,6 +49,7 @@
         private void AddIncludes()
         {
             Includes.Add(p => p.Category);
+            Includes.Add(p => p.Country);
             Includes.Add(p => p.Comments);
             Includes.Add(p => p.Speakers);
 

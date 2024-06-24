@@ -35,6 +35,7 @@ public static class ApplicationServicesExtension
         services.AddScoped<IBlogPostCommentService, BlogPostCommentService>();
 
         services.AddScoped<IEventCategoryService, EventCategoryService>();
+        services.AddScoped<IEventCountryService, EventCountryService>();
         services.AddScoped<IEventCommentService, EventCommentService>();
         services.AddScoped<IEventSpeakerService, EventSpeakerService>();
         services.AddScoped<IEventService, EventService>();

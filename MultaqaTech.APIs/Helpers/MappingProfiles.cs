@@ -88,6 +88,8 @@ public class MappingProfiles : Profile
         #region Event
         CreateMap<EventCategoryCreateDto, EventCategory>();
 
+        CreateMap<EventCountryCreateDto, EventCountry>();
+
         CreateMap<EventSpeakerCreateDto, EventSpeaker>()
             .ForMember(dest => dest.SpeakerPictureUrl, opt => opt.Ignore());
 

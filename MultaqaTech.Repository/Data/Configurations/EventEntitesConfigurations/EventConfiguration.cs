@@ -49,6 +49,12 @@ namespace MultaqaTech.Repository.Data.Configurations.EventEntitesConfigurations
                      .IsRequired()
                      .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasOne(bp => bp.Country)
+                     .WithMany(c => c.Events)
+                     .HasForeignKey(bp => bp.EventCountryId)
+                     .IsRequired()
+                     .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasMany(bp => bp.Comments)
                .WithOne(c => c.Event)
                .HasForeignKey(c => c.EventId)

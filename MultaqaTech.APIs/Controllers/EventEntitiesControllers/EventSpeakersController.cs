@@ -1,6 +1,7 @@
 ﻿
 namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
 {
+    [Authorize]
     public class EventSpeakersController(IEventService eventService, IEventSpeakerService eventSpeakerService , IMapper mapper ,
         IUnitOfWork unitOfWork) : BaseApiController
     {
@@ -45,7 +46,7 @@ namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
             if (eventSpeakers == null)
                 return NotFound(new { Message = "Not Found", StatusCode = 404 });
 
-            return Ok(eventSpeakers);
+            return Ok(_mapper.Map<EventSpeakerToReturnDto>(eventSpeakers));
         }
 
 

@@ -4,6 +4,7 @@
     {
         public string? sort { get; set; }
         public int? categoryId { get; set; }
+        public int? countryId { get; set; }
         private string? search;
 
         public string? Search

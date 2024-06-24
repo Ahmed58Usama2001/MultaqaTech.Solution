@@ -4,12 +4,12 @@ using MultaqaTech.Core.Specifications.EventEntitiesSpecs.EventSpecs;
 namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
 {  
     public class EventController(IEventService eventService , IMapper mapper , IEventCategoryService eventCategoryService ,
-      IEventSpeakerService eventSpeakerService , IUnitOfWork unitOfWork  ) : BaseApiController
+     IEventCountryService eventCountryService  , IEventSpeakerService eventSpeakerService , IUnitOfWork unitOfWork  ) : BaseApiController
     {
         private readonly IEventService _eventService = eventService;
         private readonly IMapper _mapper = mapper;
         private readonly IEventCategoryService _eventCategoryService = eventCategoryService;
-        private readonly IEventSpeakerService _eventSpeakerService = eventSpeakerService;
+        private readonly IEventCountryService _eventCountryService = eventCountryService;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         [ProducesResponseType(typeof(EventToReturnDto), StatusCodes.Status200OK)]
@@ -24,6 +24,10 @@ namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
             if (existingCategory is null)
                 return NotFound(new { Message = "Category wasn't Not Found", StatusCode = 404 });
 
+            var existingCountry = await _eventCountryService.ReadByIdAsync(eventDto.CountryId);
+            if (existingCountry is null)
+                return NotFound(new { Message = "Country wasn't Not Found", StatusCode = 404 });
+
             var mappedEvent = new Event
             {
                 Title = eventDto.Title,
@@ -35,10 +39,12 @@ namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
                 EventPictureUrl = DocumentSetting.UploadFile(eventDto?.PictureUrl, "Events\\EventsImages"),
                 DateFrom= eventDto.DateFrom,
                 DateTo= eventDto.DateTo,
-               // TimeFrom= eventDto.TimeFrom,
-               // TimeTo= eventDto.TimeTo,
+                TimeFrom= eventDto.TimeFrom,
+                TimeTo= eventDto.TimeTo,
                 EventCategoryId = eventDto.CategoryId,
                 Category=existingCategory,
+                EventCountryId = eventDto.CountryId,
+                Country =existingCountry,
 
             };
 
@@ -90,6 +96,10 @@ namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
             if (updatedCategory is null)
                 return NotFound(new { Message = "Category wasn't Not Found", StatusCode = 404 });
 
+            var updatedCountry = await _eventCountryService.ReadByIdAsync(updatedEventDto.CountryId);
+            if (updatedCountry is null)
+                return NotFound(new { Message = "Country wasn't Not Found", StatusCode = 404 });
+
             if (storedEvent == null)
                 return NotFound(new ApiResponse(404));
 
@@ -102,6 +112,9 @@ namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
             newEvent.Id = storedEvent.Id;
             newEvent.Category = updatedCategory;
             newEvent.EventCategoryId = updatedCategory.Id;
+            newEvent.Country = updatedCountry;
+            newEvent.EventCountryId = updatedCategory.Id;
+
 
             if (updatedEventDto.PictureUrl is not null)
                 newEvent.EventPictureUrl = DocumentSetting.UploadFile(updatedEventDto?.PictureUrl, "Events\\EventsImages");

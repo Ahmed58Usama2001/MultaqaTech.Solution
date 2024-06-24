@@ -86,6 +86,8 @@ namespace MultaqaTech.Service.EventEntitesServices
             storedEvent.EventPictureUrl = newEvent.EventPictureUrl;
             storedEvent.Category = newEvent.Category;
             storedEvent.EventCategoryId = newEvent.EventCategoryId;
+            storedEvent.Country = newEvent.Country;
+            storedEvent.EventCountryId = newEvent.EventCountryId;
 
             try
             {
