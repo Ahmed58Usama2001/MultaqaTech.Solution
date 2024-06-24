@@ -2,7 +2,8 @@
 using MultaqaTech.Core.Specifications.EventEntitiesSpecs.EventSpecs;
 
 namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
-{  
+{
+    [Authorize]
     public class EventController(IEventService eventService , IMapper mapper , IEventCategoryService eventCategoryService ,
      IEventCountryService eventCountryService  , IEventSpeakerService eventSpeakerService , IUnitOfWork unitOfWork  ) : BaseApiController
     {

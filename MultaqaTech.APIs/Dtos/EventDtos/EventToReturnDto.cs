@@ -19,7 +19,7 @@
         public string PhoneNumber { get; set; }
         public string Website { get; set; }
         public string Price { get; set; }
-        public List<EventSpeaker>? Speakers { get; set; } = new();
+        public List<EventSpeakerToReturnDto>? Speakers { get; set; } = new();
         public List<EventCommentToReturnDto>? Comments { get; set; } = new();
 
     }

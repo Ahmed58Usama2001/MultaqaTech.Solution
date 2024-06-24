@@ -94,6 +94,7 @@ public class MappingProfiles : Profile
             .ForMember(dest => dest.SpeakerPictureUrl, opt => opt.Ignore());
 
         CreateMap<EventSpeaker , EventSpeakerToReturnDto>()
+             .ForMember(dest => dest.Event, opt => opt.MapFrom(src => src.Event.Title))
              .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<GenericMediaUrlResolver<EventSpeaker, EventSpeakerToReturnDto>>());
 
         CreateMap<EventCreateDto , Event>()
@@ -101,10 +102,10 @@ public class MappingProfiles : Profile
 
         CreateMap<Event, EventToReturnDto>()
             .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
+            .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country.Name))
             .ForMember(dest => dest.DateFrom, opt => opt.MapFrom(src => src.DateFrom.ToString("dddd, MMMM dd, yyyy")))
-            .ForMember(dest => dest.DateTo, opt => opt.MapFrom(src => src.DateTo.ToString("dddd, MMMM dd, yyyy")));
-           // .ForMember(dest => dest.TimeFrom, opt => opt.MapFrom(src => src.DateTo.ToString("h:mm tt")))
-          //  .ForMember(dest => dest.TimeTo, opt => opt.MapFrom(src => src.DateTo.ToString("h:mm tt")));
+            .ForMember(dest => dest.DateTo, opt => opt.MapFrom(src => src.DateTo.ToString("dddd, MMMM dd, yyyy")))
+            .ForMember(dest => dest.PictureUrl, opt => opt.MapFrom<GenericMediaUrlResolver<Event, EventToReturnDto>>());
 
 
         CreateMap<EventComment, EventCommentToReturnDto>()
