@@ -1,6 +1,4 @@
 ﻿
-using MultaqaTech.Core.Specifications.EventEntitiesSpecs.EventSpecs;
-
 namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
 {
     [Authorize]

@@ -48,6 +48,7 @@ global using MultaqaTech.Core.Services.Contract.CourseDomainContracts;
 global using MultaqaTech.Core.Services.Contract.AccountModuleContracts;
 global using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.LectureDtos;
 global using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.SectionDtos;
+global using MultaqaTech.Core.Specifications.EventEntitiesSpecs.EventSpecs;
 global using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.QuizQuestionDtos;
 global using MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
 global using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.Q_ADtos.QuestionDtos;

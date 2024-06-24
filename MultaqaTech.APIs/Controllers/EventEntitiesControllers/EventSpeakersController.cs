@@ -1,7 +1,7 @@
 ﻿
 namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
 {
-  //  [Authorize]
+    [Authorize]
     public class EventSpeakersController(IEventService eventService, IEventSpeakerService eventSpeakerService , IMapper mapper ,
         IUnitOfWork unitOfWork) : BaseApiController
     {
@@ -55,7 +55,7 @@ namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
         [ProducesResponseType(typeof(EventSpeakerToReturnDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
-        public async Task<ActionResult<EventSpeaker>> GetEventSpeaker(int id)
+        public async Task<ActionResult<EventSpeakerToReturnDto>> GetEventSpeaker(int id)
         {
             var eventSpeaker = await _eventSpeakerService.ReadByIdAsync(id);
 
