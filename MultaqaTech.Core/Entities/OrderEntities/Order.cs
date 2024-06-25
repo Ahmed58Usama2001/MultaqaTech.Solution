@@ -3,8 +3,8 @@
 public class Order : BaseEntity
 {
     public StudentBasket? Basket { get; set; }
-    public int UserId { get; set; }
 
+    public string UserEmail { get; set; } = string.Empty;
     public OrderStatus Status { get; set; }
     public string? Coupon { get; set; }
 

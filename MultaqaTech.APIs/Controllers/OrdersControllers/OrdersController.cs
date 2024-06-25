@@ -13,8 +13,10 @@ public class OrdersController(IOrderService orderService, IMapper mapper) : Base
         if (string.IsNullOrEmpty(email))
             return BadRequest(new ApiResponse(401));
 
-        Order? createdOrder = await _orderService.CreateOrderAsync(_mapper.Map<Order>(orderDto));
+        var mappedOrder = _mapper.Map<Order>(orderDto);
+        mappedOrder.UserEmail = email;
+        Order? createdOrder = await _orderService.CreateOrderAsync(mappedOrder);
 
-        return createdOrder is null ? Ok(_mapper.Map<OrderToReturnDto>(createdOrder)) : BadRequest(new ApiResponse(400));
+        return createdOrder is not null ? Ok(_mapper.Map<OrderToReturnDto>(createdOrder)) : BadRequest(new ApiResponse(400));
     }
 }

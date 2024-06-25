@@ -1,15 +1,23 @@
-﻿namespace MultaqaTech.Repository.Repositories;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class BasketRepository(IConnectionMultiplexer redis, IUnitOfWork unitOfWork, ICourseService courseService) : IBasketRepository
+namespace MultaqaTech.Repository.Repositories;
+
+public class BasketRepository(IConnectionMultiplexer redis, IUnitOfWork unitOfWork, MultaqaTechContext multaqaTechContext, UserManager<AppUser> userManager) : IBasketRepository
 {
     private readonly IDatabase _context = redis.GetDatabase();
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
-    private readonly ICourseService _courseService = courseService;
+    private readonly MultaqaTechContext _multaqaTechContext = multaqaTechContext;
+    private readonly UserManager<AppUser> _userManager = userManager;
+
 
     public async Task<StudentBasket?> UpdateBasket(string email, params int[] coursesIds)
     {
         List<BasketItem>? basketItems = await PrepareBasketItems(coursesIds);
-        StudentBasket studentBasket = new() { BasketItems = basketItems };
+        StudentBasket studentBasket = new() 
+        {
+            BasketItems = basketItems,
+            StudentId = _userManager.FindByEmailAsync(email).Id,
+        };
 
         bool updateOrCreatedSuccessfully = await SaveBasketToDb(email, studentBasket);
         return updateOrCreatedSuccessfully ? studentBasket : null;
@@ -45,7 +53,8 @@ public class BasketRepository(IConnectionMultiplexer redis, IUnitOfWork unitOfWo
         {
             basketFromDb = new()
             {
-                BasketItems = []
+                BasketItems = [],
+                StudentId = (await _multaqaTechContext.Set<AppUser>().FirstOrDefaultAsync(e => e.Email == email)).StudentId ?? 0
             };
         }
 

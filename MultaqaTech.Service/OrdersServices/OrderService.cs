@@ -1,10 +1,11 @@
 ﻿namespace MultaqaTech.Service.OrderService;
 
-public class OrderService(IUnitOfWork unitOfWork, ICourseService courseService, MultaqaTechContext context) : IOrderService
+public class OrderService(IUnitOfWork unitOfWork, ICourseService courseService, MultaqaTechContext context, IBasketRepository basketRepository) : IOrderService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ICourseService _courseService = courseService;
     private readonly MultaqaTechContext _context = context;
+    private readonly IBasketRepository _basketRepository = basketRepository;
 
     private async Task BeforeCreate(Order order)
     {
@@ -15,15 +16,24 @@ public class OrderService(IUnitOfWork unitOfWork, ICourseService courseService, 
 
         await Task.CompletedTask;
     }
+
     public async Task<Order> CreateOrderAsync(Order order)
     {
-        await BeforeCreate(order);
-        await _unitOfWork.Repository<Order>().AddAsync(order);
-        await AfterCreate(order);
+        try
+        {
 
-        await _unitOfWork.CompleteAsync();
+            order.Basket = await _basketRepository.GetBasket(order.UserEmail);
+            await BeforeCreate(order);
+            await _unitOfWork.Repository<Order>().AddAsync(order);
+            await AfterCreate(order);
 
-        return order;
+            await _unitOfWork.CompleteAsync();
+
+            return order;
+        }
+        catch (Exception ex) {
+            return new();
+        }
     }
 
     private async Task AfterCreate(Order order)
@@ -104,7 +114,6 @@ public class OrderService(IUnitOfWork unitOfWork, ICourseService courseService, 
 
         if (course == null)
             return null;
-
 
         var curriculumItems = new List<CurriculumItem>();
         foreach (var section in course.CurriculumSections)
