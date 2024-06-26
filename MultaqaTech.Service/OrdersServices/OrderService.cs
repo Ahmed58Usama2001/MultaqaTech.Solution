@@ -19,21 +19,14 @@ public class OrderService(IUnitOfWork unitOfWork, ICourseService courseService, 
 
     public async Task<Order> CreateOrderAsync(Order order)
     {
-        try
-        {
+        order.Basket = await _basketRepository.GetBasket(order.UserEmail);
+        await BeforeCreate(order);
+        await _unitOfWork.Repository<Order>().AddAsync(order);
+        await AfterCreate(order);
 
-            order.Basket = await _basketRepository.GetBasket(order.UserEmail);
-            await BeforeCreate(order);
-            await _unitOfWork.Repository<Order>().AddAsync(order);
-            await AfterCreate(order);
+        await _unitOfWork.CompleteAsync();
 
-            await _unitOfWork.CompleteAsync();
-
-            return order;
-        }
-        catch (Exception ex) {
-            return new();
-        }
+        return order;
     }
 
     private async Task AfterCreate(Order order)
@@ -41,7 +34,12 @@ public class OrderService(IUnitOfWork unitOfWork, ICourseService courseService, 
         await ManageStudentCourses(order);
 
         await ManageCoursesCachedStudentsIds(order);
+
+        await DeleteBasket(order);
     }
+
+    private async Task DeleteBasket(Order order)
+         => await _basketRepository.DeleteBasket(order.UserEmail);
 
     private async Task ManageCoursesCachedStudentsIds(Order order)
     {

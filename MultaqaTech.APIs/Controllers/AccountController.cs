@@ -27,7 +27,6 @@ public class AccountController : BaseApiController
         _configuration = configuration;
     }
 
-
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDto model)
     {
