@@ -85,6 +85,13 @@ public class BlogPostCommentsController(IBlogPostService blogPostService, IMappe
         if (updatedComment == null)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
 
+        var authorEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (authorEmail is null) return BadRequest(new ApiResponse(404));
+
+        var user = await _userManager.FindByEmailAsync(authorEmail);
+        if (user is null || user.UserName != updatedComment?.AuthorName)
+            return BadRequest(new ApiResponse(401));
+
         updatedComment.CommentContent = updatedBlogPostCommentDto.CommentContent;
 
         var blogPostComment = await _blogPostCommentService.UpdateBlogPostComment(blogPostCommentId, updatedComment);
