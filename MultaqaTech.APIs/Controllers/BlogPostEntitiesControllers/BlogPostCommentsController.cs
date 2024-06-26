@@ -13,7 +13,7 @@ public class BlogPostCommentsController(IBlogPostService blogPostService, IMappe
     [ProducesResponseType(typeof(BlogPostCommentToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPost]
-    public async Task<ActionResult<BlogPostCommentToReturnDto>> CreateBlogPostAsync(BlogPostCommentCreateDto blogPostCommentDto)
+    public async Task<ActionResult<BlogPostCommentToReturnDto>> CreateBlogPostCommentAsync(BlogPostCommentCreateDto blogPostCommentDto)
     {
         if (blogPostCommentDto is null) return BadRequest(new ApiResponse(400));
 
@@ -36,7 +36,7 @@ public class BlogPostCommentsController(IBlogPostService blogPostService, IMappe
             DatePosted = DateTime.Now,
         };
 
-        var createdBlogPostComment = await blogPostCommentService.CreateBlogPostAsync(mappedblogPostComment);
+        var createdBlogPostComment = await blogPostCommentService.CreateBlogPostCommentAsync(mappedblogPostComment);
 
         if (createdBlogPostComment is null) return BadRequest(new ApiResponse(400));
 
@@ -84,6 +84,13 @@ public class BlogPostCommentsController(IBlogPostService blogPostService, IMappe
 
         if (updatedComment == null)
             return NotFound(new { Message = "Not Found", StatusCode = 404 });
+
+        var authorEmail = User.FindFirstValue(ClaimTypes.Email);
+        if (authorEmail is null) return BadRequest(new ApiResponse(404));
+
+        var user = await _userManager.FindByEmailAsync(authorEmail);
+        if (user is null || user.UserName != updatedComment?.AuthorName)
+            return BadRequest(new ApiResponse(401));
 
         updatedComment.CommentContent = updatedBlogPostCommentDto.CommentContent;
 
