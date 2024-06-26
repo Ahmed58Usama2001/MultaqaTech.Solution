@@ -4,7 +4,7 @@ public class BlogPostCommentService(IUnitOfWork unitOfWork) : IBlogPostCommentSe
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-    public async Task<BlogPostComment?> CreateBlogPostAsync(BlogPostComment blogPostComment)
+    public async Task<BlogPostComment?> CreateBlogPostCommentAsync(BlogPostComment blogPostComment)
     {
         try
         {

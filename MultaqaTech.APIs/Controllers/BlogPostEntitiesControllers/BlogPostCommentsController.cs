@@ -13,7 +13,7 @@ public class BlogPostCommentsController(IBlogPostService blogPostService, IMappe
     [ProducesResponseType(typeof(BlogPostCommentToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPost]
-    public async Task<ActionResult<BlogPostCommentToReturnDto>> CreateBlogPostAsync(BlogPostCommentCreateDto blogPostCommentDto)
+    public async Task<ActionResult<BlogPostCommentToReturnDto>> CreateBlogPostCommentAsync(BlogPostCommentCreateDto blogPostCommentDto)
     {
         if (blogPostCommentDto is null) return BadRequest(new ApiResponse(400));
 
@@ -36,7 +36,7 @@ public class BlogPostCommentsController(IBlogPostService blogPostService, IMappe
             DatePosted = DateTime.Now,
         };
 
-        var createdBlogPostComment = await blogPostCommentService.CreateBlogPostAsync(mappedblogPostComment);
+        var createdBlogPostComment = await blogPostCommentService.CreateBlogPostCommentAsync(mappedblogPostComment);
 
         if (createdBlogPostComment is null) return BadRequest(new ApiResponse(400));
 

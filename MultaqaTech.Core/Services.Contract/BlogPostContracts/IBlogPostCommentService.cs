@@ -2,7 +2,7 @@
 
 public interface IBlogPostCommentService
 {
-    Task<BlogPostComment?> CreateBlogPostAsync(BlogPostComment blogPostComment);
+    Task<BlogPostComment?> CreateBlogPostCommentAsync(BlogPostComment blogPostComment);
 
     Task<IReadOnlyList<BlogPostComment>> ReadAllBlogPostCommentsAsync(BlogPostCommentSpeceficationsParams speceficationsParams);
 
