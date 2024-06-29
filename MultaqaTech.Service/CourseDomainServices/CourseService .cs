@@ -68,18 +68,6 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
     }
 
-    public async Task<IEnumerable<Course>?> ReadCoursesForInstructor(CourseSpecificationsParams courseSpeceficationsParams)
-    {
-        try
-        {
-            return await ReadCoursesWithSpecifications(courseSpeceficationsParams);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex.ToString(),ex);
-            return null;
-        }
-    }
 
     public async Task<IEnumerable<Course>?> ReadCoursesWithSpecifications(CourseSpecificationsParams courseSpeceficationsParams)
     {
@@ -100,18 +88,6 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
         }
     }
 
-    public async Task<IEnumerable<Course>?> ReadCoursesForStudent(string studentId, CourseSpecificationsParams courseSpeceficationsParams)
-    {
-        try
-        {
-            return await ReadCoursesWithSpecifications(courseSpeceficationsParams);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex.ToString());
-            return null;
-        }
-    }
 
     //private async Task BeforeUpdate(Course course)
     //{

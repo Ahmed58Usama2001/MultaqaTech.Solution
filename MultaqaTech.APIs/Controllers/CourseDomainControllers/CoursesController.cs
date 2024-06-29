@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers;
+﻿using MultaqaTech.Core.Entities.CourseDomainEntities;
+
+namespace MultaqaTech.APIs.Controllers.CourseDomainControllers;
 
 [Authorize]
 public partial class CoursesController(ICourseService courseService, IMapper mapper, UserManager<AppUser> userManager,
@@ -84,8 +86,7 @@ public partial class CoursesController(ICourseService courseService, IMapper map
     {
         courseSpecificationsParams.InstructorId = instructorId;
 
-        IEnumerable<Course>? courses = await _courseService.ReadCoursesForInstructor(courseSpecificationsParams);
-
+        IEnumerable<Course>? courses = await _courseService.ReadCoursesWithSpecifications(courseSpecificationsParams);
         if (courses is null)
             return NotFound(new ApiResponse(404));
 
@@ -105,10 +106,11 @@ public partial class CoursesController(ICourseService courseService, IMapper map
     [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("GetCoursesForStudentByStudentId/{studentId}")]
-    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForStudentByStudentId(string studentId, [FromQuery] CourseSpecificationsParams courseSpecificationsParams)
+    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCoursesForStudentByStudentId(int studentId, [FromQuery] CourseSpecificationsParams courseSpecificationsParams)
     {
-        IEnumerable<Course>? courses = await _courseService.ReadCoursesForStudent(studentId, courseSpecificationsParams);
+        courseSpecificationsParams.StudentId = studentId;
 
+        IEnumerable<Course>? courses = await _courseService.ReadCoursesWithSpecifications(courseSpecificationsParams);
         if (courses is null)
             return NotFound(new ApiResponse(404));
 

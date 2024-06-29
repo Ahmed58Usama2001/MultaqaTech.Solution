@@ -12,9 +12,6 @@ public interface ICourseService : ICourseReviewService
 
     Task<IEnumerable<Course>?> ReadCoursesWithSpecifications(CourseSpecificationsParams courseSpeceficationsParams);
 
-    Task<IEnumerable<Course>?> ReadCoursesForStudent(string studentId, CourseSpecificationsParams courseSpeceficationsParams);
-
-    Task<IEnumerable<Course>?> ReadCoursesForInstructor(CourseSpecificationsParams courseSpeceficationsParams);
     Task<(bool isUnique, int courseIdWithSameTitle)> CheckTitleUniqueness(string title);
 
     Task<int> GetCountAsync(CourseSpecificationsParams speceficationsParams);
