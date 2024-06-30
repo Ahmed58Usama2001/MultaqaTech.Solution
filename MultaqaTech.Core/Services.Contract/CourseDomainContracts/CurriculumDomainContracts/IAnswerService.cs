@@ -8,9 +8,9 @@ public interface IAnswerService
 
     Task<Answer?> ReadByIdAsync(int answerId);
 
-    Task<Answer?> UpdateAnswer(int answerId, Answer updatedAnswer);
+    public Task<Answer?> UpdateAnswer(Answer storedAnswer, Answer newAnswer);
 
     Task<bool> DeleteAnswer(int answerId);
 
-    //Task<IReadOnlyList<CurriculumItem>> ReadCurriculumItemsByIds(List<int> curriculumItemIds);
+    Task<int> GetCountAsync(AnswerSpeceficationsParams speceficationsParams);
 }

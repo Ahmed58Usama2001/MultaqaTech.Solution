@@ -6,13 +6,15 @@ public class QuestionsController(
     UserManager<AppUser> userManager,
     IQuestionService questionService,
     ICurriculumItemService curriculumItemService,
-    IUnitOfWork unitOfWork) : BaseApiController
+    IUnitOfWork unitOfWork,
+    MultaqaTechContext context) : BaseApiController
 {
     private readonly IMapper _mapper = mapper;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IQuestionService _questionService = questionService;
     private readonly ICurriculumItemService _curriculumItemService = curriculumItemService;
     private readonly UserManager<AppUser> _userManager = userManager;
+    private readonly MultaqaTechContext _context = context;
 
     [ProducesResponseType(typeof(QuestionReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -28,8 +30,8 @@ public class QuestionsController(
         var mappedQuestion = _mapper.Map<QuestionCreateDto, Question>(questionDto);
         mappedQuestion.Lecture = (Lecture)existingLecture;
 
+        if(questionDto.QuestionPicture is not null)
         mappedQuestion.QuestionPictureUrl = DocumentSetting.UploadFile(questionDto?.QuestionPicture, $"Questions\\{existingLecture.Id}\\QuestionsImages");
-
 
         string? userEmail = User.FindFirstValue(ClaimTypes.Email);
         if (userEmail is null) return NotFound(new ApiResponse(401));
@@ -67,6 +69,13 @@ public class QuestionsController(
         var count = await _questionService.GetCountAsync(speceficationsParams);
 
         var data = _mapper.Map<IReadOnlyList<Question>, IReadOnlyList<QuestionReturnDto>>(questions);
+
+        foreach (var item in data)
+        {
+            Student? student = await _unitOfWork.Repository<Student>().FindAsync(S => S.Id == item.AskerId);
+            _context?.Entry(student).Reference(c => c.AppUser).Load();
+            item.AskerName=student?.AppUser.FirstName+" "+student.AppUser.LastName;
+        }
 
         return Ok(new Pagination<QuestionReturnDto>(speceficationsParams.PageIndex, speceficationsParams.PageSize, count, data));
     }

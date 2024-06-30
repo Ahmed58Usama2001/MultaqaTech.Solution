@@ -11,5 +11,8 @@ public class QuestionReturnDto
 
     public int LectureId { get; set; }
 
+    public int AskerId { get; set; }
+    public string AskerName { get; set; }
+
     public string? QuestionPictureUrl { get; set; }
 }

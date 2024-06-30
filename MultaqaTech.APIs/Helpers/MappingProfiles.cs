@@ -69,6 +69,9 @@ public class MappingProfiles : Profile
         CreateMap<Question, QuestionReturnDto>()
         .ForMember(dest => dest.QuestionPictureUrl, opt => opt.MapFrom<GenericMediaUrlResolver<Question, QuestionReturnDto>>());
 
+        CreateMap<AnswerCreateDto, Answer>();
+        CreateMap<AnswerUpdateDto, Answer>();
+        CreateMap<Answer, AnswerReturnDto>();
 
         CreateMap<NoteCreateDto, Note>();
         CreateMap<NoteUpdateDto, Note>();

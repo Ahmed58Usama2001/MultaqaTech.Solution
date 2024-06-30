@@ -1,7 +1,4 @@
-﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
-using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
-
-namespace MultaqaTech.APIs.Controllers.CurriculumItemDomainControllers.CurriculumDomainControllers;
+﻿namespace MultaqaTech.APIs.Controllers.CurriculumItemDomainControllers.CurriculumDomainControllers;
 
 [Authorize]
 public class NotesController(

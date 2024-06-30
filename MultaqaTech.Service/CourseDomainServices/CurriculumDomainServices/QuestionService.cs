@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Core.Entities.BlogPostDomainEntities;
-
-namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
+﻿namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
 
 public class QuestionService(IUnitOfWork unitOfWork) : IQuestionService
 {

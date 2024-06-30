@@ -46,6 +46,15 @@ public class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
         }
     }
 
+    public async Task<int> GetCountAsync(AnswerSpeceficationsParams speceficationsParams)
+    {
+        var countSpec = new AnswerWithFilterationForCountSpecifications(speceficationsParams);
+
+        var count = await _unitOfWork.Repository<Answer>().GetCountAsync(countSpec);
+
+        return count;
+    }
+
     public async Task<IReadOnlyList<Answer>> ReadAnswersAsync(AnswerSpeceficationsParams speceficationsParams)
     {
         var spec = new AnswerWithIncludesSpecifications(speceficationsParams);
@@ -80,6 +89,28 @@ public class AnswerService(IUnitOfWork unitOfWork) : IAnswerService
             if (result <= 0) return null;
 
             return answer;
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+            return null;
+        }
+    }
+
+    public async Task<Answer?> UpdateAnswer(Answer storedAnswer, Answer newAnswer)
+    {
+        if (newAnswer == null || storedAnswer == null)
+            return null;
+        
+        storedAnswer.Content= newAnswer.Content;
+
+        try
+        {
+            _unitOfWork.Repository<Answer>().Update(storedAnswer);
+            var result = await _unitOfWork.CompleteAsync();
+            if (result <= 0) return null;
+
+            return storedAnswer;
         }
         catch (Exception ex)
         {
