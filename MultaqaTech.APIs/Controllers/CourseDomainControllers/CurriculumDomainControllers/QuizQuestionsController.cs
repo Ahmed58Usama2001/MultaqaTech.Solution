@@ -1,5 +1,5 @@
 ﻿namespace MultaqaTech.APIs.Controllers.QuizDomainControllers.CurriculumDomainControllers;
-
+[Authorize]
 public class QuizQuestionsController(
     IMapper mapper,
     IQuizQuestionService quizQuestionService,

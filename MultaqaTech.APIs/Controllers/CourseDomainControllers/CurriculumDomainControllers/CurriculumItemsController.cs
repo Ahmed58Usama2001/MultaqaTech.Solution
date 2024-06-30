@@ -1,5 +1,6 @@
 ﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers.CurriculumDomainControllers;
 
+[Authorize]
 
 public class CurriculumItemsController(
         IMapper mapper,

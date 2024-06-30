@@ -1,6 +1,4 @@
-﻿using MultaqaTech.Core.Entities.CourseDomainEntities;
-
-namespace MultaqaTech.APIs.Controllers.CourseDomainControllers;
+﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers;
 
 [Authorize]
 public partial class CoursesController(ICourseService courseService, IMapper mapper, UserManager<AppUser> userManager,

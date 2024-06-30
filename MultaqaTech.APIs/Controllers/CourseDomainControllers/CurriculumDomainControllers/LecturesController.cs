@@ -1,7 +1,5 @@
-﻿using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
-using MultaqaTech.Core.Entities.CourseDomainEntities;
-
-namespace MultaqaTech.APIs.Controllers.CourseDomainControllers.CurriculumDomainControllers;
+﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers.CurriculumDomainControllers;
+[Authorize]
 
 public class LecturesController(
     IMapper mapper,

@@ -1,7 +1,6 @@
-﻿using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
+﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers.CurriculumDomainControllers;
 
-namespace MultaqaTech.APIs.Controllers.CourseDomainControllers.CurriculumDomainControllers;
-
+[Authorize]
 
 public class QuizesController(
     IMapper mapper,
