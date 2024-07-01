@@ -136,7 +136,13 @@ public class QuestionsController(
         if (storedQuestion == null)
             return BadRequest(new ApiResponse(400));
 
-        return Ok(_mapper.Map<QuestionReturnDto>(storedQuestion));
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+
+        var returnedQuestion = _mapper.Map<Question, QuestionReturnDto>(storedQuestion);
+        returnedQuestion.AskerName = storedUser?.UserName ?? " ";
+
+        return Ok(returnedQuestion);
     }
 
     [ProducesResponseType(typeof(QuestionReturnDto), StatusCodes.Status200OK)]

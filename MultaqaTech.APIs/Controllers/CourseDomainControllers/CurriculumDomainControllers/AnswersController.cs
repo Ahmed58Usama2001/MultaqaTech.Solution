@@ -109,7 +109,13 @@ public class AnswersController(
         if (storedAnswer == null)
             return BadRequest(new ApiResponse(400));
 
-        return Ok(_mapper.Map<AnswerReturnDto>(storedAnswer));
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+
+        var returnedAnswer = _mapper.Map<Answer, AnswerReturnDto>(storedAnswer);
+        returnedAnswer.AnswererName = storedUser?.UserName ?? " ";
+
+        return Ok(returnedAnswer);
     }
 
     [ProducesResponseType(typeof(AnswerReturnDto), StatusCodes.Status200OK)]
