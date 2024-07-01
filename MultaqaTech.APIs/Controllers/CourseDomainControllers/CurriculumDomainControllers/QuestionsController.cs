@@ -74,10 +74,29 @@ public class QuestionsController(
         {
             Student? student = await _unitOfWork.Repository<Student>().FindAsync(S => S.Id == item.AskerId);
             _context?.Entry(student).Reference(c => c.AppUser).Load();
-            item.AskerName=student?.AppUser.FirstName+" "+student.AppUser.LastName;
+            item.AskerName=student?.AppUser?.UserName??" ";
         }
 
         return Ok(new Pagination<QuestionReturnDto>(speceficationsParams.PageIndex, speceficationsParams.PageSize, count, data));
+    }
+
+    [ProducesResponseType(typeof(QuestionReturnDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<QuestionReturnDto>> GetQuestion(int id)
+    {
+        Question? question = await _questionService.ReadByIdAsync(id);
+
+        if (question == null)
+            return NotFound(new ApiResponse(404));
+
+        var returnedQuestion = _mapper.Map<QuestionReturnDto>(question);
+
+        Student? student = await _unitOfWork.Repository<Student>().FindAsync(S => S.Id == returnedQuestion.AskerId);
+        _context?.Entry(student).Reference(c => c.AppUser).Load();
+        returnedQuestion.AskerName = student?.AppUser?.UserName ?? " ";
+
+        return Ok(returnedQuestion);
     }
 
     [ProducesResponseType(typeof(QuestionReturnDto), StatusCodes.Status200OK)]

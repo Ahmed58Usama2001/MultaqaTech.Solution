@@ -71,7 +71,7 @@ public class AnswersController(
         {
             Student? student = await _unitOfWork.Repository<Student>().FindAsync(S => S.Id == item.AnswererId);
             _context?.Entry(student).Reference(c => c.AppUser).Load();
-            item.AnswererName = student?.AppUser.FirstName + " " + student.AppUser.LastName;
+            item.AnswererName = student?.AppUser?.UserName ?? " ";
         }
 
         return Ok(new Pagination<AnswerReturnDto>(speceficationsParams.PageIndex, speceficationsParams.PageSize, count, data));
