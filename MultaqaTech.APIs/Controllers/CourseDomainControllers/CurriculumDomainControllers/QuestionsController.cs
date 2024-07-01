@@ -49,7 +49,10 @@ public class QuestionsController(
 
         if (createdQuestion is null) return BadRequest(new ApiResponse(400));
 
-        return Ok(_mapper.Map<Question, QuestionReturnDto>(createdQuestion));
+        var returnedQuestion = _mapper.Map<Question, QuestionReturnDto>(createdQuestion);
+        returnedQuestion.AskerName = storedUser?.UserName ?? " ";
+
+        return Ok(returnedQuestion);
     }
 
     [ProducesResponseType(typeof(QuestionReturnDto), StatusCodes.Status200OK)]

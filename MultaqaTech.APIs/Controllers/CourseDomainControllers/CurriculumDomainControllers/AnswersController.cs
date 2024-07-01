@@ -46,7 +46,10 @@ public class AnswersController(
 
         if (createdAnswer is null) return BadRequest(new ApiResponse(400));
 
-        return Ok(_mapper.Map<Answer, AnswerReturnDto>(createdAnswer));
+        var returnedAnswer = _mapper.Map<Answer, AnswerReturnDto>(createdAnswer);
+        returnedAnswer.AnswererName = storedUser?.UserName??" ";
+
+        return Ok(returnedAnswer);
     }
 
     [ProducesResponseType(typeof(AnswerReturnDto), StatusCodes.Status200OK)]
