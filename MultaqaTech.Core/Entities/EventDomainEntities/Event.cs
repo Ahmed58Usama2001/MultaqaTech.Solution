@@ -5,6 +5,7 @@ namespace MultaqaTech.Core.Entities.EventDomainEntities
     {
         public string Title { get; set; } = string.Empty;
         public string AboutTheEvent { get; set; } = string.Empty;
+        public string? EventBy { get; set; }
         public DateTime DateFrom { get; set; }
         public DateTime DateTo { get; set; }
 

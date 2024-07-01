@@ -2,11 +2,12 @@
 namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
 {
     [Authorize]
-    public class EventController(IEventService eventService , IMapper mapper , IEventCategoryService eventCategoryService ,
+    public class EventController(IEventService eventService , IMapper mapper , UserManager<AppUser> userManager , IEventCategoryService eventCategoryService ,
      IEventCountryService eventCountryService  , IEventSpeakerService eventSpeakerService , IUnitOfWork unitOfWork  ) : BaseApiController
     {
         private readonly IEventService _eventService = eventService;
         private readonly IMapper _mapper = mapper;
+        private readonly UserManager<AppUser> _userManager = userManager;
         private readonly IEventCategoryService _eventCategoryService = eventCategoryService;
         private readonly IEventCountryService _eventCountryService = eventCountryService;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
@@ -18,6 +19,12 @@ namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
         public async Task<ActionResult<EventToReturnDto>> CreateEventAsync(EventCreateDto eventDto)
         {
             if (eventDto is null) return BadRequest(new ApiResponse(400));
+
+            var authorEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (authorEmail is null) return BadRequest(new ApiResponse(404));
+
+            var user = await _userManager.FindByEmailAsync(authorEmail);
+            if (user is null) return BadRequest(new ApiResponse(404));
 
             var existingCategory = await _eventCategoryService.ReadByIdAsync(eventDto.CategoryId);
             if (existingCategory is null)
@@ -31,6 +38,7 @@ namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
             {
                 Title = eventDto.Title,
                 AboutTheEvent = eventDto.AboutTheEvent,
+                EventBy= user.UserName,
                 PhoneNumber = eventDto.PhoneNumber,
                 Price = eventDto.Price,
                 Address = eventDto.Address,
@@ -102,6 +110,12 @@ namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
             if (storedEvent == null)
                 return NotFound(new ApiResponse(404));
 
+            var authorEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (authorEmail is null) return BadRequest(new ApiResponse(404));
+
+            var user = await _userManager.FindByEmailAsync(authorEmail);
+            if (user is null || user.UserName != storedEvent?.EventBy)
+                return BadRequest(new ApiResponse(401));
 
             if (!string.IsNullOrEmpty(storedEvent?.EventPictureUrl))
                 DocumentSetting.DeleteFile(storedEvent.EventPictureUrl);
@@ -135,6 +149,13 @@ namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
             var @event = await _unitOfWork.Repository<Event>().GetByIdAsync(id);
             if (@event == null)
                 return NotFound(new ApiResponse(404));
+
+            var authorEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (authorEmail is null) return BadRequest(new ApiResponse(404));
+
+            var user = await _userManager.FindByEmailAsync(authorEmail);
+            if (user is null || user.UserName != @event.EventBy)
+                return BadRequest(new ApiResponse(401));
 
 
             var result = await _eventService.DeleteEvent(@event);

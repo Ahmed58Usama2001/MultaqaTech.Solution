@@ -1,6 +1,4 @@
 ﻿
-using MultaqaTech.Core.Specifications.EventEntitiesSpecs.EventSpecs;
-
 namespace MultaqaTech.Service.EventEntitesServices
 {
     public class EventService(IUnitOfWork unitOfWork) : IEventService
@@ -79,7 +77,8 @@ namespace MultaqaTech.Service.EventEntitesServices
             storedEvent.Price = newEvent.Price;
             storedEvent.DateFrom = newEvent.DateFrom;
             storedEvent.DateTo = newEvent.DateTo;
-         //   storedEvent.TimeTo = newEvent.TimeTo;
+            storedEvent.TimeTo = newEvent.TimeTo;
+            storedEvent.TimeFrom = newEvent.TimeFrom;
             storedEvent.PhoneNumber = newEvent.PhoneNumber;
             storedEvent.Address = newEvent.Address;
             storedEvent.Website = newEvent.Website;
