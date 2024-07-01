@@ -12,7 +12,6 @@ public static class CreateUserFromSocialLoginExtension
             return user; //USER ALREADY EXISTS.
 
         user = await userManager.FindByEmailAsync(model.Email);
-                Student? student = new();
 
         if (user is null)
         {
@@ -31,25 +30,14 @@ public static class CreateUserFromSocialLoginExtension
             {
                 await userManager.CreateAsync(user);
 
-                student.AppUser = user;
-                student.AppUserId = user.Id;
-                context.Students.Add(student);
-
-                user.Student = student;
-                user.StudentId = student.Id;    
-
-
                 //EMAIL IS CONFIRMED; IT IS COMING FROM AN IDENTITY PROVIDER            
                 user.EmailConfirmed = true;
-
-                await userManager.UpdateAsync(user);
 
             }
             catch (Exception ex)
             {
-                context.Students.Remove(student);
                 Log.Error(ex.ToString());
-                return null;
+                return new AppUser();
             }
 
                 await context.SaveChangesAsync();

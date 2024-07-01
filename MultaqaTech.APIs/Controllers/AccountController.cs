@@ -252,18 +252,43 @@ public class AccountController : BaseApiController
     {
         try
         {
-            var result = await _authService.SignInWithGoogle(model);
-            if (result != null)
+            var googleUser = await _authService.SignInWithGoogle(model);
+
+            if (!CheckEmailExists(googleUser?.Email??" ").Result.Value)
+            {
+                Student? student = new()
+                {
+                    AppUser = googleUser,
+                    AppUserId = googleUser.Id
+                };
+                await _unitOfWork.Repository<Student>().AddAsync(student);
+
+                var studentResult = await _unitOfWork.CompleteAsync();
+                if (studentResult <= 0) return BadRequest(false);
+
+                googleUser.Student = student;
+                googleUser.StudentId = student.Id;
+
+                var result = await _userManager.UpdateAsync(googleUser);
+                if (!result.Succeeded)
+                {
+                    string errors = string.Join(", ", result.Errors.Select(error => error.Description));
+                    return BadRequest(new ApiResponse(400, errors));
+                }
+            }
+
+
+            if (googleUser != null)
             {
                 UserDto userDto = new UserDto()
                 {
-                    UserName = result.UserName ?? string.Empty,
-                    IsInstructor = result?.IsInstructor ?? false,
-                    InstructorId = result?.InstructorId ?? 0,
-                    StudentId = result?.StudentId ?? 0,
-                    ProfilePictureUrl = !string.IsNullOrEmpty(result.ProfilePictureUrl) ? $"{_configuration["ApiBaseUrl"]}/{result?.ProfilePictureUrl}" : string.Empty,
-                    Email = result?.Email ?? string.Empty,
-                    Token = await _authService.CreateTokenAsync(result, _userManager)
+                    UserName = googleUser.UserName ?? string.Empty,
+                    IsInstructor = googleUser?.IsInstructor ?? false,
+                    InstructorId = googleUser?.InstructorId ?? 0,
+                    StudentId = googleUser?.StudentId ?? 0,
+                    ProfilePictureUrl = !string.IsNullOrEmpty(googleUser.ProfilePictureUrl) ? $"{_configuration["ApiBaseUrl"]}/{googleUser?.ProfilePictureUrl}" : string.Empty,
+                    Email = googleUser?.Email ?? string.Empty,
+                    Token = await _authService.CreateTokenAsync(googleUser, _userManager)
                 };
 
                 return Ok(userDto);
@@ -283,18 +308,43 @@ public class AccountController : BaseApiController
     {
         try
         {
-            var result = await _authService.SignInWithFacebook(model);
-            if (result != null)
+            var facebookUser = await _authService.SignInWithFacebook(model);
+
+
+            if (!CheckEmailExists(facebookUser?.Email ?? " ").Result.Value)
+            {
+                Student? student = new()
+                {
+                    AppUser = facebookUser,
+                    AppUserId = facebookUser.Id
+                };
+                await _unitOfWork.Repository<Student>().AddAsync(student);
+
+                var studentResult = await _unitOfWork.CompleteAsync();
+                if (studentResult <= 0) return BadRequest(false);
+
+                facebookUser.Student = student;
+                facebookUser.StudentId = student.Id;
+
+                var result = await _userManager.UpdateAsync(facebookUser);
+                if (!result.Succeeded)
+                {
+                    string errors = string.Join(", ", result.Errors.Select(error => error.Description));
+                    return BadRequest(new ApiResponse(400, errors));
+                }
+            }
+
+            if (facebookUser != null)
             {
                 UserDto userDto = new UserDto()
                 {
-                    UserName = result.UserName ?? string.Empty,
-                    IsInstructor = result?.IsInstructor ?? false,
-                    InstructorId = result?.InstructorId ?? 0,
-                    StudentId = result?.StudentId ?? 0,
-                    ProfilePictureUrl = !string.IsNullOrEmpty(result.ProfilePictureUrl) ? $"{_configuration["ApiBaseUrl"]}/{result?.ProfilePictureUrl}" : string.Empty,
-                    Email = result?.Email ?? string.Empty,
-                    Token = await _authService.CreateTokenAsync(result, _userManager)
+                    UserName = facebookUser.UserName ?? string.Empty,
+                    IsInstructor = facebookUser?.IsInstructor ?? false,
+                    InstructorId = facebookUser?.InstructorId ?? 0,
+                    StudentId = facebookUser?.StudentId ?? 0,
+                    ProfilePictureUrl = !string.IsNullOrEmpty(facebookUser.ProfilePictureUrl) ? $"{_configuration["ApiBaseUrl"]}/{facebookUser?.ProfilePictureUrl}" : string.Empty,
+                    Email = facebookUser?.Email ?? string.Empty,
+                    Token = await _authService.CreateTokenAsync(facebookUser, _userManager)
                 };
 
                 return Ok(userDto);
