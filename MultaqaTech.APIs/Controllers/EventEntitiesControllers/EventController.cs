@@ -1,5 +1,4 @@
-﻿
-namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
+﻿namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
 {
     [Authorize]
     public class EventController(IEventService eventService , IMapper mapper , UserManager<AppUser> userManager , IEventCategoryService eventCategoryService ,

@@ -1,11 +1,10 @@
 ﻿namespace MultaqaTech.APIs.Controllers;
 
 [Authorize]
-public class BasketsController(IBasketRepository basketRepository, IMapper mapper, UserManager<AppUser> userManager) : BaseApiController
+public class BasketsController(IBasketRepository basketRepository, IMapper mapper) : BaseApiController
 {
-    private readonly IBasketRepository _basketRepository = basketRepository;
     private readonly IMapper _mapper = mapper;
-    private readonly UserManager<AppUser> _userManager = userManager;
+    private readonly IBasketRepository _basketRepository = basketRepository;
 
     [ProducesResponseType(typeof(StudentBasket), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -104,10 +103,5 @@ public class BasketsController(IBasketRepository basketRepository, IMapper mappe
         {
             basket.BasketItems[i] = _mapper.Map<BasketItem>(basket.BasketItems[i]);
         }
-    }
-
-    private async Task ManageStudentId()
-    {
-
     }
 }

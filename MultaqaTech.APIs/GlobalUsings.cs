@@ -58,7 +58,10 @@ global using MultaqaTech.APIs.Dtos.CourseDtos.CurriculumDtos.QuizQuestionChoiceD
 global using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
 global using MultaqaTech.Core.Services.Contract.CourseDomainContracts.CurriculumDomainContracts;
 global using MultaqaTech.Core.Specifications.CourseDomainSpecs.CurriculumEntitiesSpecs.CurriculumSectionSpecs;
+global using File = System.IO.File;
 global using Order = MultaqaTech.Core.Entities.OrderEntities.Order;
+global using Event = MultaqaTech.Core.Entities.EventDomainEntities.Event;
+global using EventService = MultaqaTech.Service.EventEntitesServices.EventService;
 
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
@@ -76,6 +79,7 @@ global using System.Text.Encodings.Web;
 global using System.ComponentModel.DataAnnotations;
 global using JsonSerializer = System.Text.Json.JsonSerializer;
 
+global using Stripe;
 global using Serilog;
 global using AutoMapper;
 global using Newtonsoft.Json;

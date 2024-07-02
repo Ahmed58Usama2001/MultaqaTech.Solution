@@ -53,6 +53,7 @@ public class Program
 
         #endregion
 
+        StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
         var app = builder.Build();
 
