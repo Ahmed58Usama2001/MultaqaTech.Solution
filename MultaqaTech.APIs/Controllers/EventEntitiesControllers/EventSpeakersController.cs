@@ -13,7 +13,7 @@ namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
         [ProducesResponseType(typeof(EventSpeakerToReturnDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [HttpPost]
-        public async Task<ActionResult<EventSpeaker>> CreateEventSpeaker(EventSpeakerCreateDto eventSpeakerDto)
+        public async Task<ActionResult<EventSpeakerToReturnDto>> CreateEventSpeaker(EventSpeakerCreateDto eventSpeakerDto)
         {
             if (eventSpeakerDto is null) return BadRequest(new ApiResponse(400));
 
@@ -38,19 +38,21 @@ namespace MultaqaTech.APIs.Controllers.EventEntitiesControllers
             return Ok(_mapper.Map<EventSpeaker, EventSpeakerToReturnDto>(createdEventSpeaker));
         }
 
-        [ProducesResponseType(typeof(EventSpeakerToReturnDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IReadOnlyList<EventSpeakerToReturnDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<EventSpeakerToReturnDto>>> GetAllEventSpeakers()
         {
             var eventSpeakers = await _eventSpeakerService.ReadAllEventSpeakersAsync();
-            
-            if (eventSpeakers == null)
+
+            if (eventSpeakers == null || !eventSpeakers.Any())
                 return NotFound(new { Message = "Not Found", StatusCode = 404 });
 
-            return Ok(_mapper.Map<EventSpeakerToReturnDto>(eventSpeakers));
+            var eventSpeakersDto = _mapper.Map<IReadOnlyList<EventSpeakerToReturnDto>>(eventSpeakers);
+
+            return Ok(eventSpeakersDto);
         }
-        
+
 
         [ProducesResponseType(typeof(EventSpeakerToReturnDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
