@@ -254,7 +254,7 @@ public class AccountController : BaseApiController
         {
             var googleUser = await _authService.SignInWithGoogle(model);
 
-            if (!CheckEmailExists(googleUser?.Email??" ").Result.Value)
+            if (googleUser.StudentId is null)
             {
                 Student? student = new()
                 {
@@ -311,7 +311,7 @@ public class AccountController : BaseApiController
             var facebookUser = await _authService.SignInWithFacebook(model);
 
 
-            if (!CheckEmailExists(facebookUser?.Email ?? " ").Result.Value)
+            if (facebookUser.StudentId is null)
             {
                 Student? student = new()
                 {
