@@ -67,10 +67,10 @@ public class OrderService(IUnitOfWork unitOfWork, ICourseService courseService, 
             List<StudentCourseProgress>? studentProgresses = new List<StudentCourseProgress>();
             foreach (var studentCourse in studentCourses)
             {
-                studentProgresses.AddRange(await PrepareStudentsProgress(studentCourse));
+                studentProgresses.AddRange(await PrepareStudentsProgress(studentCourse) ?? []);
             }
 
-            if (studentProgresses?.Count > 0)
+            if (studentProgresses.Count > 0)
             {
                 await CreateStudentProgressesInCourse(studentProgresses);
             }

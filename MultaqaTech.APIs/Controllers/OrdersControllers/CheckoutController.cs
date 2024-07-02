@@ -1,18 +1,12 @@
-﻿using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Hosting.Server.Features;
-using Microsoft.Extensions.Primitives;
-using MultaqaTech.APIs.Controllers;
-using Stripe.Checkout;
+﻿namespace Server.Controllers;
 
-namespace Server.Controllers;
-
-[ApiExplorerSettings(IgnoreApi = true)]
 public class CheckoutController(IConfiguration configuration, IBasketRepository basketRepository) : BaseApiController
 {
     private readonly IConfiguration _configuration = configuration;
     private readonly IBasketRepository _basketRepository = basketRepository;
-    private static string _clientURL = string.Empty;
+    private string? _clientURL = string.Empty;
 
+    [ProducesResponseType(typeof(CheckoutOrderResponse), StatusCodes.Status200OK)]
     [HttpPost]
     public async Task<ActionResult> CheckoutOrder([FromServices] IServiceProvider sp)
     {
@@ -35,12 +29,12 @@ public class CheckoutController(IConfiguration configuration, IBasketRepository 
             return StatusCode(500);
 
         var sessionId = await CheckOut(thisApiUrl);
-        string PublishableKey = _configuration["Stripe:PublishableKey"] ?? string.Empty;
+        string publishableKey = _configuration["Stripe:PublishableKey"] ?? string.Empty;
 
-        var checkoutOrderResponse = new CheckoutOrderResponse()
+        CheckoutOrderResponse? checkoutOrderResponse = new ()
         {
             SessionId = sessionId,
-            PublishableKey = PublishableKey
+            PublishableKey = publishableKey
         };
 
         return Ok(checkoutOrderResponse);
@@ -49,11 +43,11 @@ public class CheckoutController(IConfiguration configuration, IBasketRepository 
     [NonAction]
     public async Task<string> CheckOut(string thisApiUrl)
     {
+        string email = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
+        StudentBasket? basket = await _basketRepository.GetBasket(email);
+
         // Create a payment flow from the items in the cart.
         // Gets sent to Stripe API.
-        string email = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
-
-        StudentBasket? basket = await _basketRepository.GetBasket(email);
 
         List<SessionLineItemOptions>? lineItems = [];
 
@@ -72,7 +66,7 @@ public class CheckoutController(IConfiguration configuration, IBasketRepository 
             Quantity = 1,
         }));
 
-        var options = new SessionCreateOptions
+        SessionCreateOptions? options = new()
         {
             // Stripe calls the URLs below when certain checkout events happen such as success and failure.
             SuccessUrl = $"{thisApiUrl}/checkout/success?sessionId=" + "{CHECKOUT_SESSION_ID}", // Customer paid.
