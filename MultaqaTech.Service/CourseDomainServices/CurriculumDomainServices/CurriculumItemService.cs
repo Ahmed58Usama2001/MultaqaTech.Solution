@@ -189,7 +189,7 @@ public class CurriculumItemService(IUnitOfWork unitOfWork, MultaqaTechContext co
             for (int i = 0; i < newOrder.Count; i++)
             {
                 var itemOrder = newOrder[i];
-                CurriculumItem? item = items.FirstOrDefault(s => s.Order == itemOrder);
+                CurriculumItem? item = items.FirstOrDefault(s => s.Order == itemOrder&&!_context.Entry(s).Property(l => l.Order).IsModified);
                 if (item != null)
                 {
                     item.Order = i + 1; // Update order property
