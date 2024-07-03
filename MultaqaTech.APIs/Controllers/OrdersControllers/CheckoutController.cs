@@ -1,9 +1,10 @@
 ﻿namespace Server.Controllers;
 
-public class CheckoutController(IConfiguration configuration, IBasketRepository basketRepository) : BaseApiController
+public class CheckoutController(IConfiguration configuration, IBasketRepository basketRepository, IOrderService orderService) : BaseApiController
 {
     private readonly IConfiguration _configuration = configuration;
     private readonly IBasketRepository _basketRepository = basketRepository;
+    private readonly IOrderService _orderService = orderService;
     private string? _clientURL = string.Empty;
 
     [ProducesResponseType(typeof(CheckoutOrderResponse), StatusCodes.Status200OK)]
@@ -31,7 +32,7 @@ public class CheckoutController(IConfiguration configuration, IBasketRepository 
         var sessionId = await CheckOut(thisApiUrl);
         string publishableKey = _configuration["Stripe:PublishableKey"] ?? string.Empty;
 
-        CheckoutOrderResponse? checkoutOrderResponse = new ()
+        CheckoutOrderResponse? checkoutOrderResponse = new()
         {
             SessionId = sessionId,
             PublishableKey = publishableKey
@@ -89,14 +90,14 @@ public class CheckoutController(IConfiguration configuration, IBasketRepository 
     [HttpGet("success")]
     // Automatic query parameter handling from ASP.NET.
     // Example URL: https://localhost:7051/checkout/success?sessionId=si_123123123123
-    public ActionResult CheckoutSuccess([FromQuery] string sessionId)
+    public async Task<ActionResult> CheckoutSuccess([FromQuery] string sessionId)
     {
         var sessionService = new SessionService();
         var session = sessionService.Get(sessionId);
 
         // Here you can save order and customer details to your database.
-        var total = session.AmountTotal.Value;
-        var customerEmail = session.CustomerDetails.Email;
+        Order order = new() { UserEmail = session.CustomerDetails.Email };
+        _ = await _orderService.CreateOrderAsync(order);
 
         return Redirect(_clientURL + "success");
     }
