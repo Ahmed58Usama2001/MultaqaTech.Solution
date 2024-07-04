@@ -15,7 +15,8 @@ public class CourseDto
     [MinLength(3, ErrorMessage = "Course Language must be at least 3 characters long.")]
     public string? Language { get; set; }
 
-    public string ThumbnailUrl { get; set; } = string.Empty;
+    [Required]
+    public IFormFile Thumbnail { get; set; }
 
     [Required]
     [Range(0, int.MaxValue, ErrorMessage = "Price Should be grater than or equal to zero !")]

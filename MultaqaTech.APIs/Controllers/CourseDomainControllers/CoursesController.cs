@@ -31,7 +31,10 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         (bool isTitleUnique, _) = await _courseService.CheckTitleUniqueness(courseDto.Title);
         if (!isTitleUnique) return BadRequest(new ApiResponse(400, "Course Title Should Be Unique"));
 
-        Course? createdCourse = await _courseService.CreateCourseAsync(_mapper.Map<Course>(courseDto), instructor);
+        Course mappedCourse = _mapper.Map<Course>(courseDto);
+        mappedCourse.ThumbnailUrl = DocumentSetting.UploadFile(courseDto.Thumbnail, "Courses\\Thumbnails");
+
+        Course? createdCourse = await _courseService.CreateCourseAsync(mappedCourse, instructor);
 
         if (createdCourse is null) return BadRequest(new ApiResponse(400));
 
