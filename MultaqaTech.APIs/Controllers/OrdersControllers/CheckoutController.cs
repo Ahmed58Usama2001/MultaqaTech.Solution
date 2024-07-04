@@ -90,7 +90,7 @@ public class CheckoutController(IConfiguration configuration, IBasketRepository 
     [HttpGet("success")]
     // Automatic query parameter handling from ASP.NET.
     // Example URL: https://localhost:7051/checkout/success?sessionId=si_123123123123
-    public async Task<ActionResult> CheckoutSuccess([FromQuery] string sessionId)
+    public async Task<ActionResult> CheckoutSuccess(string sessionId)
     {
         var sessionService = new SessionService();
         var session = sessionService.Get(sessionId);
