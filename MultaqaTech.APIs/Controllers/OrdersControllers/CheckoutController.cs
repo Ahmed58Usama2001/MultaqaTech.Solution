@@ -70,8 +70,9 @@ public class CheckoutController(IConfiguration configuration, IBasketRepository 
         SessionCreateOptions? options = new()
         {
             // Stripe calls the URLs below when certain checkout events happen such as success and failure.
-            SuccessUrl = $"{thisApiUrl}/checkout/success?sessionId=" + "{CHECKOUT_SESSION_ID}", // Customer paid.
+            //SuccessUrl = $"{thisApiUrl}/checkout/success?sessionId=" + "{CHECKOUT_SESSION_ID}", // Customer paid.
             CancelUrl = _clientURL + "failed",  // Checkout cancelled.
+            SuccessUrl = _clientURL + "success",  // Checkout cancelled.
             PaymentMethodTypes =
             [
                 "card"
@@ -87,18 +88,32 @@ public class CheckoutController(IConfiguration configuration, IBasketRepository 
         return session.Id;
     }
 
+    //[HttpGet("success")]
+    //// Automatic query parameter handling from ASP.NET.
+    //// Example URL: https://localhost:7051/checkout/success?sessionId=si_123123123123
+    //public async Task<ActionResult> CheckoutSuccess(string sessionId)
+    //{
+    //    var sessionService = new SessionService();
+    //    var session = sessionService.Get(sessionId);
+
+    //    // Here you can save order and customer details to your database.
+    //    Order order = new() { UserEmail = session.CustomerDetails.Email };
+    //    _ = await _orderService.CreateOrderAsync(order);
+
+    //    return Redirect(_clientURL + "success");
+    //}
+
     [HttpGet("success")]
     // Automatic query parameter handling from ASP.NET.
     // Example URL: https://localhost:7051/checkout/success?sessionId=si_123123123123
-    public async Task<ActionResult> CheckoutSuccess(string sessionId)
+    public async Task<IActionResult> CheckoutSuccess()
     {
-        var sessionService = new SessionService();
-        var session = sessionService.Get(sessionId);
-
         // Here you can save order and customer details to your database.
-        Order order = new() { UserEmail = session.CustomerDetails.Email };
+        string email = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
+
+        Order order = new() { UserEmail = email };
         _ = await _orderService.CreateOrderAsync(order);
 
-        return Redirect(_clientURL + "success");
+        return Ok();
     }
 }
