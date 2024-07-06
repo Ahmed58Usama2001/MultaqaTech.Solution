@@ -101,7 +101,7 @@ public class Program
 
         app.UseStatusCodePagesWithRedirects("/errors/{0}");
 
-        app.UseHttpsRedirection();
+        //app.UseHttpsRedirection();
 
         app.UseStaticFiles();
 

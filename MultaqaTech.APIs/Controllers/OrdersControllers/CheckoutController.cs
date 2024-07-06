@@ -114,49 +114,49 @@ public class CheckoutController(IConfiguration configuration, IBasketRepository 
         return Ok();
     }
 
-    //[HttpPost("/webhook")]
-    //public async Task<IActionResult> WebHook()
-    //{
-    //    string endpointSecret = "whsec_MhEkyp9yJXn4AqfhDZCZAlJk26y0ebk2";
-    //    var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
-    //    try
-    //    {
-    //        var stripeEvent = EventUtility.ConstructEvent(json,
-    //            Request.Headers["Stripe-Signature"], endpointSecret);
+    [HttpPost("/webhook")]
+    public async Task<IActionResult> WebHook()
+    {
+        string? endpointSecret = _configuration["Stripe:WebhookSecret"];
+        var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+        try
+        {
+            var stripeEvent = EventUtility.ConstructEvent(json,
+                Request.Headers["Stripe-Signature"], endpointSecret);
 
-    //        // Handle the event
-    //        if (stripeEvent.Type == Events.CheckoutSessionCompleted)
-    //        {
-    //            var session = stripeEvent.Data.Object as Session;
-    //            if (session.Status == "paid")
-    //            {
-    //                var email = session.CustomerEmail;
-    //                Order order = new() { UserEmail = email };
+            // Handle the event
+            if (stripeEvent.Type == Events.CheckoutSessionCompleted)
+            {
+                var session = stripeEvent.Data.Object as Session;
+                if (session.PaymentStatus == "paid")
+                {
+                    var email = session.CustomerEmail;
+                    Order order = new() { UserEmail = email };
 
-    //                await _orderService.CreateOrderAsync(order);
-    //            }
-    //        }
-    //        else if (stripeEvent.Type == Events.CheckoutSessionAsyncPaymentSucceeded)
-    //        {
-    //            var session = stripeEvent.Data.Object as Session;
+                    await _orderService.CreateOrderAsync(order);
+                }
+            }
+            else if (stripeEvent.Type == Events.CheckoutSessionAsyncPaymentSucceeded)
+            {
+                var session = stripeEvent.Data.Object as Session;
 
-    //            var email = session.CustomerEmail;
-    //            Order order = new() { UserEmail = email };
+                var email = session.CustomerEmail;
+                Order order = new() { UserEmail = email };
 
-    //            await _orderService.CreateOrderAsync(order);
-    //        }
-    //        //else if(stripeEvent.Type == Events.CheckoutSessionAsyncPaymentFailed)
-    //        //    Handle Failure
-    //        else
-    //        {
-    //            Console.WriteLine("Unhandled event type: {0}", stripeEvent.Type);
-    //        }
+                await _orderService.CreateOrderAsync(order);
+            }
+            //else if(stripeEvent.Type == Events.CheckoutSessionAsyncPaymentFailed)
+            //    Handle Failure
+            else
+            {
+                Console.WriteLine("Unhandled event type: {0}", stripeEvent.Type);
+            }
 
-    //        return Ok();
-    //    }
-    //    catch (StripeException e)
-    //    {
-    //        return BadRequest();
-    //    }
-    //}
+            return Ok();
+        }
+        catch (StripeException e)
+        {
+            return BadRequest();
+        }
+    }
 }
