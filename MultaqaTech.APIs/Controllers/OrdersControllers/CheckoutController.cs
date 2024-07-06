@@ -78,7 +78,7 @@ public class CheckoutController(IConfiguration configuration, IBasketRepository 
                 "card"
             ],
             LineItems = lineItems,
-
+            CustomerEmail = email,
             Mode = "payment" // One-time payment. Stripe supports recurring 'subscription' payments.
         };
 
@@ -104,11 +104,8 @@ public class CheckoutController(IConfiguration configuration, IBasketRepository 
     //}
 
     [HttpGet("success")]
-    // Automatic query parameter handling from ASP.NET.
-    // Example URL: https://localhost:7051/checkout/success?sessionId=si_123123123123
     public async Task<IActionResult> CheckoutSuccess()
     {
-        // Here you can save order and customer details to your database.
         string email = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
 
         Order order = new() { UserEmail = email };
@@ -116,4 +113,6 @@ public class CheckoutController(IConfiguration configuration, IBasketRepository 
 
         return Ok();
     }
+
+
 }

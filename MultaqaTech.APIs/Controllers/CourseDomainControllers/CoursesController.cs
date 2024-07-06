@@ -24,15 +24,15 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         AppUser? storedUser = await _userManager.FindByEmailAsync(instructorEmail);
         if (storedUser is null) return NotFound(new ApiResponse(401));
 
-        Instructor? instructor =await _unitOfWork.Repository<Instructor>().FindAsync(I=>I.AppUserId==storedUser.Id);
+        Instructor? instructor = await _unitOfWork.Repository<Instructor>().FindAsync(I => I.AppUserId == storedUser.Id);
         if (instructor is null)
-           return NotFound(new ApiResponse(401));
+            return NotFound(new ApiResponse(401));
 
         (bool isTitleUnique, _) = await _courseService.CheckTitleUniqueness(courseDto.Title);
         if (!isTitleUnique) return BadRequest(new ApiResponse(400, "Course Title Should Be Unique"));
 
         Course mappedCourse = _mapper.Map<Course>(courseDto);
-        mappedCourse.ThumbnailUrl = DocumentSetting.UploadFile(courseDto.Thumbnail, "Courses\\Thumbnails");
+        mappedCourse.ThumbnailUrl = DocumentSetting.UploadFile(courseDto.Thumbnail, "CoursesThumbnails");
 
         Course? createdCourse = await _courseService.CreateCourseAsync(mappedCourse, instructor);
 
@@ -61,7 +61,7 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
 
-        return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize,count, data));
+        return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
     }
 
     [ProducesResponseType(typeof(CourseToReturnDto), StatusCodes.Status200OK)]
