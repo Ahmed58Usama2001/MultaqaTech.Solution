@@ -10,7 +10,7 @@ public class CoursesSpecifications : BaseSpecifications<Course>
                  (!speceficationsParams.StudentId.HasValue || e.EnrolledStudentsIds.Contains((int)speceficationsParams.StudentId)) &&
                  (!speceficationsParams.SubjectId.HasValue || e.SubjectId == speceficationsParams.SubjectId) &&
                  (!speceficationsParams.MinPrice.HasValue || e.Price >= speceficationsParams.MinPrice) &&
-                 (!speceficationsParams.MinPrice.HasValue || e.Price <= speceficationsParams.MaxPrice) &&
+                 (!speceficationsParams.MaxPrice.HasValue || e.Price <= speceficationsParams.MaxPrice) &&
                  (!speceficationsParams.CourseLevel.HasValue || e.Level == speceficationsParams.CourseLevel)
            )
     {
