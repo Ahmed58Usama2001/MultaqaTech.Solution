@@ -17,7 +17,7 @@ public class CourseToReturnDto
     public string Subject { get; set; } = string.Empty;
 
     public decimal Price { get; set; }
-    public float Rating { get => ((float)Reviews.Sum(e => e.NumberOfStars)) /(float) Reviews.Count; }
+    public float Rating { get => ((float)Reviews.Sum(e => e.NumberOfStars)) / (float)Reviews.Count; }
     public decimal Duration { get; set; }
 
     public DateTime UploadDate { get; set; }

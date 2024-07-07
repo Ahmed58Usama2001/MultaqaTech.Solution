@@ -2,11 +2,12 @@
 
 public partial class CourseService
 {
-    public async Task<CourseReview?> CreateCourseReviewAsync(CourseReview review, Core.Entities.Identity.AppUser? student)
+    public async Task<CourseReview?> CreateCourseReviewAsync(CourseReview review, AppUser? student)
     {
         try
         {
             review.StudentName = student?.FirstName + " " + student?.LastName;
+            review.ProfiePictureUrl = student?.ProfilePictureUrl ?? string.Empty;
 
             Course? courseFromDb = await _unitOfWork.Repository<Course>().GetByIdAsync(review.CourseId);
             review.Id = courseFromDb?.Reviews is null ? 1 : courseFromDb.Reviews.Count;
