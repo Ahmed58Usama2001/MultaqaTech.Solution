@@ -56,7 +56,7 @@ public class CheckoutController(IConfiguration configuration, IBasketRepository 
         {
             PriceData = new SessionLineItemPriceDataOptions
             {
-                UnitAmountDecimal = basketItem.Price,
+                UnitAmountDecimal = basketItem.Price * 100,
                 Currency = "USD",
                 ProductData = new SessionLineItemPriceDataProductDataOptions
                 {
