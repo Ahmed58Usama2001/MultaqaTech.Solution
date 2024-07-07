@@ -4,15 +4,15 @@ public class CoursesSpecifications : BaseSpecifications<Course>
 {
     public CoursesSpecifications(CourseSpecificationsParams speceficationsParams)
         : base(e =>
-           (
+
                  (string.IsNullOrEmpty(speceficationsParams.Language) || e.Language == speceficationsParams.Language) &&
                  (!speceficationsParams.InstructorId.HasValue || e.InstructorId == speceficationsParams.InstructorId) &&
                  (!speceficationsParams.StudentId.HasValue || e.EnrolledStudentsIds.Contains((int)speceficationsParams.StudentId)) &&
                  (!speceficationsParams.SubjectId.HasValue || e.SubjectId == speceficationsParams.SubjectId) &&
                  (!speceficationsParams.MinPrice.HasValue || e.Price >= speceficationsParams.MinPrice) &&
-                 (!speceficationsParams.MinPrice.HasValue|| e.Price <= speceficationsParams.MaxPrice) &&
+                 (!speceficationsParams.MinPrice.HasValue || e.Price <= speceficationsParams.MaxPrice) &&
                  (!speceficationsParams.CourseLevel.HasValue || e.Level == speceficationsParams.CourseLevel)
-           ))
+           )
     {
         AddIncludes();
 
@@ -74,7 +74,9 @@ public class CoursesSpecifications : BaseSpecifications<Course>
             }
         }
         else
+        {
             AddOrderByDesc(p => p.Rating);
+        }
 
         ApplyPagination((speceficationsParams.PageIndex - 1) * speceficationsParams.PageSize, speceficationsParams.PageSize);
     }

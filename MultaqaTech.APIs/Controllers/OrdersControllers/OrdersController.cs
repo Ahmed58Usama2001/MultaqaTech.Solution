@@ -19,4 +19,12 @@ public class OrdersController(IOrderService orderService, IMapper mapper) : Base
 
         return createdOrder is not null ? Ok(_mapper.Map<OrderToReturnDto>(createdOrder)) : BadRequest(new ApiResponse(400));
     }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<OrderToReturnDto>>> GetOrders([FromQuery] OrderSpecificationsParams orderSpecificationsParams)
+    {
+        IEnumerable<Order>? orders = await _orderService.ReadOrdersAsync(orderSpecificationsParams);
+
+        return Ok(_mapper.Map<IEnumerable<OrderToReturnDto>>(orders));
+    }
 }

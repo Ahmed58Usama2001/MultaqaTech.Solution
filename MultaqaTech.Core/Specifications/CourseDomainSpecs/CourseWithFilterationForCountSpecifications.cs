@@ -2,9 +2,9 @@
 
 public class CourseWithFilterationForCountSpecifications : BaseSpecifications<Course>
 {
-    public CourseWithFilterationForCountSpecifications(CourseSpecificationsParams speceficationsParams) 
+    public CourseWithFilterationForCountSpecifications(CourseSpecificationsParams speceficationsParams)
           : base(e =>
-           (
+          (
                  (string.IsNullOrEmpty(speceficationsParams.Language) || e.Language == speceficationsParams.Language) &&
                  (!speceficationsParams.InstructorId.HasValue || e.InstructorId == speceficationsParams.InstructorId) &&
                  (!speceficationsParams.StudentId.HasValue || e.EnrolledStudentsIds.Contains((int)speceficationsParams.StudentId)) &&
@@ -12,9 +12,7 @@ public class CourseWithFilterationForCountSpecifications : BaseSpecifications<Co
                  (!speceficationsParams.MinPrice.HasValue || e.Price >= speceficationsParams.MinPrice) &&
                  (!speceficationsParams.MinPrice.HasValue || e.Price <= speceficationsParams.MaxPrice) &&
                  (!speceficationsParams.CourseLevel.HasValue || e.Level == speceficationsParams.CourseLevel)
-           ))
+          ))
     {
-
     }
 }
-

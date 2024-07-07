@@ -137,4 +137,11 @@ public class OrderService(IUnitOfWork unitOfWork, ICourseService courseService, 
 
     private async Task CreateStudentProgressesInCourse(List<StudentCourseProgress> studentProgresses)
      => await _unitOfWork.Repository<StudentCourseProgress>().BulkAddAsync(studentProgresses);
+
+    public async Task<IEnumerable<Order>> ReadOrdersAsync(OrderSpecificationsParams orderSpecificationsParams)
+    {
+        OrderSpecifications orderSpecs = new(orderSpecificationsParams);
+
+        return await _unitOfWork.Repository<Order>().GetAllWithSpecAsync(orderSpecs);
+    }
 }

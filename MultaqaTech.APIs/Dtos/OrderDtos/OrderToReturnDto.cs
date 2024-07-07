@@ -2,6 +2,8 @@
 
 public class OrderToReturnDto
 {
+    public StudentBasket? Basket { get; set; }
+
     public OrderStatus Status { get; set; }
 
     public DateTime CreationDate { get; set; }

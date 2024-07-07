@@ -3,4 +3,5 @@
 public interface IOrderService
 {
     Task<Order> CreateOrderAsync(Order order);
+    Task<IEnumerable<Order>> ReadOrdersAsync(OrderSpecificationsParams orderSpecificationsParams);
 }
