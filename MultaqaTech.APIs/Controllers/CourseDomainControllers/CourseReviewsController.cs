@@ -1,8 +1,9 @@
 ﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers;
 
-[Authorize]
-public partial class CoursesController : BaseApiController
+public partial class CoursesController
 {
+    [Authorize]
+
     [ProducesResponseType(typeof(CourseReviewToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPost("Reviews")]
@@ -23,6 +24,8 @@ public partial class CoursesController : BaseApiController
         return Ok(_mapper.Map<CourseReviewToReturnDto>(createdCourseReview));
     }
 
+    [Authorize]
+
     [ProducesResponseType(typeof(CourseReviewToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPut("Reviews/{reviewId}")]
@@ -39,6 +42,8 @@ public partial class CoursesController : BaseApiController
 
         return Ok(_mapper.Map<CourseReviewToReturnDto>(createdCourseReview));
     }
+
+    [Authorize]
 
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]

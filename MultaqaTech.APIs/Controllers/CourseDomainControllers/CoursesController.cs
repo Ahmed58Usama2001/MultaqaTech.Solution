@@ -1,14 +1,15 @@
 ﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers;
 
-[Authorize]
 public partial class CoursesController(ICourseService courseService, IMapper mapper, UserManager<AppUser> userManager,
     IUnitOfWork unitOfWork, MultaqaTechContext context) : BaseApiController
 {
-    private readonly ICourseService _courseService = courseService;
-    private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly IMapper _mapper = mapper;
-    private readonly UserManager<AppUser> _userManager = userManager;
+    private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly MultaqaTechContext _context = context;
+    private readonly ICourseService _courseService = courseService;
+    private readonly UserManager<AppUser> _userManager = userManager;
+
+    [Authorize]
 
     [ProducesResponseType(typeof(CourseToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -146,6 +147,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         return Ok(_mapper.Map<IReadOnlyList<Instructor>, IReadOnlyList<InstructorReturnDto>>(instructors));
     }
 
+    [Authorize]
+
     [ProducesResponseType(typeof(CourseToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -166,6 +169,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         return Ok(_mapper.Map<Course, CourseToReturnDto>(updatedCourse));
     }
+
+    [Authorize]
 
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpDelete("{id}")]
