@@ -11,6 +11,10 @@ public class CourseSpecificationsParams
     public int? SubjectId { get; set; }
     public decimal? MinPrice { get; set; }
     public decimal? MaxPrice { get; set; }
+
+    public decimal? MinRating { get; set; }
+    public decimal? MaxRating { get; set; }
+
     public CourseLevel? CourseLevel{ get; set; }
 
     private const int maxPageSize = 12;

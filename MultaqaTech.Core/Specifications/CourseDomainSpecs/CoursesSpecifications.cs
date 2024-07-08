@@ -11,6 +11,8 @@ public class CoursesSpecifications : BaseSpecifications<Course>
                  (!speceficationsParams.SubjectId.HasValue || e.SubjectId == speceficationsParams.SubjectId) &&
                  (!speceficationsParams.MinPrice.HasValue || e.Price >= speceficationsParams.MinPrice) &&
                  (!speceficationsParams.MaxPrice.HasValue || e.Price <= speceficationsParams.MaxPrice) &&
+                 (!speceficationsParams.MinRating.HasValue || e.Rating >= speceficationsParams.MinRating) &&
+                 (!speceficationsParams.MaxRating.HasValue || e.Rating <= speceficationsParams.MaxRating) &&
                  (!speceficationsParams.CourseLevel.HasValue || e.Level == speceficationsParams.CourseLevel)
            )
     {

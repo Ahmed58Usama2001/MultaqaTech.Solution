@@ -9,13 +9,14 @@ public partial class CourseService
             review.StudentName = student?.FirstName + " " + student?.LastName;
             review.ProfiePictureUrl = student?.ProfilePictureUrl ?? string.Empty;
 
-            Course? courseFromDb = await _unitOfWork.Repository<Course>().GetByIdAsync(review.CourseId);
-            review.Id = courseFromDb?.Reviews is null ? 1 : courseFromDb.Reviews.Count;
+            Course? courseFromDb = await _unitOfWork.Repository<Course>().GetByIdAsync(review.CourseId)
+                  ?? throw new Exception("There is no course with provided Id");
 
-            courseFromDb?.Reviews?.Add(review);
+            review.Id = courseFromDb.Reviews is null ? 1 : courseFromDb.Reviews.Count;
+            courseFromDb.Reviews?.Add(review);
+            CalculateRating(courseFromDb);
 
-            if (courseFromDb is not null)
-                _unitOfWork.Repository<Course>().Update(courseFromDb);
+            _unitOfWork.Repository<Course>().Update(courseFromDb);
 
             var result = await _unitOfWork.CompleteAsync();
             if (result <= 0) return null;
@@ -44,6 +45,8 @@ public partial class CourseService
             reviewToBeUpdated.Content = review.Content;
             reviewToBeUpdated.NumberOfStars = review.NumberOfStars;
 
+            CalculateRating(courseFromDb);
+
             _unitOfWork.Repository<Course>().Update(courseFromDb);
             int result = await _unitOfWork.CompleteAsync();
 
@@ -67,6 +70,8 @@ public partial class CourseService
             CourseReview reviewToBeRemoved = courseFromDb?.Reviews?.Find(cr => cr.Id.Equals(review.Id)) ?? new();
             courseFromDb?.Reviews?.Remove(reviewToBeRemoved);
 
+            CalculateRating(courseFromDb);
+
             if (courseFromDb is not null)
                 _unitOfWork.Repository<Course>().Update(courseFromDb);
 
@@ -80,5 +85,10 @@ public partial class CourseService
             Log.Error(ex.Message);
             return false;
         }
+    }
+
+    private static void CalculateRating(Course courseFromDb)
+    {
+        courseFromDb.Rating = (decimal)courseFromDb.Reviews.Sum(e => e.NumberOfStars) / (decimal)courseFromDb.Reviews.Count;
     }
 }
