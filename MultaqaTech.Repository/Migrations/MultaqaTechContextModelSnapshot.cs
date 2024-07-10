@@ -642,12 +642,6 @@ namespace MultaqaTech.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LectureId");
-
-                    b.HasIndex("QuizId");
-
-                    b.HasIndex("StudentCourseId");
-
                     b.ToTable("StudentsProgress");
                 });
 
@@ -1333,33 +1327,6 @@ namespace MultaqaTech.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("QuizQuestion");
-                });
-
-            modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.StudentCourseProgress", b =>
-                {
-                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.Lecture", "Lecture")
-                        .WithMany()
-                        .HasForeignKey("LectureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities.Quiz", "Quiz")
-                        .WithMany()
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MultaqaTech.Core.Entities.CourseDomainEntities.StudentCourse", "StudentCourse")
-                        .WithMany()
-                        .HasForeignKey("StudentCourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Lecture");
-
-                    b.Navigation("Quiz");
-
-                    b.Navigation("StudentCourse");
                 });
 
             modelBuilder.Entity("MultaqaTech.Core.Entities.CourseDomainEntities.Instructor", b =>

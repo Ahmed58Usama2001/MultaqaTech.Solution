@@ -3,4 +3,6 @@
 public class LectureReturnDto:ItemReturnDto
 {
     public string VideoUrl { get; set; }
+
+
 }

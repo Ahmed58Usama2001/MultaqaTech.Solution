@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.APIs.Controllers;
+﻿using MultaqaTech.Core.Specifications.OrderSpecs;
+
+namespace MultaqaTech.APIs.Controllers;
 
 [Authorize]
 public class OrdersController(IOrderService orderService, IMapper mapper) : BaseApiController
