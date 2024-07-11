@@ -75,6 +75,9 @@ MultaqaTechContext context) : BaseApiController
         StudentCourse? studentCourse = await _context.StudentCourses
                 .FirstOrDefaultAsync(sc => sc.StudentId == student.Id && sc.CourseId== section.CourseId);
 
+        if (studentCourse is null)
+            return Ok(mappedItems);
+
         foreach (var item in mappedItems)
         {
             switch (item.ItemType)
@@ -89,6 +92,8 @@ MultaqaTechContext context) : BaseApiController
                                 S.StudentCourseId == studentCourse.Id);
                     break;
             }
+
+            if(progress is not null)
             item.IsCompleted = progress.IsCompleted;
         }
 

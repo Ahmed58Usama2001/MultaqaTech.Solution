@@ -1,4 +1,7 @@
-﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers;
+﻿using MultaqaTech.Core.Entities.CourseDomainEntities;
+using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
+
+namespace MultaqaTech.APIs.Controllers.CourseDomainControllers;
 
 public partial class CoursesController(ICourseService courseService, IMapper mapper, UserManager<AppUser> userManager,
     IUnitOfWork unitOfWork, MultaqaTechContext context) : BaseApiController
@@ -58,9 +61,26 @@ public partial class CoursesController(ICourseService courseService, IMapper map
             _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        Student? student = await _unitOfWork.Repository<Student>().FindAsync(S => S.AppUserId == storedUser.Id);
+        if (student is null)
+            return BadRequest(new ApiResponse(401));
+
+        
+        CourseToReturnDto? mappedCourse=null;
+        List<CourseToReturnDto> data=new();
+        foreach (var course in courses)
+        {
+            mappedCourse = _mapper.Map<Course, CourseToReturnDto>(course);
+            if (course.EnrolledStudentsIds.Contains(student.Id))
+              mappedCourse.WasBoughtBySignedInUser = true;
+
+            data.Add(mappedCourse);
+        }
+
         var count = await _courseService.GetCountAsync(courseSpecificationsParams);
 
-        var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
 
         return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
     }
@@ -78,7 +98,18 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         _context.Entry(course).Reference(c => c.Instructor).Load();
         _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
 
-        return Ok(_mapper.Map<CourseToReturnDto>(course));
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        Student? student = await _unitOfWork.Repository<Student>().FindAsync(S => S.AppUserId == storedUser.Id);
+        if (student is null)
+            return BadRequest(new ApiResponse(401));
+
+        var mappedCourse = _mapper.Map<CourseToReturnDto>(course);
+
+        if(course.EnrolledStudentsIds.Contains(student.Id))
+            mappedCourse.WasBoughtBySignedInUser = true;
+
+        return Ok(mappedCourse);
     }
 
     [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
@@ -122,9 +153,12 @@ public partial class CoursesController(ICourseService courseService, IMapper map
             _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
+        List<CourseToReturnDto> data = (List<CourseToReturnDto>)_mapper.Map<IReadOnlyList<CourseToReturnDto>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<CourseToReturnDto>)courses);
+        foreach (var mappedCourse in data)
+            mappedCourse.WasBoughtBySignedInUser=true;
+
         var count = await _courseService.GetCountAsync(courseSpecificationsParams);
 
-        var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
 
         return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
     }
