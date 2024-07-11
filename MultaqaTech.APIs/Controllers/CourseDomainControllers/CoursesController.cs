@@ -153,12 +153,12 @@ public partial class CoursesController(ICourseService courseService, IMapper map
             _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
-        List<CourseToReturnDto> data = (List<CourseToReturnDto>)_mapper.Map<IReadOnlyList<CourseToReturnDto>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<CourseToReturnDto>)courses);
-        foreach (var mappedCourse in data)
-            mappedCourse.WasBoughtBySignedInUser=true;
 
         var count = await _courseService.GetCountAsync(courseSpecificationsParams);
+        var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
 
+        foreach (var mappedCourse in data)
+            mappedCourse.WasBoughtBySignedInUser=true;
 
         return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
     }
