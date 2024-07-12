@@ -163,6 +163,63 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
     }
 
+    [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [HttpGet("GetActiveCoursesForStudentByStudentId/{studentId}")]
+    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetActiveCoursesForStudentByStudentId(int studentId, [FromQuery] CourseSpecificationsParams courseSpecificationsParams)
+    {
+        courseSpecificationsParams.StudentId = studentId;
+
+        IEnumerable<Course>? storedCourses = await _courseService.ReadCoursesWithSpecifications(courseSpecificationsParams);
+        if (storedCourses is null)
+            return NotFound(new ApiResponse(404));
+
+        List<StudentCourse> studentCourses = (List<StudentCourse>)_context.StudentCourses.Where(sc => sc.StudentId == studentId &&
+        sc.CompletionPercentage>0 && sc.CompletionPercentage < 100);
+        
+        foreach (var course in storedCourses)
+        {
+            _context.Entry(course).Reference(c => c.Instructor).Load();
+            _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
+        }
+
+
+        var count = await _courseService.GetCountAsync(courseSpecificationsParams);
+        var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)storedCourses);
+
+        foreach (var mappedCourse in data)
+            mappedCourse.WasBoughtBySignedInUser = true;
+
+        return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
+    }
+
+    [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [HttpGet("GetCompleteCoursesForStudentByStudentId/{studentId}")]
+    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCompleteCoursesForStudentByStudentId(int studentId, [FromQuery] CourseSpecificationsParams courseSpecificationsParams)
+    {
+        courseSpecificationsParams.StudentId = studentId;
+
+        IEnumerable<Course>? courses = await _courseService.ReadCoursesWithSpecifications(courseSpecificationsParams);
+        if (courses is null)
+            return NotFound(new ApiResponse(404));
+
+        foreach (var course in courses)
+        {
+            _context.Entry(course).Reference(c => c.Instructor).Load();
+            _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
+        }
+
+
+        var count = await _courseService.GetCountAsync(courseSpecificationsParams);
+        var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
+
+        foreach (var mappedCourse in data)
+            mappedCourse.WasBoughtBySignedInUser = true;
+
+        return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
+    }
+
     [ProducesResponseType(typeof(InstructorReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("GetInstructors")]

@@ -1,9 +1,10 @@
 ﻿namespace MultaqaTech.Service.CourseDomainServices;
 
-public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectService) : ICourseService
+public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subjectService, MultaqaTechContext context) : ICourseService
 {
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
     private readonly ISubjectService _subjectService = subjectService;
+    private readonly MultaqaTechContext _context = context;
 
     private async Task BeforeCreate(Course course, Instructor? instructor)
     {
@@ -191,4 +192,6 @@ public partial class CourseService(IUnitOfWork unitOfWork, ISubjectService subje
 
     public async Task<IReadOnlyList<Course>?> ReadByPredicateWithIncludes(Expression<Func<Course, bool>> criteriaExpression)
         => await _unitOfWork.Repository<Course>().GetAllWithSpecAsync(new CoursesSpecifications(criteriaExpression));
+
+   
 }

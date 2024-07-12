@@ -74,7 +74,7 @@ public class LecturesController(
             return BadRequest(new ApiResponse(401));
 
 
-        if (!lecture.CurriculumSection.Course.EnrolledStudentsIds.Contains(student.Id))
+        if (lecture.CurriculumSection.Course.EnrolledStudentsIds.Contains(student.Id))
         {
             StudentCourse studentCourse = await _unitOfWork.Repository<StudentCourse>().FindAsync(SC => SC.StudentId == student.Id &&
               SC.CourseId == lecture.CurriculumSection.CourseId);
