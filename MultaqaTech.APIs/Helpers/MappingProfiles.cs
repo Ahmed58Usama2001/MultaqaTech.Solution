@@ -10,7 +10,7 @@ public class MappingProfiles : Profile
 
         CreateMap<Instructor, InstructorReturnDto>()
             .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.AppUser.InstructorId))
-            .ForMember(dest => dest.InstructorName, opt => opt.MapFrom(src => src.AppUser.FirstName + " " + src.AppUser.LastName));
+            .ForMember(dest => dest.InstructorName, opt => opt.MapFrom(src => src.AppUser.UserName));
 
         #region Blog Post
 
