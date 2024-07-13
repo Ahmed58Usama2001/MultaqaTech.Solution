@@ -1,5 +1,6 @@
 ﻿namespace MultaqaTech.APIs.Controllers.CourseDomainControllers;
 
+[Authorize]
 public partial class CoursesController(ICourseService courseService, IMapper mapper, UserManager<AppUser> userManager,
     IUnitOfWork unitOfWork, MultaqaTechContext context) : BaseApiController
 {
@@ -9,7 +10,6 @@ public partial class CoursesController(ICourseService courseService, IMapper map
     private readonly ICourseService _courseService = courseService;
     private readonly UserManager<AppUser> _userManager = userManager;
 
-    [Authorize]
 
     [ProducesResponseType(typeof(CourseToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -58,9 +58,26 @@ public partial class CoursesController(ICourseService courseService, IMapper map
             _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        Student? student = await _unitOfWork.Repository<Student>().FindAsync(S => S.AppUserId == storedUser.Id);
+        if (student is null)
+            return BadRequest(new ApiResponse(401));
+
+        
+        CourseToReturnDto? mappedCourse=null;
+        List<CourseToReturnDto> data=new();
+        foreach (var course in courses)
+        {
+            mappedCourse = _mapper.Map<Course, CourseToReturnDto>(course);
+            if (course.EnrolledStudentsIds.Contains(student.Id))
+              mappedCourse.WasBoughtBySignedInUser = true;
+
+            data.Add(mappedCourse);
+        }
+
         var count = await _courseService.GetCountAsync(courseSpecificationsParams);
 
-        var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
 
         return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
     }
@@ -78,7 +95,18 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         _context.Entry(course).Reference(c => c.Instructor).Load();
         _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
 
-        return Ok(_mapper.Map<CourseToReturnDto>(course));
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        Student? student = await _unitOfWork.Repository<Student>().FindAsync(S => S.AppUserId == storedUser.Id);
+        if (student is null)
+            return BadRequest(new ApiResponse(401));
+
+        var mappedCourse = _mapper.Map<CourseToReturnDto>(course);
+
+        if(course.EnrolledStudentsIds.Contains(student.Id))
+            mappedCourse.WasBoughtBySignedInUser = true;
+
+        return Ok(mappedCourse);
     }
 
     [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
@@ -112,19 +140,183 @@ public partial class CoursesController(ICourseService courseService, IMapper map
     {
         courseSpecificationsParams.StudentId = studentId;
 
-        IEnumerable<Course>? courses = await _courseService.ReadCoursesWithSpecifications(courseSpecificationsParams);
-        if (courses is null)
+        IEnumerable<Course>? storedCourses = await _courseService.ReadCoursesWithSpecifications(courseSpecificationsParams);
+        if (storedCourses is null)
             return NotFound(new ApiResponse(404));
 
-        foreach (var course in courses)
+        // Retrieve StudentCourse entities filtered by CompletionPercentage
+        List<StudentCourse> studentCourses = await _context.StudentCourses
+            .Where(sc => sc.StudentId == studentId)
+            .ToListAsync();
+
+        // Get the CourseIds from the filtered StudentCourse entities
+        var filteredCourseIds = studentCourses.Select(sc => sc.CourseId).ToList();
+
+        // Filter storedCourses to include only those that match the CourseIds
+        var filteredStoredCourses = storedCourses
+            .Where(course => filteredCourseIds.Contains(course.Id))
+            .ToList();
+
+        if (!filteredStoredCourses.Any())
+            return NotFound(new ApiResponse(404));
+
+        foreach (var course in filteredStoredCourses)
         {
             _context.Entry(course).Reference(c => c.Instructor).Load();
             _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
+            _context.Entry(course).Collection(c => c.CurriculumSections).Load();
+
+            foreach (var section in course.CurriculumSections)
+            {
+                _context.Entry(section).Collection(s => s.Lectures).Load();
+            }
         }
 
-        var count = await _courseService.GetCountAsync(courseSpecificationsParams);
+        var count = filteredStoredCourses.Count;
 
-        var data = _mapper.Map<IReadOnlyList<Course>, IReadOnlyList<CourseToReturnDto>>((IReadOnlyList<Course>)courses);
+        var data = filteredStoredCourses.Select(course => {
+            var studentCourse = studentCourses.FirstOrDefault(sc => sc.CourseId == course.Id);
+
+            var numberOfLectures = course.CurriculumSections
+                .SelectMany(cs => cs.Lectures)
+                .Count();
+
+            var completionPercentage = studentCourse?.CompletionPercentage ?? 0;
+
+            var courseDto = _mapper.Map<CourseToReturnDto>(course);
+            courseDto.NumberOfLectures = numberOfLectures;
+            courseDto.CompletionPercentage = completionPercentage;
+            courseDto.WasBoughtBySignedInUser = true;
+
+            return courseDto;
+        }).ToList();
+
+        return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
+    }
+
+    [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [HttpGet("GetActiveCoursesForStudentByStudentId/{studentId}")]
+    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetActiveCoursesForStudentByStudentId(int studentId, [FromQuery] CourseSpecificationsParams courseSpecificationsParams)
+    {
+        courseSpecificationsParams.StudentId = studentId;
+
+        IEnumerable<Course>? storedCourses = await _courseService.ReadCoursesWithSpecifications(courseSpecificationsParams);
+        if (storedCourses is null)
+            return NotFound(new ApiResponse(404));
+
+        // Retrieve StudentCourse entities filtered by CompletionPercentage
+        List<StudentCourse> studentCourses = await _context.StudentCourses
+            .Where(sc => sc.StudentId == studentId &&
+                         sc.CompletionPercentage > 0 &&
+                         sc.CompletionPercentage < 100)
+            .ToListAsync();
+
+        // Get the CourseIds from the filtered StudentCourse entities
+        var filteredCourseIds = studentCourses.Select(sc => sc.CourseId).ToList();
+
+        // Filter storedCourses to include only those that match the CourseIds
+        var filteredStoredCourses = storedCourses
+            .Where(course => filteredCourseIds.Contains(course.Id))
+            .ToList();
+
+        if (!filteredStoredCourses.Any())
+            return NotFound(new ApiResponse(404));
+
+        foreach (var course in filteredStoredCourses)
+        {
+            _context.Entry(course).Reference(c => c.Instructor).Load();
+            _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
+            _context.Entry(course).Collection(c => c.CurriculumSections).Load();
+
+            foreach (var section in course.CurriculumSections)
+            {
+                _context.Entry(section).Collection(s => s.Lectures).Load();
+            }
+        }
+
+        var count = filteredStoredCourses.Count;
+
+        var data = filteredStoredCourses.Select(course => {
+            var studentCourse = studentCourses.FirstOrDefault(sc => sc.CourseId == course.Id);
+
+            var numberOfLectures = course.CurriculumSections
+                .SelectMany(cs => cs.Lectures)
+                .Count();
+
+            var completionPercentage = studentCourse?.CompletionPercentage ?? 0;
+
+            var courseDto = _mapper.Map<CourseToReturnDto>(course);
+            courseDto.NumberOfLectures = numberOfLectures;
+            courseDto.CompletionPercentage = completionPercentage;
+            courseDto.WasBoughtBySignedInUser = true;
+
+            return courseDto;
+        }).ToList();
+
+        return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
+    }
+
+
+
+    [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [HttpGet("GetCompleteCoursesForStudentByStudentId/{studentId}")]
+    public async Task<ActionResult<IEnumerable<CourseToReturnDto>>> GetCompleteCoursesForStudentByStudentId(int studentId, [FromQuery] CourseSpecificationsParams courseSpecificationsParams)
+    {
+        courseSpecificationsParams.StudentId = studentId;
+
+        IEnumerable<Course>? storedCourses = await _courseService.ReadCoursesWithSpecifications(courseSpecificationsParams);
+        if (storedCourses is null)
+            return NotFound(new ApiResponse(404));
+
+        // Retrieve StudentCourse entities filtered by CompletionPercentage
+        List<StudentCourse> studentCourses = await _context.StudentCourses
+            .Where(sc => sc.StudentId == studentId &&
+                         sc.CompletionPercentage == 100)
+            .ToListAsync();
+
+        // Get the CourseIds from the filtered StudentCourse entities
+        var filteredCourseIds = studentCourses.Select(sc => sc.CourseId).ToList();
+
+        // Filter storedCourses to include only those that match the CourseIds
+        var filteredStoredCourses = storedCourses
+            .Where(course => filteredCourseIds.Contains(course.Id))
+            .ToList();
+
+        if (!filteredStoredCourses.Any())
+            return NotFound(new ApiResponse(404));
+
+        foreach (var course in filteredStoredCourses)
+        {
+            _context.Entry(course).Reference(c => c.Instructor).Load();
+            _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
+            _context.Entry(course).Collection(c => c.CurriculumSections).Load();
+
+            foreach (var section in course.CurriculumSections)
+            {
+                _context.Entry(section).Collection(s => s.Lectures).Load();
+            }
+        }
+
+        var count = filteredStoredCourses.Count;
+
+        var data = filteredStoredCourses.Select(course => {
+            var studentCourse = studentCourses.FirstOrDefault(sc => sc.CourseId == course.Id);
+
+            var numberOfLectures = course.CurriculumSections
+                .SelectMany(cs => cs.Lectures)
+                .Count();
+
+            var completionPercentage = studentCourse?.CompletionPercentage ?? 0;
+
+            var courseDto = _mapper.Map<CourseToReturnDto>(course);
+            courseDto.NumberOfLectures = numberOfLectures;
+            courseDto.CompletionPercentage = completionPercentage;
+            courseDto.WasBoughtBySignedInUser = true;
+
+            return courseDto;
+        }).ToList();
 
         return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
     }

@@ -10,7 +10,7 @@ public class MappingProfiles : Profile
 
         CreateMap<Instructor, InstructorReturnDto>()
             .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.AppUser.InstructorId))
-            .ForMember(dest => dest.InstructorName, opt => opt.MapFrom(src => src.AppUser.FirstName + " " + src.AppUser.LastName));
+            .ForMember(dest => dest.InstructorName, opt => opt.MapFrom(src => src.AppUser.UserName));
 
         #region Blog Post
 
@@ -37,8 +37,13 @@ public class MappingProfiles : Profile
            .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags != null ? src.Tags.Select(s => s.Name).ToList() : null))
            .ForMember(dest => dest.Prerequisites, opt => opt.MapFrom(src => src.Prerequisites != null ? src.Prerequisites.Select(c => c.Name).ToList() : null))
            .ForMember(d => d.ThumbnailUrl, O => O.MapFrom<GenericMediaUrlResolver<Course, CourseToReturnDto>>())
-           .ForMember(dest => dest.InstructorName, opt => opt.MapFrom(src => src.Instructor.AppUser.FirstName + " " + src.Instructor.AppUser.LastName))
-           .ForMember(dest => dest.InstructorPicture, opt => opt.MapFrom(src => src.Instructor.AppUser.ProfilePictureUrl));
+           .ForMember(dest => dest.InstructorName, opt => opt.MapFrom(src => src.Instructor.AppUser.UserName))
+           .ForMember(dest => dest.InstructorPicture, opt => opt.MapFrom(src => src.Instructor.AppUser.ProfilePictureUrl))
+           .ForMember(dest => dest.Rating, opt => opt.MapFrom(src =>
+                src.Reviews.Any()
+                    ? src.Reviews.Where(r => r.CourseId == src.Id).Sum(r => r.NumberOfStars) / (decimal)src.Reviews.Count
+                    : 5m));
+
 
         CreateMap<CourseReviewDto, CourseReview>();
         CreateMap<CourseReview, CourseReviewToReturnDto>()

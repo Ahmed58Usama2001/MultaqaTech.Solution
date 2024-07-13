@@ -1,4 +1,6 @@
-﻿using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
+﻿using MultaqaTech.Core.Entities.CourseDomainEntities;
+using MultaqaTech.Core.Entities.CourseDomainEntities.CurriculumDomainEntities;
+using System;
 
 namespace MultaqaTech.Service.CourseDomainServices.CurriculumDomainServices;
 
@@ -272,10 +274,41 @@ public class CurriculumItemService(IUnitOfWork unitOfWork, MultaqaTechContext co
                     break;
             }
 
-            progress.IsCompleted = true;
-            var result = await _unitOfWork.CompleteAsync();
+            if (progress == null)
+                return false;
 
-            if (result <= 0) return false;
+            progress.IsCompleted = true;
+            await _unitOfWork.CompleteAsync();
+
+            // Update student course completion percentage
+            var studentCourse = await _context.StudentCourses
+                .Include(sc => sc.Course)
+                    .ThenInclude(c => c.CurriculumSections)
+                    .ThenInclude(cs => cs.Lectures)
+                .Include(sc => sc.Course)
+                    .ThenInclude(c => c.CurriculumSections)
+                    .ThenInclude(cs => cs.Quizes)
+                .FirstOrDefaultAsync(sc => sc.Id == studentCourseId);
+
+            if (studentCourse == null)
+                return false;
+
+            var completedItems = await _context.StudentsProgress
+                .CountAsync(p => p.IsCompleted && p.StudentCourseId == studentCourseId);
+
+            var totalItems = studentCourse.Course?.CurriculumSections?
+                .SelectMany(section =>
+                {
+                    var lectures = section.Lectures?.Cast<CurriculumItem>() ?? Enumerable.Empty<CurriculumItem>();
+                    var quizes = section.Quizes?.Cast<CurriculumItem>() ?? Enumerable.Empty<CurriculumItem>();
+                    return lectures.Concat(quizes);
+                })
+                .Count();
+
+            studentCourse.CompletionPercentage = (int)((completedItems * 100) / totalItems);
+
+            await _unitOfWork.CompleteAsync();
+
             return true;
         }
         catch (Exception ex)
@@ -284,4 +317,5 @@ public class CurriculumItemService(IUnitOfWork unitOfWork, MultaqaTechContext co
             return false;
         }
     }
+
 }

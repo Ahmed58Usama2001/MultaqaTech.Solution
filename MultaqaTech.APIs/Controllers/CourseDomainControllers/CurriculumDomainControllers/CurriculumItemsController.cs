@@ -52,11 +52,49 @@ MultaqaTechContext context) : BaseApiController
         if (speceficationsParams.curriculumSectionId <= 0)
             return BadRequest(new { message = "Enter a suitable Section ID: It must be greater than 0" });
 
+        CurriculumSection? section=await _sectionService.ReadByIdAsync(sectionId);
+        if(section is null)
+            return BadRequest(new { message = "Section Doesn't exist" });
+
         var items = await _itemService.ReadCurriculumItemsAsync(speceficationsParams);
         if (items == null)
             return NotFound(new ApiResponse(404));
 
-        return Ok(_mapper.Map<IReadOnlyList<CurriculumItem>, IReadOnlyList<ItemReturnDto>>(items).OrderBy(i=>i.Order));
+        var mappedItems=_mapper.Map<IReadOnlyList<CurriculumItem>, IReadOnlyList<ItemReturnDto>>(items).OrderBy(i => i.Order);
+
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        Student? student = await _unitOfWork.Repository<Student>().FindAsync(S => S.AppUserId == storedUser.Id);
+        if (student is null)
+            return BadRequest(new ApiResponse(401));
+
+        StudentCourseProgress? progress = null;
+        StudentCourse? studentCourse = await _context.StudentCourses
+                .FirstOrDefaultAsync(sc => sc.StudentId == student.Id && sc.CourseId== section.CourseId);
+
+        if (studentCourse is null)
+            return Ok(mappedItems);
+
+        foreach (var item in mappedItems)
+        {
+            switch (item.ItemType)
+            {
+                case "Lecture":
+                    progress = await _unitOfWork.Repository<StudentCourseProgress>().FindAsync(S => S.LectureId == item.Id &&
+                    S.StudentCourseId == studentCourse.Id);
+                    break;
+
+                case "Quiz":
+                    progress = await _unitOfWork.Repository<StudentCourseProgress>().FindAsync(S => S.QuizId == item.Id &&
+                                S.StudentCourseId == studentCourse.Id);
+                    break;
+            }
+
+            if(progress is not null)
+            item.IsCompleted = progress.IsCompleted;
+        }
+
+        return Ok(mappedItems);
     }
 
     private async Task<bool> CheckIfRequestFromCreatorUser(int instructorId)

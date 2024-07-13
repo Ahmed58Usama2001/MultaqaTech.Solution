@@ -7,8 +7,13 @@ public class CourseToReturnDto
     public int DeductionAmount { get; set; }
     public int NumberOfLectures { get; set; }
 
+    public int CompletionPercentage { get; set; }
+
+    public bool WasBoughtBySignedInUser { get; set; }
+
     public string? Language { get; set; }
 
+    public int InstructorId { get; set; }
     public string? InstructorName { get; set; }
     public string? InstructorPicture { get; set; }
 

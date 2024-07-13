@@ -202,13 +202,24 @@ public class AccountController : BaseApiController
 
         var user = await _userManager.FindByEmailAsync(email);
 
+        if(user is null)
+            return BadRequest(new ApiResponse(401));
+
+        Instructor? instructor = await _unitOfWork.Repository<Instructor>().FindAsync(S => S.AppUserId == user.Id);
+
         return Ok(new UserDto()
         {
-            UserName = user.UserName ?? string.Empty,
-            Email = user.Email ?? string.Empty,
+            UserName = user?.UserName ?? string.Empty,
+            PhoneNumber=user?.PhoneNumber??string.Empty,
+            JobTitle= instructor?.JobTitle ?? string.Empty,
+            Bio= instructor?.Bio ?? string.Empty,
+            FirstName=user?.FirstName ??string.Empty,
+            LastName=user?.LastName ??string.Empty,
+            Email = user?.Email ?? string.Empty,
             IsInstructor = user?.IsInstructor ?? false,
             InstructorId = user?.InstructorId ?? 0,
             StudentId = user?.StudentId ?? 0,
+            RegistrationDate=user.RegistrationDate,
             ProfilePictureUrl = !string.IsNullOrEmpty(user.ProfilePictureUrl) ? $"{_configuration["ApiBaseUrl"]}/{user?.ProfilePictureUrl}" : string.Empty,
             Token = await _authService.CreateTokenAsync(user, _userManager)
         });

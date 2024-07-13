@@ -1,4 +1,6 @@
-﻿namespace MultaqaTech.Core.Services.Contract.OrderContracts;
+﻿using MultaqaTech.Core.Specifications.OrderSpecs;
+
+namespace MultaqaTech.Core.Services.Contract.OrderContracts;
 
 public interface IOrderService
 {

@@ -19,7 +19,7 @@ public class QuizesController(
     [ProducesResponseType(typeof(QuizReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpPost]
-    public async Task<ActionResult<QuizReturnDto>> CreateLectureAsync(QuizCreateDto quizDto)
+    public async Task<ActionResult<QuizReturnDto>> CreateQuizAsync(QuizCreateDto quizDto)
     {
         if (quizDto is null) return BadRequest(new ApiResponse(400));
 
@@ -125,7 +125,6 @@ public class QuizesController(
 
         _context.Entry(quiz).Reference(i => i.CurriculumSection).Load();
         _context.Entry(quiz.CurriculumSection).Reference(i => i.Course).Load();
-        _context.Entry(quiz.CurriculumSection.Course).Reference(i => i.EnrolledStudentsIds).Load();
 
         string? userEmail = User.FindFirstValue(ClaimTypes.Email);
         AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
@@ -148,7 +147,7 @@ public class QuizesController(
     [ProducesResponseType(typeof(QuizReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteSection(int id)
+    public async Task<IActionResult> DeleteQuiz(int id)
     {
         var quiz = await _itemService.ReadByIdAsync(id, CurriculumItemType.Quiz);
         if (quiz == null)

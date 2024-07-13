@@ -54,8 +54,8 @@ public class LecturesController(
 
     [ProducesResponseType(typeof(LectureReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    [HttpGet("{id}")]
-    public async Task<ActionResult<LectureReturnDto>> GetLecture(int id)
+    [HttpGet("{id}/ForStudent")]
+    public async Task<ActionResult<LectureReturnDto>> GetLectureForStudent(int id)
     {
         Lecture? lecture = (Lecture?)await _itemService.ReadByIdAsync(id,CurriculumItemType.Lecture);
         if (lecture == null)
@@ -73,7 +73,8 @@ public class LecturesController(
         if (!await CheckIfRequestFromCreatorUser(lecture.CurriculumSection.Course.InstructorId)&&!lecture.CurriculumSection.Course.EnrolledStudentsIds.Contains(student.Id))
             return BadRequest(new ApiResponse(401));
 
-        if (!await CheckIfRequestFromCreatorUser(lecture.CurriculumSection.Course.InstructorId))
+
+        if (lecture.CurriculumSection.Course.EnrolledStudentsIds.Contains(student.Id))
         {
             StudentCourse studentCourse = await _unitOfWork.Repository<StudentCourse>().FindAsync(SC => SC.StudentId == student.Id &&
               SC.CourseId == lecture.CurriculumSection.CourseId);
@@ -82,6 +83,31 @@ public class LecturesController(
             if (!updated)
                 return BadRequest(new ApiResponse(400));
         }
+
+        return Ok(_mapper.Map<LectureReturnDto>(lecture));
+    }
+
+    [ProducesResponseType(typeof(LectureReturnDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<LectureReturnDto>> GetLecture(int id)
+    {
+        Lecture? lecture = (Lecture?)await _itemService.ReadByIdAsync(id, CurriculumItemType.Lecture);
+        if (lecture == null)
+            return NotFound(new ApiResponse(404));
+
+        _context.Entry(lecture).Reference(i => i.CurriculumSection).Load();
+        _context.Entry(lecture.CurriculumSection).Reference(i => i.Course).Load();
+
+        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+        Student? student = await _unitOfWork.Repository<Student>().FindAsync(S => S.AppUserId == storedUser.Id);
+        if (student is null)
+            return BadRequest(new ApiResponse(401));
+
+        if (!await CheckIfRequestFromCreatorUser(lecture.CurriculumSection.Course.InstructorId))
+            return BadRequest(new ApiResponse(401));
+
 
         return Ok(_mapper.Map<LectureReturnDto>(lecture));
     }
@@ -187,5 +213,8 @@ public class LecturesController(
     }
 
    
+
+
+
 }
 
