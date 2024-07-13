@@ -42,6 +42,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
         return Ok(_mapper.Map<CourseToReturnDto>(createdCourse));
     }
 
+    [AllowAnonymous]
+
     [ProducesResponseType(typeof(List<CourseToReturnDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet]
@@ -49,7 +51,7 @@ public partial class CoursesController(ICourseService courseService, IMapper map
     {
         IEnumerable<Course>? courses = await _courseService.ReadCoursesWithSpecifications(courseSpecificationsParams);
 
-        if (courses is null)
+        if (courses == null || !courses.Any())
             return NotFound(new ApiResponse(404));
 
         foreach (var course in courses)
@@ -58,29 +60,46 @@ public partial class CoursesController(ICourseService courseService, IMapper map
             _context.Entry(course.Instructor).Reference(i => i.AppUser).Load();
         }
 
-        string? userEmail = User.FindFirstValue(ClaimTypes.Email);
-        AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
-        Student? student = await _unitOfWork.Repository<Student>().FindAsync(S => S.AppUserId == storedUser.Id);
-        if (student is null)
-            return BadRequest(new ApiResponse(401));
+        int studentId = -1;
+        int count;
+        List<CourseToReturnDto> data = new();
 
-        
-        CourseToReturnDto? mappedCourse=null;
-        List<CourseToReturnDto> data=new();
-        foreach (var course in courses)
+        if (Request.Headers.ContainsKey("Authorization"))
         {
-            mappedCourse = _mapper.Map<Course, CourseToReturnDto>(course);
-            if (course.EnrolledStudentsIds.Contains(student.Id))
-              mappedCourse.WasBoughtBySignedInUser = true;
+            string? userEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (!string.IsNullOrEmpty(userEmail))
+            {
+                AppUser? storedUser = await _userManager.FindByEmailAsync(userEmail);
+                if (storedUser != null)
+                {
+                    Student? student = await _unitOfWork.Repository<Student>().FindAsync(s => s.AppUserId == storedUser.Id);
+                    if (student != null)
+                    {
+                        studentId = student.Id;
+                        foreach (var course in courses)
+                        {
+                            var mappedCourse = _mapper.Map<Course, CourseToReturnDto>(course);
+                            if (course.EnrolledStudentsIds.Contains(studentId))
+                                mappedCourse.WasBoughtBySignedInUser = true;
 
-            data.Add(mappedCourse);
+                            data.Add(mappedCourse);
+                        }
+                        count = await _courseService.GetCountAsync(courseSpecificationsParams);
+                        return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
+                    }
+                }
+            }
+
+            return BadRequest(new ApiResponse(401));
         }
 
-        var count = await _courseService.GetCountAsync(courseSpecificationsParams);
-
+        data = _mapper.Map<IEnumerable<Course>, List<CourseToReturnDto>>(courses).ToList();
+        count = await _courseService.GetCountAsync(courseSpecificationsParams);
 
         return Ok(new Pagination<CourseToReturnDto>(courseSpecificationsParams.PageIndex, courseSpecificationsParams.PageSize, count, data));
     }
+
+    [AllowAnonymous]
 
     [ProducesResponseType(typeof(CourseToReturnDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -103,7 +122,7 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         var mappedCourse = _mapper.Map<CourseToReturnDto>(course);
 
-        if(course.EnrolledStudentsIds.Contains(student.Id))
+        if (course.EnrolledStudentsIds.Contains(student.Id))
             mappedCourse.WasBoughtBySignedInUser = true;
 
         return Ok(mappedCourse);
@@ -174,7 +193,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         var count = filteredStoredCourses.Count;
 
-        var data = filteredStoredCourses.Select(course => {
+        var data = filteredStoredCourses.Select(course =>
+        {
             var studentCourse = studentCourses.FirstOrDefault(sc => sc.CourseId == course.Id);
 
             var numberOfLectures = course.CurriculumSections
@@ -237,7 +257,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         var count = filteredStoredCourses.Count;
 
-        var data = filteredStoredCourses.Select(course => {
+        var data = filteredStoredCourses.Select(course =>
+        {
             var studentCourse = studentCourses.FirstOrDefault(sc => sc.CourseId == course.Id);
 
             var numberOfLectures = course.CurriculumSections
@@ -301,7 +322,8 @@ public partial class CoursesController(ICourseService courseService, IMapper map
 
         var count = filteredStoredCourses.Count;
 
-        var data = filteredStoredCourses.Select(course => {
+        var data = filteredStoredCourses.Select(course =>
+        {
             var studentCourse = studentCourses.FirstOrDefault(sc => sc.CourseId == course.Id);
 
             var numberOfLectures = course.CurriculumSections
