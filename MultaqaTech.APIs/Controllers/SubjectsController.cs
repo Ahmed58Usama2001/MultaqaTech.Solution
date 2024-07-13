@@ -1,10 +1,11 @@
 ﻿namespace MultaqaTech.APIs.Controllers;
 
-[Authorize]
 public class SubjectsController(ISubjectService subjectService, IMapper mapper) : BaseApiController
 {
     private readonly ISubjectService _subjectService = subjectService;
     private readonly IMapper _mapper = mapper;
+
+    [Authorize]
 
     [ProducesResponseType(typeof(Subject), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
@@ -27,7 +28,6 @@ public class SubjectsController(ISubjectService subjectService, IMapper mapper) 
         return Ok(subjects);
     }
 
-
     [ProducesResponseType(typeof(Subject), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpGet("{id}")]
@@ -41,6 +41,8 @@ public class SubjectsController(ISubjectService subjectService, IMapper mapper) 
         return Ok(subject);
     }
 
+    [Authorize]
+
     [ProducesResponseType(typeof(Subject), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [HttpPut("{subjectId}")]
@@ -53,6 +55,8 @@ public class SubjectsController(ISubjectService subjectService, IMapper mapper) 
 
         return Ok(subject);
     }
+
+    [Authorize]
 
     [ProducesResponseType(typeof(Subject), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
