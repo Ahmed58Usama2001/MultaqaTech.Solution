@@ -2,6 +2,9 @@
 
 MoltaqaTech is a comprehensive e-learning platform designed to foster a community for students in the tech industry. The platform provides a rich set of features, enabling users to learn, share knowledge, and engage with others in the tech community. This project encompasses both frontend and backend development, with a focus on scalability, security, and user experience.
 
+# Demo
+https://youtu.be/S9AKFMsviCU?si=6-OurSfNCO0HrIfm
+
 ## Table of Contents
 
 - [Features](#features)
